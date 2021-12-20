@@ -1,5 +1,5 @@
 {
-  "name": "rinkeby",
+  "name": "fuji",
   "chainId": "4\n",
   "contracts": {
     "AaveStrategy": {

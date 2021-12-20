@@ -210,7 +210,7 @@ module.exports = {
     localhost: {
       timeout: 60000,
     },
-    rinkeby: {
+    fuji: {
       url: `${process.env.PROVIDER_URL}`,
       accounts: [
         process.env.DEPLOYER_PK || privateKeys[1],
