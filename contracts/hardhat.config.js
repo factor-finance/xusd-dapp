@@ -204,14 +204,18 @@ module.exports = {
       accounts: {
         mnemonic,
       },
-      chainId: 1337,
       initialBaseFeePerGas: 0,
+      gasPrice: 225000000000,
+      chainId: !process.env.FORK === "true" ? 43112 : undefined, //Only specify a chainId if we are not forking
+      forking: forkingData
     },
     localhost: {
       timeout: 60000,
     },
     fuji: {
       url: `${process.env.PROVIDER_URL}`,
+      chainId: 43113,
+      gasPrice: 225000000000,
       accounts: [
         process.env.DEPLOYER_PK || privateKeys[1],
         process.env.GOVERNOR_PK || privateKeys[1],
@@ -219,6 +223,8 @@ module.exports = {
     },
     mainnet: {
       url: `${process.env.PROVIDER_URL}`,
+      chainId: 43114,
+      gasPrice: 225000000000,
       accounts: [
         process.env.DEPLOYER_PK || privateKeys[0],
         process.env.GOVERNOR_PK || privateKeys[0],
