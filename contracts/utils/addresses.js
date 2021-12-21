@@ -15,7 +15,8 @@ addresses.mainnet.Binance = "0x9f8c163cBA728e99993ABe7495F06c0A3c8Ac8b9";
  * But all together do. In case new ones are added update them from here:
  * https://snowtrace.io/accounts/label/binance?subcatid=3-0&size=100&start=0&col=2&order=desc
  */
-addresses.mainnet.BinanceAll = "0x9f8c163cBA728e99993ABe7495F06c0A3c8Ac8b9,0x0455ea966197a69eccf5fc354b6a7896e0fe38f0,0x2d6b7235db3659c1751f342f6c80a49727bb1a1d";
+addresses.mainnet.BinanceAll =
+  "0x9f8c163cBA728e99993ABe7495F06c0A3c8Ac8b9,0x0455ea966197a69eccf5fc354b6a7896e0fe38f0,0x2d6b7235db3659c1751f342f6c80a49727bb1a1d";
 
 // Native stablecoins
 addresses.mainnet.DAIe = "0xd586e7f844cea2f87f50152665bcbc2c279d8d70";
@@ -29,9 +30,8 @@ addresses.mainnet.DAI = addresses.mainnet.DAIe;
 addresses.mainnet.USDC = "0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e";
 addresses.mainnet.USDT = "0x9702230a8ea53601f5cd2dc00fdbc13d4df4a8c7";
 // REDEFINE
-addresses.mainnet.USDC = addresses.mainnet.USDCe
-addresses.mainnet.USDT = addresses.mainnet.USDTe
-
+addresses.mainnet.USDC = addresses.mainnet.USDCe;
+addresses.mainnet.USDT = addresses.mainnet.USDTe;
 
 // AAVE
 addresses.mainnet.AAVE_ADDRESS_PROVIDER =
