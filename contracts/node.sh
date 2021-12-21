@@ -31,7 +31,7 @@ main()
         nodeOutput=$(mktemp "${TMPDIR:-/tmp/}$(basename 0).XXX")
         # the --no-install is here so npx doesn't download some package on its own if it can not find one in the repo
         if [ -z "$GOPATH" ]; then echo "Set GOPATH and maybe install avalanchego" && exit 1; fi
-        $GOPATH/src/github.com/ava-labs/avalanchego/build/avalanchego --public-ip=127.0.0.1 --snow-sample-size=2 --snow-quorum-size=2 --http-port=9650 --db-dir=db/node1 --network-id=local > $nodeOutput 2>&1 &
+        $GOPATH/src/github.com/ava-labs/avalanchego/build/avalanchego --public-ip=127.0.0.1 --snow-sample-size=2 --snow-quorum-size=2 --http-port=9650 --db-dir=db/node1 --network-id=local --staking-enabled=false > $nodeOutput 2>&1 &
 
         echo "Node output: $nodeOutput"
         echo "Waiting for node to initialize:"
