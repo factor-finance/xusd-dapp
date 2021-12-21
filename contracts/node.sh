@@ -35,7 +35,7 @@ main()
         echo "Node output: $nodeOutput"
         echo "Waiting for node to initialize:"
         i=0
-        until grep -q -i 'HTTP API server listening on ' $nodeOutput
+        until grep -q -i 'Started HTTP and WebSocket JSON-RPC server ' $nodeOutput
         do
           let i++
           printf "."
