@@ -18,16 +18,16 @@ addresses.mainnet.Binance = "0x9f8c163cBA728e99993ABe7495F06c0A3c8Ac8b9";
 addresses.mainnet.BinanceAll = addresses.mainnet.Binance;
 
 // Native stablecoins
-addresses.mainnet.DAIe = '0xd586e7f844cea2f87f50152665bcbc2c279d8d70'
-addresses.mainnet.USDCe = '0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664'
-addresses.mainnet.USDTe = '0xc7198437980c041c805a1edcba50c1ce5db95118'
+addresses.mainnet.DAIe = "0xd586e7f844cea2f87f50152665bcbc2c279d8d70";
+addresses.mainnet.USDCe = "0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664";
+addresses.mainnet.USDTe = "0xc7198437980c041c805a1edcba50c1ce5db95118";
 
 // Native stablecoins
-addresses.mainnet.TUSD = '0x1c20e891bab6b1727d14da358fae2984ed9b59eb'
-addresses.mainnet.DAI = addresses.mainnet.DAIe
+addresses.mainnet.TUSD = "0x1c20e891bab6b1727d14da358fae2984ed9b59eb";
+addresses.mainnet.DAI = addresses.mainnet.DAIe;
 // these are very thin
-addresses.mainnet.USDC = '0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e'
-addresses.mainnet.USDT = '0x9702230a8ea53601f5cd2dc00fdbc13d4df4a8c7'
+addresses.mainnet.USDC = "0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e";
+addresses.mainnet.USDT = "0x9702230a8ea53601f5cd2dc00fdbc13d4df4a8c7";
 
 // AAVE
 addresses.mainnet.AAVE_ADDRESS_PROVIDER =
