@@ -9,7 +9,7 @@ addresses.zero = '0x0000000000000000000000000000000000000000'
 addresses.dead = '0x0000000000000000000000000000000000000001'
 
 addresses.mainnet = {}
-addresses.mainnet.Binance = ' 0x9f8c163cBA728e99993ABe7495F06c0A3c8Ac8b9'
+addresses.mainnet.Binance = '0x9f8c163cBA728e99993ABe7495F06c0A3c8Ac8b9'
 /* All the Binance addresses. There is not 1 address that has enough of all of the stablecoins and ether.
  * But all together do. In case new ones are added update them from here:
  * https://snowtrace.io/accounts/label/binance?subcatid=3-0&size=100&start[<8;46;16m]=0&col=2&order=desc
