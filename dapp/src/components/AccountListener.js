@@ -610,7 +610,7 @@ const AccountListener = (props) => {
     const loadLifetimeEarnings = async () => {
       if (!account) return
 
-      let response = null;
+      let response = null
       response = await fetch(
         `${
           process.env.ANALYTICS_ENDPOINT
