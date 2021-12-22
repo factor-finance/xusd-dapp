@@ -62,8 +62,7 @@ const deployAaveStrategy = async () => {
         assetAddresses.WAVAX,
         [assetAddresses.DAI],
         [assetAddresses.avDAI],
-        cAaveIncentivesController.address,
-        assetAddresses.STKAAVE
+        cAaveIncentivesController.address
       )
   );
   log("Initialized AaveStrategy");

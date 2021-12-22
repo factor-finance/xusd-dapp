@@ -109,13 +109,6 @@ const deployMocks = async ({ getNamedAccounts, deployments }) => {
 
   const mockAaveToken = await ethers.getContract("MockAAVEToken");
 
-  await deploy("MockStkAave", {
-    from: deployerAddr,
-    args: [mockAaveToken.address],
-  });
-
-  const mockStkAave = await ethers.getContract("MockStkAave");
-
   await deploy("MockNonRebasing", {
     from: deployerAddr,
   });

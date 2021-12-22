@@ -224,7 +224,6 @@ const getAssetAddresses = async (deployments) => {
       AAVE: addresses.mainnet.Aave,
       AAVE_ADDRESS_PROVIDER: addresses.mainnet.AAVE_ADDRESS_PROVIDER,
       AAVE_INCENTIVES_CONTROLLER: addresses.mainnet.AAVE_INCENTIVES_CONTROLLER,
-      STKAAVE: addresses.mainnet.STKAAVE,
     };
   } else {
     return {
@@ -238,7 +237,6 @@ const getAssetAddresses = async (deployments) => {
       avUSDT: (await deployments.get("MockAUSDT")).address,
       AAVE: (await deployments.get("MockAave")).address,
       AAVE_ADDRESS_PROVIDER: (await deployments.get("MockAave")).address,
-      STKAAVE: (await deployments.get("MockStkAave")).address,
     };
   }
 };
