@@ -60,8 +60,8 @@ const deployAaveStrategy = async () => {
         assetAddresses.AAVE_ADDRESS_PROVIDER,
         cVaultProxy.address,
         assetAddresses.WAVAX,
-        [assetAddresses.DAI],
-        [assetAddresses.avDAI],
+        [assetAddresses.DAI, assetAddresses.USDT, assetAddresses.USDC],
+        [assetAddresses.avDAI, assetAddresses.avUSDT, assetAddresses.avUSDC],
         cAaveIncentivesController.address
       )
   );
