@@ -169,6 +169,11 @@ const deployOracles = async () => {
   withConfirmation(
     oracleRouter
       .connect(sDeployer)
+      .setFeed(assetAddresses.WAVAX, oracleAddresses.chainlink.AVAX_USD)
+  );
+  withConfirmation(
+    oracleRouter
+      .connect(sDeployer)
       .setFeed(
         assetAddresses.NonStandardToken,
         oracleAddresses.chainlink.NonStandardToken_USD

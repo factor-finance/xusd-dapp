@@ -354,7 +354,8 @@ describe("Vault", function () {
     await dai.connect(josh).approve(vault.address, daiUnits("200"));
     await vault.connect(josh).mint(dai.address, daiUnits("200"), 0);
     await vault.connect(governor).allocate();
-    await vault.connect(governor).approveStrategy(aaveStrategy.address);
+    // FIXME bad to test reallocation to only 1 strategy
+    // await vault.connect(governor).approveStrategy(aaveStrategy.address);
 
     await vault
       .connect(governor)
@@ -380,7 +381,8 @@ describe("Vault", function () {
     await dai.connect(josh).approve(vault.address, daiUnits("200"));
     await vault.connect(josh).mint(dai.address, daiUnits("200"), 0);
     await vault.connect(governor).allocate();
-    await vault.connect(governor).approveStrategy(aaveStrategy.address);
+    // FIXME bad to test reallocation to only 1 strategy
+    // await vault.connect(governor).approveStrategy(aaveStrategy.address);
 
     await vault
       .connect(josh)
@@ -481,42 +483,42 @@ describe("Vault", function () {
   });
 
   it("Should not allow non-Governor to add swap token", async () => {
-    const { vault, anna, comp } = await loadFixture(defaultFixture);
+    const { vault, anna, wavax } = await loadFixture(defaultFixture);
 
     await expect(
       // Use the vault address for an address that definitely won't have a price
       // feed
-      vault.connect(anna).addSwapToken(comp.address)
+      vault.connect(anna).addSwapToken(wavax.address)
     ).to.be.revertedWith("Caller is not the Governor");
   });
 
   it("Should allow Governor to add swap token", async () => {
-    const { vault, governor, comp } = await loadFixture(defaultFixture);
-    await vault.connect(governor).addSwapToken(comp.address);
+    const { vault, governor, wavax } = await loadFixture(defaultFixture);
+    await vault.connect(governor).addSwapToken(wavax.address);
     // Check it can't be added twice
     await expect(
-      vault.connect(governor).addSwapToken(comp.address)
+      vault.connect(governor).addSwapToken(wavax.address)
     ).to.be.revertedWith("Swap token already added");
   });
 
   it("Should not allow non-Governor to remove swap token", async () => {
-    const { vault, anna, governor, comp } = await loadFixture(defaultFixture);
+    const { vault, anna, governor, wavax } = await loadFixture(defaultFixture);
     // Add a swap token with governor
-    await vault.connect(governor).addSwapToken(comp.address);
+    await vault.connect(governor).addSwapToken(wavax.address);
     // Try and remove with non-governor
     await expect(
-      vault.connect(anna).addSwapToken(comp.address)
+      vault.connect(anna).addSwapToken(wavax.address)
     ).to.be.revertedWith("Caller is not the Governor");
   });
 
   it("Should allow Governor to remove swap token", async () => {
-    const { vault, governor, comp } = await loadFixture(defaultFixture);
+    const { vault, governor, wavax } = await loadFixture(defaultFixture);
     // Add a swap token with governor
-    await vault.connect(governor).addSwapToken(comp.address);
+    await vault.connect(governor).addSwapToken(wavax.address);
     // Remove swap token with governor
-    await vault.connect(governor).removeSwapToken(comp.address);
+    await vault.connect(governor).removeSwapToken(wavax.address);
     await expect(
-      vault.connect(governor).removeSwapToken(comp.address)
+      vault.connect(governor).removeSwapToken(wavax.address)
     ).to.be.revertedWith("Swap token not added");
   });
 });

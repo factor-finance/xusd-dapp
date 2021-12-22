@@ -43,6 +43,7 @@ async function defaultFixture() {
     adai,
     aave,
     aaveToken,
+    wavax,
     mockNonRebasing,
     mockNonRebasingTwo;
 
@@ -58,6 +59,7 @@ async function defaultFixture() {
     dai = await ethers.getContractAt(daiAbi, addresses.mainnet.DAI);
     usdc = await ethers.getContractAt(usdcAbi, addresses.mainnet.USDC);
     tusd = await ethers.getContractAt(tusdAbi, addresses.mainnet.TUSD);
+    wavax = await ethers.getContractAt(tusdAbi, addresses.mainnet.WAVAX);
     aaveAddressProvider = await ethers.getContractAt(
       "ILendingPoolAddressesProvider",
       addresses.mainnet.AAVE_ADDRESS_PROVIDER
@@ -67,6 +69,7 @@ async function defaultFixture() {
     dai = await ethers.getContract("MockDAI");
     usdc = await ethers.getContract("MockUSDC");
     tusd = await ethers.getContract("MockTUSD");
+    wavax = await ethers.getContract("MockWAVAX");
     nonStandardToken = await ethers.getContract("MockNonStandardToken");
 
     adai = await ethers.getContract("MockADAI");
@@ -150,6 +153,7 @@ async function defaultFixture() {
     usdc,
     tusd,
     nonStandardToken,
+    wavax,
     // aTokens,
     adai,
 
