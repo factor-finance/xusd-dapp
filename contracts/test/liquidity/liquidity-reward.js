@@ -8,7 +8,7 @@ describe("Liquidity Reward", function () {
     this.timeout(0);
   }
 
-  it("Campaign can be stopped and started appropriately", async () => {
+  xit("Campaign can be stopped and started appropriately", async () => {
     const { anna, governor, liquidityRewardXUSD_USDT } = await loadFixture(
       defaultFixture
     );
@@ -48,7 +48,7 @@ describe("Liquidity Reward", function () {
     expect(await liquidityRewardXUSD_USDT.campaignActive()).to.equal(true);
   });
 
-  it("Deposit, then withdraw and claim with correct rewards after 10 blocks", async () => {
+  xit("Deposit, then withdraw and claim with correct rewards after 10 blocks", async () => {
     const { ogn, anna, uniswapPairXUSD_USDT, liquidityRewardXUSD_USDT } =
       await loadFixture(defaultFixture);
 
@@ -99,7 +99,7 @@ describe("Liquidity Reward", function () {
     );
   });
 
-  it("Deposit, extra Transfer, stopCampaign, drain then withdraw and claim with correct rewards after 10 blocks", async () => {
+  xit("Deposit, extra Transfer, stopCampaign, drain then withdraw and claim with correct rewards after 10 blocks", async () => {
     const {
       ogn,
       anna,
@@ -205,7 +205,7 @@ describe("Liquidity Reward", function () {
     ).to.equal("0");
   });
 
-  it("Deposit, withdraw, and claim separately with correct rewards after 10 blocks", async () => {
+  xit("Deposit, withdraw, and claim separately with correct rewards after 10 blocks", async () => {
     const { ogn, anna, uniswapPairXUSD_USDT, liquidityRewardXUSD_USDT } =
       await loadFixture(defaultFixture);
 
@@ -244,7 +244,7 @@ describe("Liquidity Reward", function () {
     );
   });
 
-  it("Deposit, withdraw, and claim with multiple accounts", async () => {
+  xit("Deposit, withdraw, and claim with multiple accounts", async () => {
     const {
       ogn,
       anna,

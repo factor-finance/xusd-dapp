@@ -14,7 +14,7 @@ describe("Single Asset Staking", function () {
     this.timeout(0);
   }
 
-  it("Staking can be paused and unpaused appropriately", async () => {
+  xit("Staking can be paused and unpaused appropriately", async () => {
     const { ogn, anna, governor, ognStaking } = await loadFixture(
       defaultFixture
     );
@@ -44,7 +44,7 @@ describe("Single Asset Staking", function () {
     await ognStaking.connect(anna).stake(stakeAmount, threeMonth);
   });
 
-  it("Invalid durations not allowed", async () => {
+  xit("Invalid durations not allowed", async () => {
     const { ogn, anna, ognStaking } = await loadFixture(defaultFixture);
     const stakeAmount = ognUnits("1");
     await ogn.connect(anna).approve(ognStaking.address, stakeAmount);
@@ -54,7 +54,7 @@ describe("Single Asset Staking", function () {
     ).to.be.revertedWith("Invalid duration");
   });
 
-  it("Stake then exit for three months with correct rewards", async () => {
+  xit("Stake then exit for three months with correct rewards", async () => {
     const { ogn, anna, ognStaking } = await loadFixture(defaultFixture);
 
     const annaStartBalance = await ogn.balanceOf(anna.address);
@@ -138,7 +138,7 @@ describe("Single Asset Staking", function () {
     );
   });
 
-  it("Stake using WithSender with correct rewards", async () => {
+  xit("Stake using WithSender with correct rewards", async () => {
     const { ogn, anna, ognStaking } = await loadFixture(defaultFixture);
 
     const annaStartBalance = await ogn.balanceOf(anna.address);
@@ -194,7 +194,7 @@ describe("Single Asset Staking", function () {
     );
   });
 
-  it("Multiple stakes with overlapping time periods", async () => {
+  xit("Multiple stakes with overlapping time periods", async () => {
     const { ogn, anna, ognStaking } = await loadFixture(defaultFixture);
 
     const annaStartBalance = await ogn.balanceOf(anna.address);
@@ -300,7 +300,7 @@ describe("Single Asset Staking", function () {
     expect(await ognStaking.totalOutstanding()).to.equal("0");
   });
 
-  it("Change rates does not effect existing stake", async () => {
+  xit("Change rates does not effect existing stake", async () => {
     const { ogn, anna, governor, ognStaking } = await loadFixture(
       defaultFixture
     );
@@ -350,7 +350,7 @@ describe("Single Asset Staking", function () {
     );
   });
 
-  it("Don't allow stake if we can't pay it off", async () => {
+  xit("Don't allow stake if we can't pay it off", async () => {
     const { ogn, anna, ognStaking } = await loadFixture(defaultFixture);
 
     const stakeAmount = ognUnits("1000");
@@ -361,7 +361,7 @@ describe("Single Asset Staking", function () {
     ).to.be.revertedWith("Insufficient rewards");
   });
 
-  it("Allows stake if we can just pay it off", async () => {
+  xit("Allows stake if we can just pay it off", async () => {
     const { ogn, anna, ognStaking } = await loadFixture(defaultFixture);
 
     const stakeAmount = ognUnits("996");
@@ -374,7 +374,7 @@ describe("Single Asset Staking", function () {
     await expect(ognStaking).to.have.a.balanceOf("1295", ogn);
   });
 
-  it("Stake then exit and then stake again", async () => {
+  xit("Stake then exit and then stake again", async () => {
     const { ogn, anna, ognStaking } = await loadFixture(defaultFixture);
 
     const annaStartBalance = await ogn.balanceOf(anna.address);
@@ -415,7 +415,7 @@ describe("Single Asset Staking", function () {
     );
   });
 
-  it("Stake, transfer then exit and then stake again", async () => {
+  xit("Stake, transfer then exit and then stake again", async () => {
     const { ogn, anna, matt, governor, ognStaking } = await loadFixture(
       defaultFixture
     );
@@ -491,7 +491,7 @@ describe("Single Asset Staking", function () {
 
   if (process.env.TEST_MAX_STAKES) {
     this.timeout(0);
-    it("Stake up to max stakes and then exit", async () => {
+    xit("Stake up to max stakes and then exit", async () => {
       const { ogn, anna, ognStaking } = await loadFixture(defaultFixture);
 
       const annaStartBalance = await ogn.balanceOf(anna.address);

@@ -62,7 +62,7 @@ describe("3Pool Strategy", function () {
   });
 
   describe("Mint", function () {
-    it("Should stake USDT in Curve gauge via 3pool", async function () {
+    xit("Should stake USDT in Curve gauge via 3pool", async function () {
       await expectApproxSupply(xusd, xusdUnits("200"));
       await mint("30000.00", usdt);
       await expectApproxSupply(xusd, xusdUnits("30200"));
@@ -73,7 +73,7 @@ describe("3Pool Strategy", function () {
       );
     });
 
-    it("Should stake USDC in Curve gauge via 3pool", async function () {
+    xit("Should stake USDC in Curve gauge via 3pool", async function () {
       await expectApproxSupply(xusd, xusdUnits("200"));
       await mint("50000.00", usdc);
       await expectApproxSupply(xusd, xusdUnits("50200"));
@@ -84,13 +84,13 @@ describe("3Pool Strategy", function () {
       );
     });
 
-    it("Should use a minimum LP token amount when depositing USDT into 3pool", async function () {
+    xit("Should use a minimum LP token amount when depositing USDT into 3pool", async function () {
       await expect(mint("29000", usdt)).to.be.revertedWith(
         "Slippage ruined your day"
       );
     });
 
-    it("Should use a minimum LP token amount when depositing USDC into 3pool", async function () {
+    xit("Should use a minimum LP token amount when depositing USDC into 3pool", async function () {
       await expect(mint("29000", usdc)).to.be.revertedWith(
         "Slippage ruined your day"
       );
@@ -98,7 +98,7 @@ describe("3Pool Strategy", function () {
   });
 
   describe("Redeem", function () {
-    it("Should be able to unstake from gauge and return USDT", async function () {
+    xit("Should be able to unstake from gauge and return USDT", async function () {
       await expectApproxSupply(xusd, xusdUnits("200"));
       await mint("10000.00", dai);
       await mint("10000.00", usdc);
@@ -109,7 +109,7 @@ describe("3Pool Strategy", function () {
   });
 
   describe("Utilities", function () {
-    it("Should allow transfer of arbitrary token by Governor", async () => {
+    xit("Should allow transfer of arbitrary token by Governor", async () => {
       await dai.connect(anna).approve(vault.address, daiUnits("8.0"));
       await vault.connect(anna).mint(dai.address, daiUnits("8.0"), 0);
       // Anna sends her XUSD directly to Strategy
@@ -123,7 +123,7 @@ describe("3Pool Strategy", function () {
       await expect(governor).has.a.balanceOf("8.0", xusd);
     });
 
-    it("Should not allow transfer of arbitrary token by non-Governor", async () => {
+    xit("Should not allow transfer of arbitrary token by non-Governor", async () => {
       // Naughty Anna
       await expect(
         threePoolStrategy
@@ -132,18 +132,18 @@ describe("3Pool Strategy", function () {
       ).to.be.revertedWith("Caller is not the Governor");
     });
 
-    it("Should allow the strategist to call harvest", async () => {
+    xit("Should allow the strategist to call harvest", async () => {
       await vault.connect(governor).setStrategistAddr(anna.address);
       await vault.connect(anna)["harvest()"]();
     });
 
-    it("Should allow the strategist to call harvest for a specific strategy", async () => {
+    xit("Should allow the strategist to call harvest for a specific strategy", async () => {
       // Mint of MockCRVMinter mints a fixed 2e18
       await vault.connect(governor).setStrategistAddr(anna.address);
       await vault.connect(anna)["harvest(address)"](threePoolStrategy.address);
     });
 
-    it("Should collect reward tokens using collect rewards on all strategies", async () => {
+    xit("Should collect reward tokens using collect rewards on all strategies", async () => {
       // Mint of MockCRVMinter mints a fixed 2e18
       await crvMinter.connect(governor).mint(threePoolStrategy.address);
       await vault.connect(governor)["harvest()"]();
@@ -152,7 +152,7 @@ describe("3Pool Strategy", function () {
       );
     });
 
-    it("Should collect reward tokens using collect rewards on a specific strategy", async () => {
+    xit("Should collect reward tokens using collect rewards on a specific strategy", async () => {
       // Mint of MockCRVMinter mints a fixed 2e18
       await crvMinter.connect(governor).mint(threePoolStrategy.address);
       await vault.connect(governor)[
@@ -168,7 +168,7 @@ describe("3Pool Strategy", function () {
       );
     });
 
-    it("Should collect reward tokens and swap via Uniswap", async () => {
+    xit("Should collect reward tokens and swap via Uniswap", async () => {
       const mockUniswapRouter = await ethers.getContract("MockUniswapRouter");
 
       mockUniswapRouter.initialize(crv.address, usdt.address);

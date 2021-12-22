@@ -70,17 +70,17 @@ describe("Compensation Claims", async () => {
       await fundClaims("57500000");
     });
 
-    it("should show a user their funds, and a total of all funds", async () => {
+    xit("should show a user their funds, and a total of all funds", async () => {
       await expect(anna).to.have.a.balanceOf(
         "4.000000000072189",
         compensationClaims
       );
       await expectTotalClaims(compensationClaims, "56400004.123400000072189");
     });
-    it("should show a zero for a user without a claim", async () => {
+    xit("should show a zero for a user without a claim", async () => {
       await expect(josh).to.have.a.balanceOf("0", compensationClaims);
     });
-    it("should allow a user to make claim after the start of the claim period", async () => {
+    xit("should allow a user to make claim after the start of the claim period", async () => {
       await expect(anna).to.have.a.balanceOf(
         "4.000000000072189",
         compensationClaims
@@ -92,20 +92,20 @@ describe("Compensation Claims", async () => {
       await expectTotalClaims(compensationClaims, "56400000.1234");
       await expect(anna).to.have.a.balanceOf("4.000000000072189", xusd);
     });
-    it("should allow a user to withdraw their funds just before the end of the claim period", async () => {
+    xit("should allow a user to withdraw their funds just before the end of the claim period", async () => {
       await compensationClaims.connect(governor).start(1000);
       await advanceTime(990);
       await compensationClaims.connect(anna).claim(await anna.getAddress());
       await expect(anna).to.have.a.balanceOf("0", compensationClaims);
       await expect(anna).to.have.a.balanceOf("4.000000000072189", xusd);
     });
-    it("should not allow a user to withdraw their funds before the claim period", async () => {
+    xit("should not allow a user to withdraw their funds before the claim period", async () => {
       const tx = compensationClaims
         .connect(anna)
         .claim(await anna.getAddress());
       await expect(tx).to.be.revertedWith("Should be in claim period");
     });
-    it("should not allow a user to withdraw their funds after the claim period", async () => {
+    xit("should not allow a user to withdraw their funds after the claim period", async () => {
       await compensationClaims.connect(governor).start(1000);
       await advanceTime(1002);
       const tx = compensationClaims
@@ -113,14 +113,14 @@ describe("Compensation Claims", async () => {
         .claim(await anna.getAddress());
       await expect(tx).to.be.revertedWith("Should be in claim period");
     });
-    it("should throw if the user never had a claim", async () => {
+    xit("should throw if the user never had a claim", async () => {
       await compensationClaims.connect(governor).start(1000);
       const tx = compensationClaims
         .connect(anna)
         .claim(await josh.getAddress());
       await expect(tx).to.be.revertedWith("Amount must be greater than 0");
     });
-    it("should throw if the user has already claimed their funds", async () => {
+    xit("should throw if the user has already claimed their funds", async () => {
       await compensationClaims.connect(governor).start(1000);
       await compensationClaims.connect(anna).claim(await anna.getAddress()); // first claim
       const tx = compensationClaims
@@ -142,7 +142,7 @@ describe("Compensation Claims", async () => {
       compensationClaims = fixture.compensationClaims;
     });
 
-    it("should set one claim amount", async () => {
+    xit("should set one claim amount", async () => {
       const accounts = [await anna.getAddress()];
       const amounts = [xusdUnits("20")];
       await compensationClaims.connect(governor).unlockAdjuster();
@@ -150,7 +150,7 @@ describe("Compensation Claims", async () => {
       await expect(anna).to.have.a.balanceOf("20", compensationClaims);
       await expectTotalClaims(compensationClaims, "20");
     });
-    it("should set multiple claim amounts", async () => {
+    xit("should set multiple claim amounts", async () => {
       const accounts = [await anna.getAddress(), await matt.getAddress()];
       const amounts = [xusdUnits("40.0023"), xusdUnits("0.000091")];
       await compensationClaims.connect(governor).unlockAdjuster();
@@ -159,7 +159,7 @@ describe("Compensation Claims", async () => {
       await expect(matt).to.have.a.balanceOf("0.000091", compensationClaims);
       await expectTotalClaims(compensationClaims, "40.002391");
     });
-    it("should be able to set same account twice, and have the totals be correct", async () => {
+    xit("should be able to set same account twice, and have the totals be correct", async () => {
       const accounts = [await anna.getAddress(), await matt.getAddress()];
       const amountsOne = [xusdUnits("40.0023"), xusdUnits("0.000091")];
       await compensationClaims.connect(governor).unlockAdjuster();
@@ -175,7 +175,7 @@ describe("Compensation Claims", async () => {
       await expect(matt).to.have.a.balanceOf("4000000.00", compensationClaims);
       await expectTotalClaims(compensationClaims, "4000001.000091");
     });
-    it("should not be able to overflow the total amount", async () => {
+    xit("should not be able to overflow the total amount", async () => {
       const accounts = [await anna.getAddress(), await matt.getAddress()];
       const amounts = [parseUnits("1.1", 77), parseUnits("1", 77)];
       await compensationClaims.connect(governor).unlockAdjuster();
@@ -185,7 +185,7 @@ describe("Compensation Claims", async () => {
         "Arithmetic operation underflowed or overflowed outside of an unchecked block"
       );
     });
-    it("should not be able to set mismatching addresses and amounts", async () => {
+    xit("should not be able to set mismatching addresses and amounts", async () => {
       const accounts = [await anna.getAddress()];
       const amounts = [xusdUnits("20"), xusdUnits("40")];
       await compensationClaims.connect(governor).unlockAdjuster();
@@ -194,14 +194,14 @@ describe("Compensation Claims", async () => {
       ).to.be.revertedWith("Addresses and amounts must match");
     });
 
-    it("should not be able to set claims before being unlocked", async () => {
+    xit("should not be able to set claims before being unlocked", async () => {
       const accounts = [await anna.getAddress()];
       const amounts = [xusdUnits("20")];
       await expect(
         compensationClaims.connect(adjuster).setClaims(accounts, amounts)
       ).to.be.revertedWith("Adjuster must be unlocked");
     });
-    it("should not be able to set claims after being locked", async () => {
+    xit("should not be able to set claims after being locked", async () => {
       const accounts = [await anna.getAddress()];
       const amounts = [xusdUnits("20")];
       await compensationClaims.connect(governor).unlockAdjuster();
@@ -210,7 +210,7 @@ describe("Compensation Claims", async () => {
         compensationClaims.connect(adjuster).setClaims(accounts, amounts)
       ).to.be.revertedWith("Adjuster must be unlocked");
     });
-    it("should not be able to set claims during the claim period", async () => {
+    xit("should not be able to set claims during the claim period", async () => {
       await setClaims([[anna, "44"]]);
       await fundClaims("44");
       const accounts = [await anna.getAddress()];
@@ -221,7 +221,7 @@ describe("Compensation Claims", async () => {
         compensationClaims.connect(adjuster).setClaims(accounts, amounts)
       ).to.be.revertedWith("Should not be in claim period");
     });
-    it("no one else should be able to set one claim amount", async () => {
+    xit("no one else should be able to set one claim amount", async () => {
       const accounts = [await anna.getAddress()];
       const amounts = [xusdUnits("20")];
       await compensationClaims.connect(governor).unlockAdjuster();
@@ -246,40 +246,40 @@ describe("Compensation Claims", async () => {
     });
 
     describe("Adjuster locking and unlocking", async () => {
-      it("should unlock adjuster", async () => {
+      xit("should unlock adjuster", async () => {
         await compensationClaims.connect(governor).unlockAdjuster();
         expect(await compensationClaims.isAdjusterLocked()).to.be.false;
       });
-      it("should lock adjuster", async () => {
+      xit("should lock adjuster", async () => {
         await compensationClaims.connect(governor).lockAdjuster();
         expect(await compensationClaims.isAdjusterLocked()).to.be.true;
       });
-      it("should not unlock during claims period", async () => {
+      xit("should not unlock during claims period", async () => {
         await setClaims([[anna, "1"]]); // Must have a claim to start
         await fundClaims("1");
         await compensationClaims.connect(governor).start(1000);
         const tx = compensationClaims.connect(governor).unlockAdjuster();
         await expect(tx).to.be.revertedWith("Should not be in claim period");
       });
-      it("should not lock during claims period", async () => {
+      xit("should not lock during claims period", async () => {
         await setClaims([[anna, "1"]]); // Must have a claim to start
         await fundClaims("1");
         await compensationClaims.connect(governor).start(1000);
         const tx = compensationClaims.connect(governor).lockAdjuster();
         await expect(tx).to.be.revertedWith("Should not be in claim period");
       });
-      it("should not let anyone one else unlock", async () => {
+      xit("should not let anyone one else unlock", async () => {
         const tx = compensationClaims.connect(adjuster).unlockAdjuster();
         await expect(tx).to.be.revertedWith("Caller is not the Governor");
       });
-      it("should not let anyone one else lock", async () => {
+      xit("should not let anyone one else lock", async () => {
         const tx = compensationClaims.connect(adjuster).lockAdjuster();
         await expect(tx).to.be.revertedWith("Caller is not the Governor");
       });
     });
 
     describe("Start claims period", async () => {
-      it("should be able to start a claims period", async () => {
+      xit("should be able to start a claims period", async () => {
         const accounts = [await anna.getAddress(), await matt.getAddress()];
         const amounts = [
           xusdUnits("4.000000000072189"),
@@ -292,7 +292,7 @@ describe("Compensation Claims", async () => {
         await compensationClaims.connect(governor).start(1000);
       });
 
-      it("should not be able to start a claims period with insufficient funds", async () => {
+      xit("should not be able to start a claims period with insufficient funds", async () => {
         const accounts = [await anna.getAddress(), await matt.getAddress()];
         const amounts = [
           xusdUnits("4.000000000072189"),
@@ -308,7 +308,7 @@ describe("Compensation Claims", async () => {
         );
       });
 
-      it("should not be able to start a claims period if a claim period is running", async () => {
+      xit("should not be able to start a claims period if a claim period is running", async () => {
         const accounts = [await anna.getAddress(), await matt.getAddress()];
         const amounts = [
           xusdUnits("4.000000000072189"),
@@ -324,7 +324,7 @@ describe("Compensation Claims", async () => {
         await expect(tx).to.be.revertedWith("Should not be in claim period");
       });
 
-      it("should not be able to start a claims period if end time is too far in the future", async () => {
+      xit("should not be able to start a claims period if end time is too far in the future", async () => {
         const accounts = [await anna.getAddress(), await matt.getAddress()];
         const amounts = [
           xusdUnits("4.000000000072189"),
@@ -339,13 +339,13 @@ describe("Compensation Claims", async () => {
         await expect(tx).to.be.revertedWith("Duration too long");
       });
 
-      it("should not be able to start a claims period if there are no claims", async () => {
+      xit("should not be able to start a claims period if there are no claims", async () => {
         await fundClaims("57500000");
         const tx = compensationClaims.connect(governor).start(1000); // Second start
         await expect(tx).to.be.revertedWith("No claims");
       });
 
-      it("no one else can start", async () => {
+      xit("no one else can start", async () => {
         await setClaims([[josh, "1"]]);
         await fundClaims("1");
         const tx = compensationClaims.connect(adjuster).start(1000);
@@ -354,14 +354,14 @@ describe("Compensation Claims", async () => {
     });
 
     describe("Collect", async () => {
-      it("should be able to collect before claims period", async () => {
+      xit("should be able to collect before claims period", async () => {
         await setClaims([[josh, "1"]]);
         await fundClaims("1000000000.155");
         await expect(governor).to.have.a.balanceOf("0", xusd);
         await compensationClaims.connect(governor).collect(xusd.address);
         await expect(governor).to.have.a.balanceOf("1000000000.155", xusd);
       });
-      it("should be able to collect after claims period", async () => {
+      xit("should be able to collect after claims period", async () => {
         await setClaims([[josh, "1"]]);
         await fundClaims("1000000000.155");
         await compensationClaims.connect(governor).start(1000);
@@ -370,7 +370,7 @@ describe("Compensation Claims", async () => {
         await compensationClaims.connect(governor).collect(xusd.address);
         await expect(governor).to.have.a.balanceOf("1000000000.155", xusd);
       });
-      it("should be able to collect any coin", async () => {
+      xit("should be able to collect any coin", async () => {
         await usdc.connect(josh).mint(usdcUnits("100.111"));
         await usdc
           .connect(josh)
@@ -380,7 +380,7 @@ describe("Compensation Claims", async () => {
         await compensationClaims.connect(governor).collect(usdc.address);
         await expect(governor).to.have.a.balanceOf("1100.111", usdc);
       });
-      it("should not be able to collect during claims period", async () => {
+      xit("should not be able to collect during claims period", async () => {
         await setClaims([[josh, "1"]]);
         await fundClaims("1000000000.155");
         await expect(governor).to.have.a.balanceOf("0", xusd);
@@ -388,7 +388,7 @@ describe("Compensation Claims", async () => {
         const tx = compensationClaims.connect(governor).collect(xusd.address);
         await expect(tx).to.be.revertedWith("Should not be in claim period");
       });
-      it("no one else can collect", async () => {
+      xit("no one else can collect", async () => {
         await setClaims([[josh, "1"]]);
         await fundClaims("1000000000.155");
         await expect(governor).to.have.a.balanceOf("0", xusd);

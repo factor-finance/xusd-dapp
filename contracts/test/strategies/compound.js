@@ -9,7 +9,7 @@ describe("Compound strategy", function () {
     this.timeout(0);
   }
 
-  it("Should allow a withdraw", async () => {
+  xit("Should allow a withdraw", async () => {
     const { cStandalone, governor, usdc, cusdc } = await loadFixture(
       compoundFixture
     );
@@ -69,7 +69,7 @@ describe("Compound strategy", function () {
     );
   });
 
-  it("Should collect rewards", async () => {
+  xit("Should collect rewards", async () => {
     const { cStandalone, governor, usdc, comp } = await loadFixture(
       compoundFixture
     );
@@ -115,12 +115,12 @@ describe("Compound strategy", function () {
     await expect(await comp.balanceOf(cStandalone.address)).to.be.equal("0");
   });
 
-  it("Should read reward liquidation threshold", async () => {
+  xit("Should read reward liquidation threshold", async () => {
     const { cStandalone } = await loadFixture(compoundFixture);
     expect(await cStandalone.rewardLiquidationThreshold()).to.equal("0");
   });
 
-  it("Should allow Governor to set reward liquidation threshold", async () => {
+  xit("Should allow Governor to set reward liquidation threshold", async () => {
     const { cStandalone, governor } = await loadFixture(compoundFixture);
     await expect(
       cStandalone
@@ -134,7 +134,7 @@ describe("Compound strategy", function () {
     );
   });
 
-  it("Should not allow non-Governor to set reward liquidation threshold", async () => {
+  xit("Should not allow non-Governor to set reward liquidation threshold", async () => {
     const { cStandalone, anna } = await loadFixture(compoundFixture);
     await expect(
       cStandalone
@@ -143,7 +143,7 @@ describe("Compound strategy", function () {
     ).to.be.revertedWith("Caller is not the Governor");
   });
 
-  it("Should allow Governor to set reward token address", async () => {
+  xit("Should allow Governor to set reward token address", async () => {
     const { cStandalone, governor, comp } = await loadFixture(compoundFixture);
     await expect(
       cStandalone.connect(governor).setRewardTokenAddress(cStandalone.address)
@@ -155,7 +155,7 @@ describe("Compound strategy", function () {
     );
   });
 
-  it("Should not allow non-Governor to set reward token address", async () => {
+  xit("Should not allow non-Governor to set reward token address", async () => {
     const { cStandalone, anna } = await loadFixture(compoundFixture);
     await expect(
       cStandalone.connect(anna).setRewardTokenAddress(cStandalone.address)

@@ -11,7 +11,7 @@ describe("Airdropped Staking", function () {
     this.timeout(0);
   }
 
-  it("Can stake a signed entry", async () => {
+  xit("Can stake a signed entry", async () => {
     const { ogn, anna, governor, ognStaking, signedPayouts } =
       await loadFixture(defaultFixture);
 
@@ -81,7 +81,7 @@ describe("Airdropped Staking", function () {
     );
   });
 
-  it("Can stake multiple signed entries", async () => {
+  xit("Can stake multiple signed entries", async () => {
     const { anna, josh, matt, ognStaking, signedPayouts } = await loadFixture(
       defaultFixture
     );
@@ -112,7 +112,7 @@ describe("Airdropped Staking", function () {
     expect(await ognStaking.totalOutstanding()).to.equal(totalAmount);
   });
 
-  it("Invalid proof not allowed", async () => {
+  xit("Invalid proof not allowed", async () => {
     const { anna, ognStaking, signedPayouts } = await loadFixture(
       defaultFixture
     );
@@ -135,7 +135,7 @@ describe("Airdropped Staking", function () {
     ).to.be.revertedWith("Invalid proof");
   });
 
-  it("Invalid and double staking not allowed", async () => {
+  xit("Invalid and double staking not allowed", async () => {
     const { anna, ognStaking, signedPayouts } = await loadFixture(
       defaultFixture
     );

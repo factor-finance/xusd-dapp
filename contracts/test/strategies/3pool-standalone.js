@@ -39,7 +39,7 @@ describe("3Pool Strategy Standalone", function () {
     await threePoolStrategy.deposit(asset.address, units(amount, asset));
   };
 
-  it("Should deposit all", async function () {
+  xit("Should deposit all", async function () {
     await dai
       .connect(governor)
       .transfer(threePoolStrategy.address, units("100", dai));
@@ -55,7 +55,7 @@ describe("3Pool Strategy Standalone", function () {
     );
   });
 
-  it("Should withdraw all", async function () {
+  xit("Should withdraw all", async function () {
     const governorAddress = await governor.getAddress();
     const governorDai = await dai.balanceOf(governorAddress);
     const governorUsdt = await usdt.balanceOf(governorAddress);
@@ -93,7 +93,7 @@ describe("3Pool Strategy Standalone", function () {
     await expect(await usdc.balanceOf(governorAddress)).eq(governorUsdc);
   });
 
-  it("Should allow safeApproveAllTokens to be called", async function () {
+  xit("Should allow safeApproveAllTokens to be called", async function () {
     const MAX = BigNumber.from(
       "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
     );
@@ -111,7 +111,7 @@ describe("3Pool Strategy Standalone", function () {
       threePoolGauge
     );
 
-    await deposit("150", usdt);
+    await deposxit("150", usdt);
     await expectAllowanceRaw(
       MAX.sub((await units("150.0", usdt)).toString()),
       usdt,
@@ -130,11 +130,11 @@ describe("3Pool Strategy Standalone", function () {
     );
   });
 
-  it("Should read reward liquidation threshold", async () => {
+  xit("Should read reward liquidation threshold", async () => {
     expect(await tpStandalone.rewardLiquidationThreshold()).to.equal("0");
   });
 
-  it("Should allow Governor to set reward liquidation threshold", async () => {
+  xit("Should allow Governor to set reward liquidation threshold", async () => {
     await tpStandalone
       .connect(governor)
       .setRewardLiquidationThreshold(utils.parseUnits("1", 18));
@@ -143,7 +143,7 @@ describe("3Pool Strategy Standalone", function () {
     );
   });
 
-  it("Should not allow non-Governor to set reward liquidation threshold", async () => {
+  xit("Should not allow non-Governor to set reward liquidation threshold", async () => {
     await expect(
       tpStandalone
         .connect(anna)
