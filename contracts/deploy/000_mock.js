@@ -40,7 +40,7 @@ const deployMocks = async ({ getNamedAccounts, deployments }) => {
   // MockAave is the mock lendingPool
   const lendingPool = await ethers.getContract("MockAave");
   await deploy("MockADAI", {
-    args: [lendingPool.address, "Mock Aave Dai", "aDAI", dai.address],
+    args: [lendingPool.address, "Mock Aave Dai", "avDAI", dai.address],
     contract: "MockAToken",
     from: deployerAddr,
   });
@@ -50,7 +50,7 @@ const deployMocks = async ({ getNamedAccounts, deployments }) => {
   );
 
   await deploy("MockAUSDC", {
-    args: [lendingPool.address, "Mock Aave USDC", "aUSDC", usdc.address],
+    args: [lendingPool.address, "Mock Aave USDC", "avUSDC", usdc.address],
     contract: "MockAToken",
     from: deployerAddr,
   });
@@ -60,7 +60,7 @@ const deployMocks = async ({ getNamedAccounts, deployments }) => {
   );
 
   await deploy("MockAUSDT", {
-    args: [lendingPool.address, "Mock Aave USDT", "aUSDT", usdt.address],
+    args: [lendingPool.address, "Mock Aave USDT", "avUSDT", usdt.address],
     contract: "MockAToken",
     from: deployerAddr,
   });
@@ -96,11 +96,25 @@ const deployMocks = async ({ getNamedAccounts, deployments }) => {
     args: [parseUnits("4000", 8).toString(), 8], // 1 ETH = 4000 USD, 8 digits decimal.
   });
 
+  await deploy("MockAAVEToken", {
+    from: deployerAddr,
+    args: [],
+  });
+
   const wavax = await ethers.getContract("MockWAVAX");
   await deploy("MockAaveIncentivesController", {
     from: deployerAddr,
     args: [wavax.address],
   });
+
+  const mockAaveToken = await ethers.getContract("MockAAVEToken");
+
+  await deploy("MockStkAave", {
+    from: deployerAddr,
+    args: [mockAaveToken.address],
+  });
+
+  const mockStkAave = await ethers.getContract("MockStkAave");
 
   await deploy("MockNonRebasing", {
     from: deployerAddr,

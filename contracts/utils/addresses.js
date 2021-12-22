@@ -35,14 +35,15 @@ addresses.mainnet.USDT = addresses.mainnet.USDTe;
 
 // AAVE https://docs.aave.com/developers/deployed-contracts/avalanche-market
 addresses.mainnet.AAVE_ADDRESS_PROVIDER =
-  "0xb6A86025F0FE1862B372cb0ca18CE3EDe02A318f"; // v2
+  "0xb6A86025F0FE1862B372cb0ca18CE3EDe02A318f";
 // technially wrapped ether version
 addresses.mainnet.Aave = "0x63a72806098bd3d9520cc43356dd78afe5d386d9";
 addresses.mainnet.avUSDT = "0x532E6537FEA298397212F09A61e03311686f548e";
 addresses.mainnet.avDAI = "0x47AFa96Cdc9fAb46904A55a6ad4bf6660B53c38a"; // *: 6 decimals
 addresses.mainnet.avUSDC = "0x46A51127C3ce23fb7AB1DE06226147F446e4a857"; // *: 6 decimals
 addresses.mainnet.AAVE_INCENTIVES_CONTROLLER =
-  "0x01D83Fe6A10D2f2B7AF17034343746188272cAc9"; // v2
+  "0x01D83Fe6A10D2f2B7AF17034343746188272cAc9";
+addresses.mainnet.STKAAVE = "";
 
 // Chainlink feeds
 // Source https://data.chain.link/avalanche/mainnet
