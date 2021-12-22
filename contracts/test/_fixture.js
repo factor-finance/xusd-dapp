@@ -206,10 +206,78 @@ async function aaveVaultFixture() {
   await fixture.vault
     .connect(sGovernor)
     .approveStrategy(fixture.aaveStrategy.address);
-  // Add direct allocation of DAI to Aave
+  // Add direct allocation of DAI, USDC, USDT to Aave
   await fixture.vault
     .connect(sGovernor)
     .setAssetDefaultStrategy(fixture.dai.address, fixture.aaveStrategy.address);
+  await fixture.vault
+    .connect(sGovernor)
+    .setAssetDefaultStrategy(
+      fixture.usdc.address,
+      fixture.aaveStrategy.address
+    );
+  await fixture.vault
+    .connect(sGovernor)
+    .setAssetDefaultStrategy(
+      fixture.usdt.address,
+      fixture.aaveStrategy.address
+    );
+  return fixture;
+}
+
+/**
+ * Configure a Vault with two strategies
+ */
+async function multiStrategyVaultFixture() {
+  const fixture = await aaveVaultFixture();
+  const assetAddresses = await getAssetAddresses(deployments);
+  const { deploy } = deployments;
+
+  const { governorAddr } = await getNamedAccounts();
+  const sGovernor = await ethers.provider.getSigner(governorAddr);
+
+  await deploy("StrategyTwo", {
+    from: governorAddr,
+    contract: "AaveStrategy",
+  });
+
+  const cStrategyTwo = await ethers.getContract("StrategyTwo");
+  // Initialize the second strategy with DAI and USDC
+  await cStrategyTwo
+    .connect(sGovernor)
+    .initialize(
+      addresses.dead,
+      fixture.vault.address,
+      assetAddresses.WAVAX,
+      [assetAddresses.DAI, assetAddresses.USDC],
+      [assetAddresses.avDAI, assetAddresses.avUSDC]
+    );
+  // Add second strategy to Vault
+  await fixture.vault.connect(sGovernor).approveStrategy(cStrategyTwo.address);
+  // DAI to second strategy
+  await fixture.vault
+    .connect(sGovernor)
+    .setAssetDefaultStrategy(fixture.dai.address, cStrategyTwo.address);
+
+  // Set up third strategy
+  await deploy("StrategyThree", {
+    from: governorAddr,
+    contract: "AaveStrategy",
+  });
+  const cStrategyThree = await ethers.getContract("StrategyThree");
+  // Initialize the third strategy with only DAI
+  await cStrategyThree
+    .connect(sGovernor)
+    .initialize(
+      addresses.dead,
+      fixture.vault.address,
+      assetAddresses.WAVAX,
+      [assetAddresses.DAI],
+      [assetAddresses.cDAI]
+    );
+
+  fixture.strategyTwo = cStrategyTwo;
+  fixture.strategyThree = cStrategyThree;
   return fixture;
 }
 
@@ -287,6 +355,7 @@ module.exports = {
   defaultFixture,
   mockVaultFixture,
   aaveVaultFixture,
+  multiStrategyVaultFixture,
   hackedVaultFixture,
   rebornFixture,
 };
