@@ -13,6 +13,7 @@ const deployMocks = async ({ getNamedAccounts, deployments }) => {
   const assetContracts = [
     "MockUSDT",
     "MockUSDC",
+    "MockTUSD",
     "MockDAI",
     "MockNonStandardToken",
     "MockAave",
@@ -79,6 +80,11 @@ const deployMocks = async ({ getNamedAccounts, deployments }) => {
     from: deployerAddr,
     contract: "MockChainlinkOracleFeed",
     args: [parseUnits("1", 8).toString(), 18], // 1 USDT = 1 USD, 8 digits decimal.
+  });
+  await deploy("MockChainlinkOracleFeedTUSD", {
+    from: deployerAddr,
+    contract: "MockChainlinkOracleFeed",
+    args: [parseUnits("1", 8).toString(), 18], // 1 TUSDT = 1 USD, 8 digits decimal.
   });
   await deploy("MockChainlinkOracleFeedUSDC", {
     from: deployerAddr,

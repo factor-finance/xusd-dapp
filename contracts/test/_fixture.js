@@ -10,6 +10,7 @@ const { loadFixture, getOracleAddresses } = require("./helpers");
 const daiAbi = require("./abi/dai.json").abi;
 const usdtAbi = require("./abi/usdt.json").abi;
 const usdcAbi = require("./abi/erc20.json");
+const tusdAbi = require("../test/abi/erc20.json");
 
 async function defaultFixture() {
   await deployments.fixture();
@@ -36,6 +37,7 @@ async function defaultFixture() {
 
   let usdt,
     dai,
+    tusd,
     usdc,
     nonStandardToken,
     adai,
@@ -55,6 +57,7 @@ async function defaultFixture() {
     usdt = await ethers.getContractAt(usdtAbi, addresses.mainnet.USDT);
     dai = await ethers.getContractAt(daiAbi, addresses.mainnet.DAI);
     usdc = await ethers.getContractAt(usdcAbi, addresses.mainnet.USDC);
+    tusd = await ethers.getContractAt(tusdAbi, addresses.mainnet.TUSD);
     aaveAddressProvider = await ethers.getContractAt(
       "ILendingPoolAddressesProvider",
       addresses.mainnet.AAVE_ADDRESS_PROVIDER
@@ -63,6 +66,7 @@ async function defaultFixture() {
     usdt = await ethers.getContract("MockUSDT");
     dai = await ethers.getContract("MockDAI");
     usdc = await ethers.getContract("MockUSDC");
+    tusd = await ethers.getContract("MockTUSD");
     nonStandardToken = await ethers.getContract("MockNonStandardToken");
 
     adai = await ethers.getContract("MockADAI");
@@ -99,7 +103,7 @@ async function defaultFixture() {
   const sGovernor = await ethers.provider.getSigner(governorAddr);
 
   // Add TUSD in fixture, it is disabled by default in deployment
-  // await vault.connect(sGovernor).supportAsset(assetAddresses.TUSD);
+  await vault.connect(sGovernor).supportAsset(assetAddresses.TUSD);
 
   // Enable capital movement
   await vault.connect(sGovernor).unpauseCapital();
@@ -144,6 +148,7 @@ async function defaultFixture() {
     usdt,
     dai,
     usdc,
+    tusd,
     nonStandardToken,
     // aTokens,
     adai,

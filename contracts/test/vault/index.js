@@ -60,19 +60,17 @@ describe("Vault", function () {
   });
 
   it("Should revert when adding a strategy that is already approved", async function () {
-    const { vault, governor, compoundStrategy } = await loadFixture(
-      defaultFixture
-    );
-    await vault.connect(governor).approveStrategy(compoundStrategy.address);
+    const { vault, governor, aaveStrategy } = await loadFixture(defaultFixture);
+    await vault.connect(governor).approveStrategy(aaveStrategy.address);
     await expect(
-      vault.connect(governor).approveStrategy(compoundStrategy.address)
+      vault.connect(governor).approveStrategy(aaveStrategy.address)
     ).to.be.revertedWith("Strategy already approved");
   });
 
   it("Should revert when attempting to approve a strategy and not Governor", async function () {
-    const { vault, josh, compoundStrategy } = await loadFixture(defaultFixture);
+    const { vault, josh, aaveStrategy } = await loadFixture(defaultFixture);
     await expect(
-      vault.connect(josh).approveStrategy(compoundStrategy.address)
+      vault.connect(josh).approveStrategy(aaveStrategy.address)
     ).to.be.revertedWith("Caller is not the Governor");
   });
 
@@ -344,14 +342,15 @@ describe("Vault", function () {
   });
 
   it("Should allow the Governor to call reallocate", async () => {
-    const { vault, governor, dai, josh, compoundStrategy, aaveStrategy } =
-      await loadFixture(defaultFixture);
+    const { vault, governor, dai, josh, aaveStrategy } = await loadFixture(
+      defaultFixture
+    );
 
-    await vault.connect(governor).approveStrategy(compoundStrategy.address);
+    await vault.connect(governor).approveStrategy(aaveStrategy.address);
     // Send all DAI to Compound
     await vault
       .connect(governor)
-      .setAssetDefaultStrategy(dai.address, compoundStrategy.address);
+      .setAssetDefaultStrategy(dai.address, aaveStrategy.address);
     await dai.connect(josh).approve(vault.address, daiUnits("200"));
     await vault.connect(josh).mint(dai.address, daiUnits("200"), 0);
     await vault.connect(governor).allocate();
@@ -360,7 +359,7 @@ describe("Vault", function () {
     await vault
       .connect(governor)
       .reallocate(
-        compoundStrategy.address,
+        aaveStrategy.address,
         aaveStrategy.address,
         [dai.address],
         [daiUnits("200")]
@@ -368,15 +367,16 @@ describe("Vault", function () {
   });
 
   it("Should allow the Strategist to call reallocate", async () => {
-    const { vault, governor, dai, josh, compoundStrategy, aaveStrategy } =
-      await loadFixture(defaultFixture);
+    const { vault, governor, dai, josh, aaveStrategy } = await loadFixture(
+      defaultFixture
+    );
 
     await vault.connect(governor).setStrategistAddr(await josh.getAddress());
-    await vault.connect(governor).approveStrategy(compoundStrategy.address);
+    await vault.connect(governor).approveStrategy(aaveStrategy.address);
     // Send all DAI to Compound
     await vault
       .connect(governor)
-      .setAssetDefaultStrategy(dai.address, compoundStrategy.address);
+      .setAssetDefaultStrategy(dai.address, aaveStrategy.address);
     await dai.connect(josh).approve(vault.address, daiUnits("200"));
     await vault.connect(josh).mint(dai.address, daiUnits("200"), 0);
     await vault.connect(governor).allocate();
@@ -385,7 +385,7 @@ describe("Vault", function () {
     await vault
       .connect(josh)
       .reallocate(
-        compoundStrategy.address,
+        aaveStrategy.address,
         aaveStrategy.address,
         [dai.address],
         [daiUnits("200")]
@@ -437,9 +437,9 @@ describe("Vault", function () {
   });
 
   it("Should only allow Governor and Strategist to call withdrawAllFromStrategy", async () => {
-    const { vault, governor, strategist, compoundStrategy, matt, josh, dai } =
+    const { vault, governor, strategist, aaveStrategy, matt, josh, dai } =
       await loadFixture(defaultFixture);
-    await vault.connect(governor).approveStrategy(compoundStrategy.address);
+    await vault.connect(governor).approveStrategy(aaveStrategy.address);
 
     // Get the vault's initial DAI balance.
     const vaultDaiBalance = await dai.balanceOf(vault.address);
@@ -447,15 +447,13 @@ describe("Vault", function () {
     // Mint and allocate DAI to Compound.
     await vault
       .connect(governor)
-      .setAssetDefaultStrategy(dai.address, compoundStrategy.address);
+      .setAssetDefaultStrategy(dai.address, aaveStrategy.address);
     await dai.connect(josh).approve(vault.address, daiUnits("200"));
     await vault.connect(josh).mint(dai.address, daiUnits("200"), 0);
     await vault.connect(governor).allocate();
 
     // Call to withdrawAll by the governor should go thru.
-    await vault
-      .connect(governor)
-      .withdrawAllFromStrategy(compoundStrategy.address);
+    await vault.connect(governor).withdrawAllFromStrategy(aaveStrategy.address);
 
     // All the DAI should have been moved back to the vault.
     const expectedVaultDaiBalance = vaultDaiBalance.add(daiUnits("200"));
@@ -466,11 +464,11 @@ describe("Vault", function () {
     // Call to withdrawAll by the strategist should go thru.
     await vault
       .connect(strategist)
-      .withdrawAllFromStrategy(compoundStrategy.address);
+      .withdrawAllFromStrategy(aaveStrategy.address);
 
     // Call to withdrawAll from random dude matt should get rejected.
     await expect(
-      vault.connect(matt).withdrawAllFromStrategy(compoundStrategy.address)
+      vault.connect(matt).withdrawAllFromStrategy(aaveStrategy.address)
     ).to.be.revertedWith("Caller is not the Strategist or Governor");
   });
 

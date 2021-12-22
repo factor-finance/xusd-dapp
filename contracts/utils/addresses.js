@@ -25,11 +25,10 @@ addresses.mainnet.USDTe = "0xc7198437980c041c805a1edcba50c1ce5db95118";
 
 // Native stablecoins
 addresses.mainnet.TUSD = "0x1c20e891bab6b1727d14da358fae2984ed9b59eb";
-addresses.mainnet.DAI = addresses.mainnet.DAIe;
-// these are very thin, so...
-addresses.mainnet.USDC = "0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e";
-addresses.mainnet.USDT = "0x9702230a8ea53601f5cd2dc00fdbc13d4df4a8c7";
+addresses.mainnet.USDC_native = "0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e";
+addresses.mainnet.USDT_native = "0x9702230a8ea53601f5cd2dc00fdbc13d4df4a8c7";
 // REDEFINE
+addresses.mainnet.DAI = addresses.mainnet.DAIe;
 addresses.mainnet.USDC = addresses.mainnet.USDCe;
 addresses.mainnet.USDT = addresses.mainnet.USDTe;
 

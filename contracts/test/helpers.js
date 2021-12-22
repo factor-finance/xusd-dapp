@@ -203,6 +203,8 @@ const getOracleAddresses = async (deployments) => {
           .address,
         USDT_USD: (await deployments.get("MockChainlinkOracleFeedUSDT"))
           .address,
+        TUSD_USD: (await deployments.get("MockChainlinkOracleFeedTUSD"))
+          .address,
         NonStandardToken_USD: (
           await deployments.get("MockChainlinkOracleFeedNonStandardToken")
         ).address,
@@ -217,6 +219,7 @@ const getAssetAddresses = async (deployments) => {
       USDT: addresses.mainnet.USDT,
       USDC: addresses.mainnet.USDC,
       DAI: addresses.mainnet.DAI,
+      TUSD: addresses.mainnet.TUSD,
       WAVAX: addresses.mainnet.WAVAX,
       avDAI: addresses.mainnet.avDAI,
       avUSDC: addresses.mainnet.avUSDC,
@@ -230,6 +233,7 @@ const getAssetAddresses = async (deployments) => {
       USDT: (await deployments.get("MockUSDT")).address,
       USDC: (await deployments.get("MockUSDC")).address,
       DAI: (await deployments.get("MockDAI")).address,
+      TUSD: (await deployments.get("MockTUSD")).address,
       NonStandardToken: (await deployments.get("MockNonStandardToken")).address,
       WAVAX: (await deployments.get("MockWAVAX")).address,
       avDAI: (await deployments.get("MockADAI")).address,
