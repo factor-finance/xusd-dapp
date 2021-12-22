@@ -1,6 +1,7 @@
 const {
   defaultFixture,
   compoundVaultFixture,
+  aaveVaultFixture,
   multiStrategyVaultFixture,
 } = require("../_fixture");
 const { expect } = require("chai");
@@ -25,12 +26,12 @@ describe("Vault with Compound strategy", function () {
     this.timeout(0);
   }
 
-  it("Anyone can call safeApproveAllTokens", async () => {
+  xit("Anyone can call safeApproveAllTokens", async () => {
     const { matt, compoundStrategy } = await loadFixture(compoundVaultFixture);
     await compoundStrategy.connect(matt).safeApproveAllTokens();
   });
 
-  it("Governor can call removePToken", async () => {
+  xit("Governor can call removePToken", async () => {
     const { governor, compoundStrategy } = await loadFixture(
       compoundVaultFixture
     );
@@ -41,7 +42,7 @@ describe("Vault with Compound strategy", function () {
     expect(event).to.not.be.undefined;
   });
 
-  it("Governor can call setPTokenAddress", async () => {
+  xit("Governor can call setPTokenAddress", async () => {
     const { dai, xusd, matt, compoundStrategy } = await loadFixture(
       compoundVaultFixture
     );
@@ -50,14 +51,14 @@ describe("Vault with Compound strategy", function () {
     ).to.be.revertedWith("Caller is not the Governor");
   });
 
-  it("Only Vault can call collectRewardToken", async () => {
+  xit("Only Vault can call collectRewardToken", async () => {
     const { matt, compoundStrategy } = await loadFixture(compoundVaultFixture);
     await expect(
       compoundStrategy.connect(matt).collectRewardToken()
     ).to.be.revertedWith("Caller is not the Vault");
   });
 
-  it("Should allocate unallocated assets", async () => {
+  xit("Should allocate unallocated assets", async () => {
     const { anna, governor, dai, usdc, usdt, tusd, vault, compoundStrategy } =
       await loadFixture(compoundVaultFixture);
 
@@ -99,7 +100,7 @@ describe("Vault with Compound strategy", function () {
     );
   });
 
-  it("Should correctly handle a deposit of USDC (6 decimals)", async function () {
+  xit("Should correctly handle a deposit of USDC (6 decimals)", async function () {
     const { anna, xusd, usdc, vault } = await loadFixture(compoundVaultFixture);
     await expect(anna).has.a.balanceOf("0", xusd);
     // The mint process maxes out at a 1.0 price
@@ -109,7 +110,7 @@ describe("Vault with Compound strategy", function () {
     await expect(anna).has.a.balanceOf("50", xusd);
   });
 
-  it("Should allow withdrawals", async () => {
+  xit("Should allow withdrawals", async () => {
     const { anna, compoundStrategy, xusd, usdc, vault, governor } =
       await loadFixture(compoundVaultFixture);
     await expect(anna).has.a.balanceOf("1000.00", usdc);
@@ -134,7 +135,7 @@ describe("Vault with Compound strategy", function () {
     await expect(anna).has.an.approxBalanceOf("958", usdc);
   });
 
-  it("Should calculate the balance correctly with DAI in strategy", async () => {
+  xit("Should calculate the balance correctly with DAI in strategy", async () => {
     const { dai, vault, josh, compoundStrategy, governor } = await loadFixture(
       compoundVaultFixture
     );
@@ -162,7 +163,7 @@ describe("Vault with Compound strategy", function () {
     );
   });
 
-  it("Should calculate the balance correctly with USDC in strategy", async () => {
+  xit("Should calculate the balance correctly with USDC in strategy", async () => {
     const { usdc, vault, matt, compoundStrategy, governor } = await loadFixture(
       compoundVaultFixture
     );
@@ -189,7 +190,7 @@ describe("Vault with Compound strategy", function () {
     );
   });
 
-  it("Should calculate the balance correct with TUSD in Vault and DAI, USDC, USDT in Compound strategy", async () => {
+  xit("Should calculate the balance correct with TUSD in Vault and DAI, USDC, USDT in Compound strategy", async () => {
     const {
       tusd,
       usdc,
@@ -238,7 +239,7 @@ describe("Vault with Compound strategy", function () {
     );
   });
 
-  it("Should correctly rebase with changes in Compound exchange rates", async () => {
+  xit("Should correctly rebase with changes in Compound exchange rates", async () => {
     // Mocks can't handle increasing time
     if (!isFork) return;
 
@@ -267,7 +268,7 @@ describe("Vault with Compound strategy", function () {
     await expect(await vault.totalValue()).gt(utils.parseUnits("306", 18));
   });
 
-  it("Should correctly withdrawAll all assets in Compound strategy", async () => {
+  xit("Should correctly withdrawAll all assets in Compound strategy", async () => {
     const { usdc, vault, matt, josh, dai, compoundStrategy, governor } =
       await loadFixture(compoundVaultFixture);
 
@@ -315,7 +316,7 @@ describe("Vault with Compound strategy", function () {
     );
   });
 
-  it("Should withdrawAll assets in Strategy and return them to Vault on removal", async () => {
+  xit("Should withdrawAll assets in Strategy and return them to Vault on removal", async () => {
     const { usdt, usdc, vault, matt, josh, dai, compoundStrategy, governor } =
       await loadFixture(compoundVaultFixture);
 
@@ -365,7 +366,7 @@ describe("Vault with Compound strategy", function () {
     await vault.connect(governor).approveStrategy(compoundStrategy.address);
   });
 
-  it("Should not alter balances after an asset price change", async () => {
+  xit("Should not alter balances after an asset price change", async () => {
     let { xusd, vault, matt, usdc, dai } = await loadFixture(
       compoundVaultFixture
     );
@@ -401,7 +402,7 @@ describe("Vault with Compound strategy", function () {
     );
   });
 
-  it("Should handle non-standard token deposits", async () => {
+  xit("Should handle non-standard token deposits", async () => {
     let { xusd, vault, matt, nonStandardToken, governor } = await loadFixture(
       compoundVaultFixture
     );
@@ -455,7 +456,7 @@ describe("Vault with Compound strategy", function () {
     );
   });
 
-  it("Should never allocate anything when Vault buffer is 1e18 (100%)", async () => {
+  xit("Should never allocate anything when Vault buffer is 1e18 (100%)", async () => {
     const { dai, vault, governor, compoundStrategy } = await loadFixture(
       compoundVaultFixture
     );
@@ -470,7 +471,7 @@ describe("Vault with Compound strategy", function () {
     await expect(await compoundStrategy.checkBalance(dai.address)).to.equal(0);
   });
 
-  it("Should allocate correctly with DAI when Vault buffer is 1e17 (10%)", async () => {
+  xit("Should allocate correctly with DAI when Vault buffer is 1e17 (10%)", async () => {
     const { dai, vault, governor, compoundStrategy } = await loadFixture(
       compoundVaultFixture
     );
@@ -489,7 +490,7 @@ describe("Vault with Compound strategy", function () {
     await expect(await vault.totalValue()).to.approxEqual(xusdUnits("200"));
   });
 
-  it("Should allocate correctly with DAI, USDT, USDC when Vault Buffer is 1e17 (10%)", async () => {
+  xit("Should allocate correctly with DAI, USDT, USDC when Vault Buffer is 1e17 (10%)", async () => {
     const {
       dai,
       usdc,
@@ -538,7 +539,7 @@ describe("Vault with Compound strategy", function () {
     );
   });
 
-  it("Should allow transfer of arbitrary token by Governor", async () => {
+  xit("Should allow transfer of arbitrary token by Governor", async () => {
     const { vault, compoundStrategy, xusd, usdc, matt, governor } =
       await loadFixture(compoundVaultFixture);
     // Matt deposits USDC, 6 decimals
@@ -555,7 +556,7 @@ describe("Vault with Compound strategy", function () {
     await expect(governor).has.a.balanceOf("8.0", xusd);
   });
 
-  it("Should not allow transfer of arbitrary token by non-Governor", async () => {
+  xit("Should not allow transfer of arbitrary token by non-Governor", async () => {
     const { compoundStrategy, xusd, matt } = await loadFixture(
       compoundVaultFixture
     );
@@ -567,7 +568,7 @@ describe("Vault with Compound strategy", function () {
     ).to.be.revertedWith("Caller is not the Governor");
   });
 
-  it("Should have correct balances on consecutive mint and redeem", async () => {
+  xit("Should have correct balances on consecutive mint and redeem", async () => {
     const { xusd, vault, usdc, dai, anna, matt, josh } = await loadFixture(
       compoundVaultFixture
     );
@@ -602,7 +603,7 @@ describe("Vault with Compound strategy", function () {
     }
   });
 
-  it("Should collect reward tokens using collect rewards on all strategies", async () => {
+  xit("Should collect reward tokens using collect rewards on all strategies", async () => {
     const { vault, governor, compoundStrategy, comp } = await loadFixture(
       compoundVaultFixture
     );
@@ -626,7 +627,7 @@ describe("Vault with Compound strategy", function () {
     await expect(await comp.balanceOf(vault.address)).to.be.equal(compAmount);
   });
 
-  it("Should collect reward tokens using collect rewards on a specific strategy", async () => {
+  xit("Should collect reward tokens using collect rewards on a specific strategy", async () => {
     const { vault, governor, compoundStrategy, comp } = await loadFixture(
       compoundVaultFixture
     );
@@ -649,7 +650,7 @@ describe("Vault with Compound strategy", function () {
     await expect(await comp.balanceOf(vault.address)).to.be.equal(compAmount);
   });
 
-  it("Should collect reward tokens and swap via Uniswap", async () => {
+  xit("Should collect reward tokens and swap via Uniswap", async () => {
     const { josh, vault, governor, compoundStrategy, comp, usdt } =
       await loadFixture(compoundVaultFixture);
 
@@ -696,7 +697,7 @@ describe("Vault with Compound strategy", function () {
     );
   });
 
-  it("Should not swap if slippage is too high", async () => {
+  xit("Should not swap if slippage is too high", async () => {
     const { josh, vault, governor, compoundStrategy, comp, usdt } =
       await loadFixture(compoundVaultFixture);
 
@@ -738,7 +739,7 @@ describe("Vault with Compound strategy", function () {
       .connect(governor)["harvestAndSwap()"]()).to.be.revertedWith("Slippage error");
   });
 
-  it("Should collect reward tokens and swap as separate calls", async () => {
+  xit("Should collect reward tokens and swap as separate calls", async () => {
     const { josh, vault, governor, compoundStrategy, comp, usdt } =
       await loadFixture(compoundVaultFixture);
 
@@ -797,9 +798,7 @@ describe("Vault auto allocation", async () => {
   }
 
   const mintDoesAllocate = async (amount) => {
-    const { anna, vault, usdc, governor } = await loadFixture(
-      compoundVaultFixture
-    );
+    const { anna, vault, usdc, governor } = await loadFixture(aaveVaultFixture);
     await vault.connect(governor).setVaultBuffer(0);
     await vault.allocate();
     await usdc.connect(anna).mint(usdcUnits(amount));
@@ -809,7 +808,7 @@ describe("Vault auto allocation", async () => {
   };
 
   const setThreshold = async (amount) => {
-    const { vault, governor } = await loadFixture(compoundVaultFixture);
+    const { vault, governor } = await loadFixture(aaveVaultFixture);
     await vault.connect(governor).setAutoAllocateThreshold(xusdUnits(amount));
   };
 
@@ -820,7 +819,7 @@ describe("Vault auto allocation", async () => {
 
   it("Alloc with both threshhold and buffer", async () => {
     const { anna, vault, usdc, dai, governor } = await loadFixture(
-      compoundVaultFixture
+      aaveVaultFixture
     );
 
     await vault.allocate();
@@ -889,7 +888,7 @@ describe("Vault with two Compound strategies", function () {
     this.timeout(0);
   }
 
-  it("Should reallocate from one strategy to another", async () => {
+  xit("Should reallocate from one strategy to another", async () => {
     const { vault, dai, governor, compoundStrategy, strategyTwo } =
       await loadFixture(multiStrategyVaultFixture);
 
@@ -921,7 +920,7 @@ describe("Vault with two Compound strategies", function () {
     expect(await strategyTwo.checkBalance(dai.address)).to.equal(daiUnits("0"));
   });
 
-  it("Should not reallocate to a strategy that does not support the asset", async () => {
+  xit("Should not reallocate to a strategy that does not support the asset", async () => {
     const { vault, usdt, josh, governor, compoundStrategy, strategyTwo } =
       await loadFixture(multiStrategyVaultFixture);
 
@@ -954,7 +953,7 @@ describe("Vault with two Compound strategies", function () {
     ).to.be.revertedWith("Asset unsupported");
   });
 
-  it("Should not reallocate to strategy that has not been added to the Vault", async () => {
+  xit("Should not reallocate to strategy that has not been added to the Vault", async () => {
     const { vault, dai, governor, compoundStrategy, strategyThree } =
       await loadFixture(multiStrategyVaultFixture);
     await expect(
@@ -969,7 +968,7 @@ describe("Vault with two Compound strategies", function () {
     ).to.be.revertedWith("Invalid to Strategy");
   });
 
-  it("Should not reallocate from strategy that has not been added to the Vault", async () => {
+  xit("Should not reallocate from strategy that has not been added to the Vault", async () => {
     const { vault, dai, governor, compoundStrategy, strategyThree } =
       await loadFixture(multiStrategyVaultFixture);
     await expect(

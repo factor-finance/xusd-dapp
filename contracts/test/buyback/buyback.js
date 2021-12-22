@@ -5,13 +5,13 @@ const { defaultFixture } = require("../_fixture");
 const { xusdUnits, usdcUnits, loadFixture } = require("../helpers");
 
 describe("OGN Buyback", function () {
-  it("Should allow Governor to set Trustee address", async () => {
+  xit("Should allow Governor to set Trustee address", async () => {
     const { vault, governor, xusd } = await loadFixture(defaultFixture);
     // Pretend XUSD is trustee
     await vault.connect(governor).setTrusteeAddress(xusd.address);
   });
 
-  it("Should not allow non-Governor to set Trustee address", async () => {
+  xit("Should not allow non-Governor to set Trustee address", async () => {
     const { vault, anna, xusd } = await loadFixture(defaultFixture);
     // Pretend XUSD is trustee
     await expect(
@@ -19,7 +19,7 @@ describe("OGN Buyback", function () {
     ).to.be.revertedWith("Caller is not the Governor");
   });
 
-  it("Should swap XUSD balance for OGN", async () => {
+  xit("Should swap XUSD balance for OGN", async () => {
     const fixture = await loadFixture(defaultFixture);
     const { xusd, ogn, governor, buyback, vault } = fixture;
     await fundBuybackAndUniswap(fixture);
@@ -30,7 +30,7 @@ describe("OGN Buyback", function () {
     await expect(buyback).has.a.balanceOf("0", xusd);
   });
 
-  it("Should not swap XUSD if the prices are wrong", async () => {
+  xit("Should not swap XUSD if the prices are wrong", async () => {
     const fixture = await loadFixture(defaultFixture);
     const { ogn, xusd, governor, buyback, vault, chainlinkOracleFeedOGNETH } =
       fixture;
@@ -49,7 +49,7 @@ describe("OGN Buyback", function () {
     await expect(buyback).has.a.balanceOf("1000", xusd);
   });
 
-  it("Should allow withdrawal of arbitrary token by Governor", async () => {
+  xit("Should allow withdrawal of arbitrary token by Governor", async () => {
     const { vault, xusd, usdc, matt, governor, buyback } = await loadFixture(
       defaultFixture
     );
@@ -65,7 +65,7 @@ describe("OGN Buyback", function () {
     await expect(governor).has.a.balanceOf("8.0", xusd);
   });
 
-  it("Should not allow withdrawal of arbitrary token by non-Governor", async () => {
+  xit("Should not allow withdrawal of arbitrary token by non-Governor", async () => {
     const { vault, xusd, matt } = await loadFixture(defaultFixture);
     // Naughty Matt
     await expect(
