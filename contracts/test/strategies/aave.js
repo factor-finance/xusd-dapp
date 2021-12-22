@@ -166,6 +166,13 @@ describe("Aave Strategy", function () {
             rewardsAmount
           );
         }
+        const stratAave = await aaveIncentives.getRewardsBalance([
+          // FIXME: which assets?
+        ], aaveStrategy.address);
+        expect(stratAave).to.be.equal(
+          rewardsAmount,
+          "AAVE:Strategy"
+        );
 
         // Run
         // ----
@@ -177,22 +184,18 @@ describe("Aave Strategy", function () {
         const {
           shouldClaimRewards,
         } = verificationOpts;
+        let verifyRewardsAmount = shouldClaimRewards ? 0 : rewardsAmount;
 
         const vaultAave = await aave.balanceOf(vault.address);
         expect(vaultAave).to.equal("0", "AAVE:Vault");
 
-        if (shouldClaimRewards === true) {
-          const stratAave = await aave.balanceOf(aaveStrategy.address);
-          expect(stratAave).to.be.at.least(
-            REWARD_AMOUNT,
-            "AAVE:Strategy"
-          );
-        } else if (shouldClaimRewards === false) {
-          const stratAave = await aave.balanceOf(aaveStrategy.address);
-          expect(stratAave).to.be.below(REWARD_AMOUNT, "AAVE:Strategy");
-        } else {
-          expect(false).to.be.true("shouldclaimRewards is not defined");
-        }
+        const verifyStratAave = await aaveIncentives.getRewardsBalance([
+          // FIXME: which assets?
+        ], aaveStrategy.address);
+        expect(verifyStratAave).to.be.equal(
+          verifyRewardsAmount,
+          "AAVE:Strategy"
+        );
       };
     };
 
