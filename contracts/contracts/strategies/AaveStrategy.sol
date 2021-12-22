@@ -231,7 +231,6 @@ contract AaveStrategy is InitializableAbstractStrategy {
      * @dev Collect AAVE, send to Vault.
      */
     function collectRewardToken() external override onlyVault nonReentrant {
-
         address[] memory aTokens = new address[](assetsMapped.length);
         for (uint256 i = 0; i < assetsMapped.length; i++) {
             aTokens[i] = _getATokenFor(assetsMapped[i]);
@@ -250,6 +249,5 @@ contract AaveStrategy is InitializableAbstractStrategy {
             );
             require(collected == pendingRewards, "AAVE reward difference");
         }
-
     }
 }
