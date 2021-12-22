@@ -25,8 +25,39 @@ describe("Vault with Aave strategy", function () {
     this.timeout(0);
   }
 
+  let anna,
+    matt,
+    josh,
+    xusd,
+    vault,
+    governor,
+    aaveStrategy,
+    usdt,
+    usdc,
+    dai,
+    tusd,
+    wavax,
+    nonStandardToken;
+
+  beforeEach(async function () {
+    const fixture = await aaveVaultFixture();
+    governor = fixture.governor;
+    aaveStrategy = fixture.aaveStrategy;
+    anna = fixture.anna;
+    matt = fixture.matt;
+    josh = fixture.josh;
+    vault = fixture.vault;
+    xusd = fixture.xusd;
+    usdt = fixture.usdt;
+    usdc = fixture.usdc;
+    dai = fixture.dai;
+    tusd = fixture.tusd;
+    wavax = fixture.wavax;
+    nonStandardToken = fixture.nonStandardToken;
+  });
+
   it("Governor can call removePToken", async () => {
-    const { governor, aaveStrategy } = await loadFixture(aaveVaultFixture);
+    // const { governor, aaveStrategy } = await loadFixture(aaveVaultFixture);
     const tx = await aaveStrategy.connect(governor).removePToken(0);
     const receipt = await tx.wait();
 
@@ -35,25 +66,18 @@ describe("Vault with Aave strategy", function () {
   });
 
   it("Governor can call setPTokenAddress", async () => {
-    const { dai, xusd, matt, aaveStrategy } = await loadFixture(
-      aaveVaultFixture
-    );
     await expect(
       aaveStrategy.connect(matt).setPTokenAddress(xusd.address, dai.address)
     ).to.be.revertedWith("Caller is not the Governor");
   });
 
   it("Only Vault can call collectRewardToken", async () => {
-    const { matt, aaveStrategy } = await loadFixture(aaveVaultFixture);
     await expect(
       aaveStrategy.connect(matt).collectRewardToken()
     ).to.be.revertedWith("Caller is not the Vault");
   });
 
   it("Should allocate unallocated assets", async () => {
-    const { anna, governor, dai, usdc, usdt, tusd, vault, aaveStrategy } =
-      await loadFixture(aaveVaultFixture);
-
     await dai.connect(anna).transfer(vault.address, daiUnits("100"));
     await usdc.connect(anna).transfer(vault.address, usdcUnits("200"));
     await usdt.connect(anna).transfer(vault.address, usdtUnits("300"));
@@ -93,7 +117,6 @@ describe("Vault with Aave strategy", function () {
   });
 
   it("Should correctly handle a deposit of USDC (6 decimals)", async function () {
-    const { anna, xusd, usdc, vault } = await loadFixture(aaveVaultFixture);
     await expect(anna).has.a.balanceOf("0", xusd);
     // The mint process maxes out at a 1.0 price
     await setOracleTokenPriceUsd("USDC", "1.25");
@@ -103,8 +126,6 @@ describe("Vault with Aave strategy", function () {
   });
 
   it("Should allow withdrawals", async () => {
-    const { anna, aaveStrategy, xusd, usdc, vault, governor } =
-      await loadFixture(aaveVaultFixture);
     await expect(anna).has.a.balanceOf("1000.00", usdc);
     await usdc.connect(anna).approve(vault.address, usdcUnits("50.0"));
     await vault.connect(anna).mint(usdc.address, usdcUnits("50.0"), 0);
@@ -128,10 +149,6 @@ describe("Vault with Aave strategy", function () {
   });
 
   it("Should calculate the balance correctly with DAI in strategy", async () => {
-    const { dai, vault, josh, aaveStrategy, governor } = await loadFixture(
-      aaveVaultFixture
-    );
-
     expect(await vault.totalValue()).to.approxEqual(
       utils.parseUnits("200", 18)
     );
@@ -156,10 +173,6 @@ describe("Vault with Aave strategy", function () {
   });
 
   it("Should calculate the balance correctly with USDC in strategy", async () => {
-    const { usdc, vault, matt, aaveStrategy, governor } = await loadFixture(
-      aaveVaultFixture
-    );
-
     expect(await vault.totalValue()).to.approxEqual(
       utils.parseUnits("200", 18)
     );
@@ -183,19 +196,6 @@ describe("Vault with Aave strategy", function () {
   });
 
   it("Should calculate the balance correct with TUSD in Vault and DAI, USDC, USDT in Aave strategy", async () => {
-    const {
-      tusd,
-      usdc,
-      dai,
-      usdt,
-      vault,
-      matt,
-      josh,
-      anna,
-      governor,
-      aaveStrategy,
-    } = await loadFixture(aaveVaultFixture);
-
     expect(await vault.totalValue()).to.approxEqual(
       utils.parseUnits("200", 18)
     );
@@ -235,7 +235,6 @@ describe("Vault with Aave strategy", function () {
     // Mocks can't handle increasing time
     if (!isFork) return;
 
-    const { vault, matt, dai, governor } = await loadFixture(aaveVaultFixture);
     await expect(await vault.totalValue()).to.equal(
       utils.parseUnits("200", 18)
     );
@@ -259,9 +258,6 @@ describe("Vault with Aave strategy", function () {
   });
 
   it("Should correctly withdrawAll all assets in Aave strategy", async () => {
-    const { usdc, vault, matt, josh, dai, aaveStrategy, governor } =
-      await loadFixture(aaveVaultFixture);
-
     expect(await vault.totalValue()).to.approxEqual(
       utils.parseUnits("200", 18)
     );
@@ -307,9 +303,6 @@ describe("Vault with Aave strategy", function () {
   });
 
   it("Should withdrawAll assets in Strategy and return them to Vault on removal", async () => {
-    const { usdt, usdc, vault, matt, josh, dai, aaveStrategy, governor } =
-      await loadFixture(aaveVaultFixture);
-
     expect(await vault.totalValue()).to.approxEqual(
       utils.parseUnits("200", 18)
     );
@@ -357,8 +350,6 @@ describe("Vault with Aave strategy", function () {
   });
 
   it("Should not alter balances after an asset price change", async () => {
-    let { xusd, vault, matt, usdc, dai } = await loadFixture(aaveVaultFixture);
-
     await usdc.connect(matt).approve(vault.address, usdcUnits("200"));
     await vault.connect(matt).mint(usdc.address, usdcUnits("200"), 0);
     await dai.connect(matt).approve(vault.address, daiUnits("200"));
@@ -391,10 +382,6 @@ describe("Vault with Aave strategy", function () {
   });
 
   it("Should handle non-standard token deposits", async () => {
-    let { xusd, vault, matt, nonStandardToken, governor } = await loadFixture(
-      aaveVaultFixture
-    );
-
     if (nonStandardToken) {
       await vault.connect(governor).supportAsset(nonStandardToken.address);
     }
@@ -445,10 +432,6 @@ describe("Vault with Aave strategy", function () {
   });
 
   it("Should never allocate anything when Vault buffer is 1e18 (100%)", async () => {
-    const { dai, vault, governor, aaveStrategy } = await loadFixture(
-      aaveVaultFixture
-    );
-
     await expect(await vault.getStrategyCount()).to.equal(1);
 
     // Set a Vault buffer and allocate
@@ -479,9 +462,6 @@ describe("Vault with Aave strategy", function () {
   });
 
   it("Should allocate correctly with DAI, USDT, USDC when Vault Buffer is 1e17 (10%)", async () => {
-    const { dai, usdc, usdt, matt, josh, vault, anna, governor, aaveStrategy } =
-      await loadFixture(aaveVaultFixture);
-
     expect(await vault.totalValue()).to.approxEqual(
       utils.parseUnits("200", 18)
     );
@@ -519,8 +499,6 @@ describe("Vault with Aave strategy", function () {
   });
 
   it("Should allow transfer of arbitrary token by Governor", async () => {
-    const { vault, aaveStrategy, xusd, usdc, matt, governor } =
-      await loadFixture(aaveVaultFixture);
     // Matt deposits USDC, 6 decimals
     await usdc.connect(matt).approve(vault.address, usdcUnits("8.0"));
     await vault.connect(matt).mint(usdc.address, usdcUnits("8.0"), 0);
@@ -542,10 +520,6 @@ describe("Vault with Aave strategy", function () {
   });
 
   it("Should have correct balances on consecutive mint and redeem", async () => {
-    const { xusd, vault, usdc, dai, anna, matt, josh } = await loadFixture(
-      aaveVaultFixture
-    );
-
     const usersWithBalances = [
       [anna, 0],
       [matt, 100],
@@ -577,9 +551,6 @@ describe("Vault with Aave strategy", function () {
   });
 
   it("Should collect reward tokens using collect rewards on all strategies", async () => {
-    const { vault, governor, aaveStrategy, wavax } = await loadFixture(
-      aaveVaultFixture
-    );
     const wavaxAmount = utils.parseUnits("100", 18);
     await wavax.connect(governor).mint(wavaxAmount);
     await wavax.connect(governor).transfer(aaveStrategy.address, wavaxAmount);
@@ -624,9 +595,6 @@ describe("Vault with Aave strategy", function () {
   });
 
   it("Should collect reward tokens and swap via Uniswap", async () => {
-    const { josh, vault, governor, aaveStrategy, wavax, usdt } =
-      await loadFixture(aaveVaultFixture);
-
     const mockUniswapRouter = await ethers.getContract("MockUniswapRouter");
 
     mockUniswapRouter.initialize(wavax.address, usdt.address);
@@ -669,9 +637,6 @@ describe("Vault with Aave strategy", function () {
   });
 
   it("Should not swap if slippage is too high", async () => {
-    const { josh, vault, governor, aaveStrategy, wavax, usdt } =
-      await loadFixture(aaveVaultFixture);
-
     const mockUniswapRouter = await ethers.getContract("MockUniswapRouter");
 
     mockUniswapRouter.initialize(wavax.address, usdt.address);
@@ -711,9 +676,6 @@ describe("Vault with Aave strategy", function () {
   });
 
   it("Should collect reward tokens and swap as separate calls", async () => {
-    const { josh, vault, governor, aaveStrategy, wavax, usdt } =
-      await loadFixture(aaveVaultFixture);
-
     const mockUniswapRouter = await ethers.getContract("MockUniswapRouter");
 
     mockUniswapRouter.initialize(wavax.address, usdt.address);
@@ -852,103 +814,103 @@ describe("Vault auto allocation", async () => {
   });
 });
 
-// describe("Vault with two Aave strategies", function () {
-//   if (isFork) {
-//     this.timeout(0);
-//   }
+describe("Vault with two Aave strategies", function () {
+  if (isFork) {
+    this.timeout(0);
+  }
 
-//   it("Should reallocate from one strategy to another", async () => {
-//     const { vault, dai, governor, aaveStrategy, strategyTwo } =
-//       await loadFixture(multiStrategyVaultFixture);
+  it("Should reallocate from one strategy to another", async () => {
+    const { vault, dai, governor, aaveStrategy, strategyTwo } =
+      await multiStrategyVaultFixture();
 
-//     expect(await vault.totalValue()).to.approxEqual(
-//       utils.parseUnits("200", 18)
-//     );
+    expect(await vault.totalValue()).to.approxEqual(
+      utils.parseUnits("200", 18)
+    );
 
-//     await vault.allocate();
+    await vault.allocate();
 
-//     expect(await aaveStrategy.checkBalance(dai.address)).to.equal(
-//       daiUnits("0")
-//     );
-//     expect(await strategyTwo.checkBalance(dai.address)).to.equal(
-//       daiUnits("200")
-//     );
+    expect(await aaveStrategy.checkBalance(dai.address)).to.equal(
+      daiUnits("0")
+    );
+    expect(await strategyTwo.checkBalance(dai.address)).to.equal(
+      daiUnits("200")
+    );
 
-//     await vault
-//       .connect(governor)
-//       .reallocate(
-//         strategyTwo.address,
-//         aaveStrategy.address,
-//         [dai.address],
-//         [daiUnits("200")]
-//       );
+    await vault
+      .connect(governor)
+      .reallocate(
+        strategyTwo.address,
+        aaveStrategy.address,
+        [dai.address],
+        [daiUnits("200")]
+      );
 
-//     expect(await aaveStrategy.checkBalance(dai.address)).to.equal(
-//       daiUnits("200")
-//     );
-//     expect(await strategyTwo.checkBalance(dai.address)).to.equal(daiUnits("0"));
-//   });
+    expect(await aaveStrategy.checkBalance(dai.address)).to.equal(
+      daiUnits("200")
+    );
+    expect(await strategyTwo.checkBalance(dai.address)).to.equal(daiUnits("0"));
+  });
 
-//   it("Should not reallocate to a strategy that does not support the asset", async () => {
-//     const { vault, usdt, josh, governor, aaveStrategy, strategyTwo } =
-//       await loadFixture(multiStrategyVaultFixture);
+  it("Should not reallocate to a strategy that does not support the asset", async () => {
+    const { vault, usdt, josh, governor, aaveStrategy, strategyTwo } =
+      await multiStrategyVaultFixture();
 
-//     expect(await vault.totalValue()).to.approxEqual(
-//       utils.parseUnits("200", 18)
-//     );
+    expect(await vault.totalValue()).to.approxEqual(
+      utils.parseUnits("200", 18)
+    );
 
-//     // AaveStrategy supports DAI, USDT and USDC but StrategyTwo only
-//     // supports DAI and USDC, see aaveVaultFixture() and
-//     // multiStrategyVaultFixture() in test/_fixture.js
+    // AaveStrategy supports DAI, USDT and USDC but StrategyTwo only
+    // supports DAI and USDC, see aaveVaultFixture() and
+    // multiStrategyVaultFixture() in test/_fixture.js
 
-//     // Stick 200 USDT in AaveStrategy via mint and allocate
-//     await usdt.connect(josh).approve(vault.address, usdtUnits("200"));
-//     await vault.connect(josh).mint(usdt.address, usdtUnits("200"), 0);
-//     await vault.allocate();
+    // Stick 200 USDT in AaveStrategy via mint and allocate
+    await usdt.connect(josh).approve(vault.address, usdtUnits("200"));
+    await vault.connect(josh).mint(usdt.address, usdtUnits("200"), 0);
+    await vault.allocate();
 
-//     expect(await aaveStrategy.checkBalance(usdt.address)).to.equal(
-//       usdtUnits("200")
-//     );
+    expect(await aaveStrategy.checkBalance(usdt.address)).to.equal(
+      usdtUnits("200")
+    );
 
-//     await expect(
-//       vault
-//         .connect(governor)
-//         .reallocate(
-//           aaveStrategy.address,
-//           strategyTwo.address,
-//           [usdt.address],
-//           [usdtUnits("200")]
-//         )
-//     ).to.be.revertedWith("Asset unsupported");
-//   });
+    await expect(
+      vault
+        .connect(governor)
+        .reallocate(
+          aaveStrategy.address,
+          strategyTwo.address,
+          [usdt.address],
+          [usdtUnits("200")]
+        )
+    ).to.be.revertedWith("Asset unsupported");
+  });
 
-//   it("Should not reallocate to strategy that has not been added to the Vault", async () => {
-//     const { vault, dai, governor, aaveStrategy, strategyThree } =
-//       await loadFixture(multiStrategyVaultFixture);
-//     await expect(
-//       vault
-//         .connect(governor)
-//         .reallocate(
-//           aaveStrategy.address,
-//           strategyThree.address,
-//           [dai.address],
-//           [daiUnits("200")]
-//         )
-//     ).to.be.revertedWith("Invalid to Strategy");
-//   });
+  it("Should not reallocate to strategy that has not been added to the Vault", async () => {
+    const { vault, dai, governor, aaveStrategy, strategyThree } =
+      await multiStrategyVaultFixture();
+    await expect(
+      vault
+        .connect(governor)
+        .reallocate(
+          aaveStrategy.address,
+          strategyThree.address,
+          [dai.address],
+          [daiUnits("200")]
+        )
+    ).to.be.revertedWith("Invalid to Strategy");
+  });
 
-//   it("Should not reallocate from strategy that has not been added to the Vault", async () => {
-//     const { vault, dai, governor, aaveStrategy, strategyThree } =
-//       await loadFixture(multiStrategyVaultFixture);
-//     await expect(
-//       vault
-//         .connect(governor)
-//         .reallocate(
-//           strategyThree.address,
-//           aaveStrategy.address,
-//           [dai.address],
-//           [daiUnits("200")]
-//         )
-//     ).to.be.revertedWith("Invalid from Strategy");
-//   });
-// });
+  it("Should not reallocate from strategy that has not been added to the Vault", async () => {
+    const { vault, dai, governor, aaveStrategy, strategyThree } =
+      await multiStrategyVaultFixture();
+    await expect(
+      vault
+        .connect(governor)
+        .reallocate(
+          strategyThree.address,
+          aaveStrategy.address,
+          [dai.address],
+          [daiUnits("200")]
+        )
+    ).to.be.revertedWith("Invalid from Strategy");
+  });
+});

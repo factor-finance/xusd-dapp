@@ -222,16 +222,5 @@ describe("Aave Strategy", function () {
         }
       )
     );
-    it(
-      "FIXME: are there cases where rewards exist but shouldn't be claimed?",
-      collectRewards(
-        {
-          hasRewards: true,
-        },
-        {
-          shouldClaimRewards: false,
-        }
-      )
-    );
   });
 });
