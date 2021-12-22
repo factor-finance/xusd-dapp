@@ -819,6 +819,10 @@ describe("Vault with two Aave strategies", function () {
     this.timeout(0);
   }
 
+  it("these tests are timing` out, so skipping them", async () => {
+    expect(true).to.be.false;
+  });
+
   it("Should reallocate from one strategy to another", async () => {
     const { vault, dai, governor, aaveStrategy, strategyTwo } =
       await multiStrategyVaultFixture();
