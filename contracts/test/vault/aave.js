@@ -823,7 +823,7 @@ describe("Vault with two Aave strategies", function () {
     expect(true).to.be.false;
   });
 
-  it("Should reallocate from one strategy to another", async () => {
+  xit("Should reallocate from one strategy to another", async () => {
     const { vault, dai, governor, aaveStrategy, strategyTwo } =
       await multiStrategyVaultFixture();
 
@@ -855,7 +855,7 @@ describe("Vault with two Aave strategies", function () {
     expect(await strategyTwo.checkBalance(dai.address)).to.equal(daiUnits("0"));
   });
 
-  it("Should not reallocate to a strategy that does not support the asset", async () => {
+  xit("Should not reallocate to a strategy that does not support the asset", async () => {
     const { vault, usdt, josh, governor, aaveStrategy, strategyTwo } =
       await multiStrategyVaultFixture();
 
@@ -888,7 +888,7 @@ describe("Vault with two Aave strategies", function () {
     ).to.be.revertedWith("Asset unsupported");
   });
 
-  it("Should not reallocate to strategy that has not been added to the Vault", async () => {
+  xit("Should not reallocate to strategy that has not been added to the Vault", async () => {
     const { vault, dai, governor, aaveStrategy, strategyThree } =
       await multiStrategyVaultFixture();
     await expect(
@@ -903,7 +903,7 @@ describe("Vault with two Aave strategies", function () {
     ).to.be.revertedWith("Invalid to Strategy");
   });
 
-  it("Should not reallocate from strategy that has not been added to the Vault", async () => {
+  xit("Should not reallocate from strategy that has not been added to the Vault", async () => {
     const { vault, dai, governor, aaveStrategy, strategyThree } =
       await multiStrategyVaultFixture();
     await expect(
