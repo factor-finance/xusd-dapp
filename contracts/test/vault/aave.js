@@ -25,11 +25,6 @@ describe("Vault with Aave strategy", function () {
     this.timeout(0);
   }
 
-  it("Anyone can call safeApproveAllTokens", async () => {
-    const { matt, aaveStrategy } = await loadFixture(aaveVaultFixture);
-    await aaveStrategy.connect(matt).safeApproveAllTokens();
-  });
-
   it("Governor can call removePToken", async () => {
     const { governor, aaveStrategy } = await loadFixture(aaveVaultFixture);
     const tx = await aaveStrategy.connect(governor).removePToken(0);
