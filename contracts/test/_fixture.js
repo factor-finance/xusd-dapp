@@ -192,7 +192,7 @@ async function defaultFixture() {
       "MockChainlinkOracleFeedOGNETH"
     );
     chainlinkOracleFeedETH = await ethers.getContract(
-      "MockChainlinkOracleFeedETH"
+      "MockChainlinkOracleFeedAVAX"
     );
 
     // Mock contracts for testing rebase opt out

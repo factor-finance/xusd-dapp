@@ -189,14 +189,10 @@ const getOracleAddresses = async (deployments) => {
     // On mainnet or fork, return mainnet addresses.
     return {
       chainlink: {
-        ETH_USD: addresses.mainnet.chainlinkETH_USD,
+        AVAX_USD: addresses.mainnet.chainlinkETH_USD,
         DAI_USD: addresses.mainnet.chainlinkDAI_USD,
         USDC_USD: addresses.mainnet.chainlinkUSDC_USD,
         USDT_USD: addresses.mainnet.chainlinkUSDT_USD,
-        COMP_USD: addresses.mainnet.chainlinkCOMP_USD,
-        AAVE_USD: addresses.mainnet.chainlinkAAVE_USD,
-        CRV_USD: addresses.mainnet.chainlinkCRV_USD,
-        OGN_ETH: addresses.mainnet.chainlinkOGN_ETH,
       },
       openOracle: addresses.mainnet.openOracle, // Deprecated
     };
@@ -204,7 +200,7 @@ const getOracleAddresses = async (deployments) => {
     // On other environments, return mock feeds.
     return {
       chainlink: {
-        ETH_USD: (await deployments.get("MockChainlinkOracleFeedETH")).address,
+        ETH_USD: (await deployments.get("MockChainlinkOracleFeedAVAX")).address,
         DAI_USD: (await deployments.get("MockChainlinkOracleFeedDAI")).address,
         USDC_USD: (await deployments.get("MockChainlinkOracleFeedUSDC"))
           .address,
