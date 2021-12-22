@@ -152,8 +152,7 @@ module.exports = deploymentWithProposal(
           assetAddresses.AAVE,
           [assetAddresses.DAI],
           [assetAddresses.avDAI],
-          assetAddresses.AAVE_INCENTIVES_CONTROLLER,
-          assetAddresses.STKAAVE
+          assetAddresses.AAVE_INCENTIVES_CONTROLLER
         )
     );
     log("Initialized AaveStrategy...");

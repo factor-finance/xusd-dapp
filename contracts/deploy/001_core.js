@@ -52,7 +52,7 @@ const deployAaveStrategy = async () => {
 
   log("Initialized AaveStrategyProxy");
   const initFunctionName =
-    "initialize(address,address,address,address[],address[],address,address)";
+    "initialize(address,address,address,address[],address[],address)";
   await withConfirmation(
     cAaveStrategy
       .connect(sDeployer)
@@ -62,8 +62,7 @@ const deployAaveStrategy = async () => {
         assetAddresses.WAVAX,
         [assetAddresses.DAI],
         [assetAddresses.avDAI],
-        cAaveIncentivesController.address,
-        assetAddresses.STKAAVE
+        cAaveIncentivesController.address
       )
   );
   log("Initialized AaveStrategy");

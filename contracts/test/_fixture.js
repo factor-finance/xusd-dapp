@@ -41,7 +41,6 @@ async function defaultFixture() {
     adai,
     aave,
     aaveToken,
-    stkAave,
     mockNonRebasing,
     mockNonRebasingTwo;
 
@@ -74,7 +73,6 @@ async function defaultFixture() {
       "ILendingPoolAddressesProvider",
       aave.address
     );
-    stkAave = await ethers.getContract("MockStkAave");
 
     chainlinkOracleFeedDAI = await ethers.getContract(
       "MockChainlinkOracleFeedDAI"
@@ -155,7 +153,6 @@ async function defaultFixture() {
     aaveAddressProvider,
     aaveIncentivesController,
     aave,
-    stkAave,
     flipper,
   };
 }
