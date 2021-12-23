@@ -37,7 +37,9 @@ describe("Vault with Aave strategy", function () {
     dai,
     tusd,
     wavax,
-    nonStandardToken;
+    nonStandardToken,
+    aaveIncentivesController,
+    chainlinkOracleFeedWAVAX;
 
   beforeEach(async function () {
     const fixture = await aaveVaultFixture();
@@ -54,6 +56,8 @@ describe("Vault with Aave strategy", function () {
     tusd = fixture.tusd;
     wavax = fixture.wavax;
     nonStandardToken = fixture.nonStandardToken;
+    aaveIncentivesController = fixture.aaveIncentivesController;
+    chainlinkOracleFeedWAVAX = fixture.chainlinkOracleFeedWAVAX;
   });
 
   it("Governor can call removePToken", async () => {
@@ -552,17 +556,20 @@ describe("Vault with Aave strategy", function () {
 
   it("Should collect reward tokens using collect rewards on all strategies", async () => {
     const wavaxAmount = utils.parseUnits("100", 18);
-    await wavax.connect(governor).mint(wavaxAmount);
-    await wavax.connect(governor).transfer(aaveStrategy.address, wavaxAmount);
-
+    await aaveIncentivesController.setRewardsBalance(
+      aaveStrategy.address,
+      wavaxAmount
+    );
     // Make sure the Strategy has WAVAX balance
     await expect(
       await wavax.balanceOf(await governor.getAddress())
     ).to.be.equal("0");
-    await expect(await wavax.balanceOf(aaveStrategy.address)).to.be.equal(
-      wavaxAmount
-    );
-
+    await expect(
+      await aaveIncentivesController.getRewardsBalance(
+        [await aaveIncentivesController.REWARD_TOKEN()],
+        aaveStrategy.address
+      )
+    ).to.be.equal(wavaxAmount);
     await vault.connect(governor)["harvest()"]();
 
     // Note if Uniswap address was configured, it would withdrawAll the WAVAX for
@@ -572,24 +579,25 @@ describe("Vault with Aave strategy", function () {
   });
 
   it("Should collect reward tokens using collect rewards on a specific strategy", async () => {
-    const { vault, governor, aaveStrategy, wavax } = await loadFixture(
-      aaveVaultFixture
-    );
     const wavaxAmount = utils.parseUnits("100", 18);
-    await wavax.connect(governor).mint(wavaxAmount);
-    await wavax.connect(governor).transfer(aaveStrategy.address, wavaxAmount);
+    await aaveIncentivesController.setRewardsBalance(
+      aaveStrategy.address,
+      wavaxAmount
+    );
 
     // Make sure the Strategy has WAVAX balance
     await expect(
       await wavax.balanceOf(await governor.getAddress())
     ).to.be.equal("0");
-    await expect(await wavax.balanceOf(aaveStrategy.address)).to.be.equal(
-      wavaxAmount
-    );
+    await expect(
+      await aaveIncentivesController.getRewardsBalance(
+        [await aaveIncentivesController.REWARD_TOKEN()],
+        aaveStrategy.address
+      )
+    ).to.be.equal(wavaxAmount);
 
     // prettier-ignore
-    await vault
-      .connect(governor)["harvest(address)"](aaveStrategy.address);
+    await vault.connect(governor)["harvest(address)"](aaveStrategy.address);
 
     await expect(await wavax.balanceOf(vault.address)).to.be.equal(wavaxAmount);
   });
@@ -599,14 +607,20 @@ describe("Vault with Aave strategy", function () {
 
     mockUniswapRouter.initialize(wavax.address, usdt.address);
 
-    const wavaxAmount = utils.parseUnits("100", 18);
-    await wavax.connect(governor).mint(wavaxAmount);
-    await wavax.connect(governor).transfer(aaveStrategy.address, wavaxAmount);
+    const wavaxAmount = utils.parseUnits("1", 18);
+    await aaveIncentivesController.setRewardsBalance(
+      aaveStrategy.address,
+      wavaxAmount
+    );
 
     await vault.connect(governor).setUniswapAddr(mockUniswapRouter.address);
+    console.log((await chainlinkOracleFeedWAVAX.latestRoundData()).toString());
+    console.log(await chainlinkOracleFeedWAVAX.decimals());
+    console.log(await wavax.decimals(), await usdt.decimals());
 
     // Add Aave to the Vault as a token that should be swapped
     await vault.connect(governor).addSwapToken(wavax.address);
+    console.log(vault.swapTokens, wavax.address);
 
     // Make sure Vault has 0 USDT balance
     await expect(vault).has.a.balanceOf("0", usdt);
@@ -615,25 +629,31 @@ describe("Vault with Aave strategy", function () {
     await expect(
       await wavax.balanceOf(await governor.getAddress())
     ).to.be.equal("0");
-    await expect(await wavax.balanceOf(aaveStrategy.address)).to.be.equal(
-      wavaxAmount
-    );
+    await expect(
+      await aaveIncentivesController.getRewardsBalance([], aaveStrategy.address)
+    ).to.be.equal(wavaxAmount);
 
     // Give Uniswap mock some USDT so it can give it back in WAVAX liquidation
     await usdt
       .connect(josh)
-      .transfer(mockUniswapRouter.address, usdtUnits("100"));
+      .transfer(mockUniswapRouter.address, usdtUnits("1000"));
 
     // prettier-ignore
-    await vault
-      .connect(governor)["harvestAndSwap()"]();
-
-    // Make sure Vault has 100 USDT balance (the Uniswap mock converts at 1:1)
-    await expect(vault).has.a.balanceOf("100", usdt);
+    await vault.connect(governor)["harvestAndSwap()"]();
 
     // No WAVAX in Vault or Aave strategy
     await expect(vault).has.a.balanceOf("0", wavax);
+    await expect(
+      await aaveIncentivesController.getRewardsBalance(
+        [wavax.address],
+        aaveStrategy.address
+      )
+    ).to.be.equal(0);
     await expect(await wavax.balanceOf(aaveStrategy.address)).to.be.equal("0");
+    await expect(await wavax.balanceOf(vault.address)).to.be.equal("0");
+
+    // Make sure Vault has 100 USDT balance (the Uniswap mock converts at 100:1)
+    await expect(vault).has.a.balanceOf("100", usdt);
   });
 
   it("Should not swap if slippage is too high", async () => {
@@ -641,13 +661,15 @@ describe("Vault with Aave strategy", function () {
 
     mockUniswapRouter.initialize(wavax.address, usdt.address);
 
-    // Mock router gives 1:1, if we set this to something high there will be
+    // Mock router gives 100:1, if we set this to something high there will be
     // too much slippage
-    await setOracleTokenPriceUsd("WAVAX", "1.3");
+    await setOracleTokenPriceUsd("WAVAX", "130");
 
-    const wavaxAmount = utils.parseUnits("100", 18);
-    await wavax.connect(governor).mint(wavaxAmount);
-    await wavax.connect(governor).transfer(aaveStrategy.address, wavaxAmount);
+    const wavaxAmount = utils.parseUnits("1", 18);
+    await aaveIncentivesController.setRewardsBalance(
+      aaveStrategy.address,
+      wavaxAmount
+    );
 
     await vault.connect(governor).setUniswapAddr(mockUniswapRouter.address);
 
@@ -661,9 +683,9 @@ describe("Vault with Aave strategy", function () {
     await expect(
       await wavax.balanceOf(await governor.getAddress())
     ).to.be.equal("0");
-    await expect(await wavax.balanceOf(aaveStrategy.address)).to.be.equal(
-      wavaxAmount
-    );
+    await expect(
+      await aaveIncentivesController.getRewardsBalance([], aaveStrategy.address)
+    ).to.be.equal(wavaxAmount);
 
     // Give Uniswap mock some USDT so it can give it back in WAVAX liquidation
     await usdt
@@ -680,9 +702,11 @@ describe("Vault with Aave strategy", function () {
 
     mockUniswapRouter.initialize(wavax.address, usdt.address);
 
-    const wavaxAmount = utils.parseUnits("100", 18);
-    await wavax.connect(governor).mint(wavaxAmount);
-    await wavax.connect(governor).transfer(aaveStrategy.address, wavaxAmount);
+    const wavaxAmount = utils.parseUnits("1", 18);
+    await aaveIncentivesController.setRewardsBalance(
+      aaveStrategy.address,
+      wavaxAmount
+    );
 
     await vault.connect(governor).setUniswapAddr(mockUniswapRouter.address);
 
@@ -696,9 +720,9 @@ describe("Vault with Aave strategy", function () {
     await expect(
       await wavax.balanceOf(await governor.getAddress())
     ).to.be.equal("0");
-    await expect(await wavax.balanceOf(aaveStrategy.address)).to.be.equal(
-      wavaxAmount
-    );
+    await expect(
+      await aaveIncentivesController.getRewardsBalance([], aaveStrategy.address)
+    ).to.be.equal(wavaxAmount);
 
     // Give Uniswap mock some USDT so it can give it back in WAVAX liquidation
     await usdt
@@ -710,11 +734,10 @@ describe("Vault with Aave strategy", function () {
 
     // WAVAX should be sitting in Vault
     await expect(await wavax.balanceOf(vault.address)).to.be.equal(wavaxAmount);
-
     // Call the swap
     await vault.connect(governor)["swap()"]();
 
-    // Make sure Vault has 100 USDT balance (the Uniswap mock converts at 1:1)
+    // Make sure Vault has 100 USDT balance (the Uniswap mock converts at 100:1)
     await expect(vault).has.a.balanceOf("100", usdt);
 
     // No WAVAX in Vault or Aave strategy

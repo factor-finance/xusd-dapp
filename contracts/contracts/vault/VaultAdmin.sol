@@ -14,6 +14,8 @@ import { IOracle } from "../interfaces/IOracle.sol";
 import { IUniswapV2Router } from "../interfaces/uniswap/IUniswapV2Router02.sol";
 import "./VaultStorage.sol";
 
+import "hardhat/console.sol";
+
 contract VaultAdmin is VaultStorage {
     using SafeERC20 for IERC20;
     using StableMath for uint256;
@@ -486,17 +488,21 @@ contract VaultAdmin is VaultStorage {
         if (uniswapAddr != address(0)) {
             IERC20 swapToken = IERC20(_swapToken);
             uint256 balance = swapToken.balanceOf(address(this));
+            console.log("swap tokens", balance);
             if (balance > 0) {
                 // This'll revert if there is no price feed
                 uint256 oraclePrice = IOracle(priceProvider).price(_swapToken);
+                console.log("oracle price", oraclePrice);
                 // Oracle price is 1e8, USDT output is 1e6
                 uint256 minExpected = ((balance * oraclePrice * 97) / 100)
                     .scaleBy(6, Helpers.getDecimals(_swapToken) + 8);
-
+                console.log("min expected", minExpected);
+                console.log("swap decimals", Helpers.getDecimals(_swapToken));
                 // Uniswap redemption path
                 address[] memory path = new address[](3);
                 path[0] = _swapToken;
                 path[1] = IUniswapV2Router(uniswapAddr).WETH();
+                console.log(IUniswapV2Router(uniswapAddr).WETH());
                 path[2] = allAssets[1]; // USDT
 
                 swapResult = IUniswapV2Router(uniswapAddr)
