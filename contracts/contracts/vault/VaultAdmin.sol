@@ -489,9 +489,10 @@ contract VaultAdmin is VaultStorage {
             if (balance > 0) {
                 // This'll revert if there is no price feed
                 uint256 oraclePrice = IOracle(priceProvider).price(_swapToken);
-                // Oracle price is 1e10, USDT output is 1e6
+                // Oracle price is 1e8, USDT output is 1e6
                 uint256 minExpected = ((balance * oraclePrice * 97) / 100)
-                    .scaleBy(6, Helpers.getDecimals(_swapToken) + 10);
+                    .scaleBy(6, Helpers.getDecimals(_swapToken) + 8);
+
                 // Uniswap redemption path
                 address[] memory path = new address[](3);
                 path[0] = _swapToken;
