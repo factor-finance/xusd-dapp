@@ -51,6 +51,7 @@ async function defaultFixture() {
     chainlinkOracleFeedUSDT,
     chainlinkOracleFeedUSDC,
     chainlinkOracleFeedAVAX,
+    chainlinkOracleFeedWAVAX,
     aaveAddressProvider,
     flipper;
 
@@ -92,6 +93,9 @@ async function defaultFixture() {
     );
     chainlinkOracleFeedAVAX = await ethers.getContract(
       "MockChainlinkOracleFeedAVAX"
+    );
+    chainlinkOracleFeedWAVAX = await ethers.getContract(
+      "MockChainlinkOracleFeedWAVAX"
     );
 
     // Mock contracts for testing rebase opt out
@@ -145,6 +149,7 @@ async function defaultFixture() {
     chainlinkOracleFeedUSDT,
     chainlinkOracleFeedUSDC,
     chainlinkOracleFeedAVAX,
+    chainlinkOracleFeedWAVAX,
     governorContract,
     oracleRouter,
     // Assets

@@ -99,12 +99,12 @@ const deployMocks = async ({ getNamedAccounts, deployments }) => {
   await deploy("MockChainlinkOracleFeedAVAX", {
     from: deployerAddr,
     contract: "MockChainlinkOracleFeed",
-    args: [parseUnits("4000", 8).toString(), 8], // 1 ETH = 4000 USD, 8 digits decimal.
+    args: [parseUnits("100", 8).toString(), 8], // 1 ETH = 4000 USD, 8 digits decimal.
   });
   await deploy("MockChainlinkOracleFeedWAVAX", {
     from: deployerAddr,
     contract: "MockChainlinkOracleFeed",
-    args: [parseUnits("4000", 8).toString(), 8], // 1 ETH = 4000 USD, 8 digits decimal.
+    args: [parseUnits("100", 8).toString(), 18], // 1 WAVAX = 100 USD, 18 digits decimal.
   });
 
   // Deploy mock Uniswap router
@@ -122,8 +122,6 @@ const deployMocks = async ({ getNamedAccounts, deployments }) => {
     from: deployerAddr,
     args: [wavax.address],
   });
-
-  const mockAaveToken = await ethers.getContract("MockAAVEToken");
 
   await deploy("MockNonRebasing", {
     from: deployerAddr,
