@@ -38,8 +38,7 @@ describe("Vault with Aave strategy", function () {
     tusd,
     wavax,
     nonStandardToken,
-    aaveIncentivesController,
-    chainlinkOracleFeedWAVAX;
+    aaveIncentivesController;
 
   beforeEach(async function () {
     const fixture = await aaveVaultFixture();
@@ -57,7 +56,6 @@ describe("Vault with Aave strategy", function () {
     wavax = fixture.wavax;
     nonStandardToken = fixture.nonStandardToken;
     aaveIncentivesController = fixture.aaveIncentivesController;
-    chainlinkOracleFeedWAVAX = fixture.chainlinkOracleFeedWAVAX;
   });
 
   it("Governor can call removePToken", async () => {
@@ -607,20 +605,17 @@ describe("Vault with Aave strategy", function () {
 
     mockUniswapRouter.initialize(wavax.address, usdt.address);
 
-    const wavaxAmount = utils.parseUnits("1", 18);
+    const wavaxAmount = utils.parseUnits("100", 18);
     await aaveIncentivesController.setRewardsBalance(
       aaveStrategy.address,
       wavaxAmount
     );
 
     await vault.connect(governor).setUniswapAddr(mockUniswapRouter.address);
-    console.log((await chainlinkOracleFeedWAVAX.latestRoundData()).toString());
-    console.log(await chainlinkOracleFeedWAVAX.decimals());
-    console.log(await wavax.decimals(), await usdt.decimals());
+    await setOracleTokenPriceUsd("WAVAX", "1");
 
     // Add Aave to the Vault as a token that should be swapped
     await vault.connect(governor).addSwapToken(wavax.address);
-    console.log(vault.swapTokens, wavax.address);
 
     // Make sure Vault has 0 USDT balance
     await expect(vault).has.a.balanceOf("0", usdt);
@@ -636,7 +631,7 @@ describe("Vault with Aave strategy", function () {
     // Give Uniswap mock some USDT so it can give it back in WAVAX liquidation
     await usdt
       .connect(josh)
-      .transfer(mockUniswapRouter.address, usdtUnits("1000"));
+      .transfer(mockUniswapRouter.address, usdtUnits("100"));
 
     // prettier-ignore
     await vault.connect(governor)["harvestAndSwap()"]();
@@ -661,9 +656,9 @@ describe("Vault with Aave strategy", function () {
 
     mockUniswapRouter.initialize(wavax.address, usdt.address);
 
-    // Mock router gives 100:1, if we set this to something high there will be
+    // Mock router gives 1:1, if we set this to something high there will be
     // too much slippage
-    await setOracleTokenPriceUsd("WAVAX", "130");
+    await setOracleTokenPriceUsd("WAVAX", "1.3");
 
     const wavaxAmount = utils.parseUnits("1", 18);
     await aaveIncentivesController.setRewardsBalance(
@@ -702,7 +697,7 @@ describe("Vault with Aave strategy", function () {
 
     mockUniswapRouter.initialize(wavax.address, usdt.address);
 
-    const wavaxAmount = utils.parseUnits("1", 18);
+    const wavaxAmount = utils.parseUnits("100", 18);
     await aaveIncentivesController.setRewardsBalance(
       aaveStrategy.address,
       wavaxAmount

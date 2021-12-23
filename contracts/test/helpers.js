@@ -198,6 +198,8 @@ const getOracleAddresses = async (deployments) => {
       chainlink: {
         AVAX_USD: (await deployments.get("MockChainlinkOracleFeedAVAX"))
           .address,
+        WAVAX_USD: (await deployments.get("MockChainlinkOracleFeedWAVAX"))
+          .address,
         DAI_USD: (await deployments.get("MockChainlinkOracleFeedDAI")).address,
         USDC_USD: (await deployments.get("MockChainlinkOracleFeedUSDC"))
           .address,
