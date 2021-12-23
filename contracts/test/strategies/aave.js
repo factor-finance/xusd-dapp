@@ -166,9 +166,7 @@ describe("Aave Strategy", function () {
           );
         }
         const stratAave = await aaveIncentives.getRewardsBalance(
-          [
-            // FIXME: which assets?
-          ],
+          [await aaveIncentives.REWARD_TOKEN()],
           aaveStrategy.address
         );
         expect(stratAave).to.be.equal(rewardsAmount, "AAVE:Strategy");
@@ -186,9 +184,7 @@ describe("Aave Strategy", function () {
         expect(vaultAave).to.equal("0", "AAVE:Vault");
 
         const verifyStratAave = await aaveIncentives.getRewardsBalance(
-          [
-            // FIXME: which assets?
-          ],
+          [await aaveIncentives.REWARD_TOKEN()],
           aaveStrategy.address
         );
         expect(verifyStratAave).to.be.equal(
