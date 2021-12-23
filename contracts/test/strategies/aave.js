@@ -8,7 +8,6 @@ const {
   units,
   loadFixture,
   expectApproxSupply,
-  getBlockTimestamp,
   isFork,
 } = require("../helpers");
 
@@ -177,7 +176,6 @@ describe("Aave Strategy", function () {
         // Run
         // ----
         await vault.connect(governor)["harvest()"]();
-        currentTimestamp = await getBlockTimestamp();
 
         // Verification
         // ----

@@ -245,16 +245,15 @@ async function multiStrategyVaultFixture() {
   // Initialize the second strategy with DAI and USDC
   const initFunctionName =
     "initialize(address,address,address,address[],address[],address)";
-  await cStrategyTwo
-    .connect(sGovernor)
-    [initFunctionName](
-      assetAddresses.AAVE_ADDRESS_PROVIDER,
-      fixture.vault.address,
-      assetAddresses.WAVAX,
-      [assetAddresses.DAI, assetAddresses.USDC],
-      [assetAddresses.avDAI, assetAddresses.avUSDC],
-      assetAddresses.AAVE_INCENTIVES_CONTROLLER
-    );
+  await cStrategyTwo.connect(sGovernor)[initFunctionName](
+    // eslint-disable-line
+    assetAddresses.AAVE_ADDRESS_PROVIDER,
+    fixture.vault.address,
+    assetAddresses.WAVAX,
+    [assetAddresses.DAI, assetAddresses.USDC],
+    [assetAddresses.avDAI, assetAddresses.avUSDC],
+    assetAddresses.AAVE_INCENTIVES_CONTROLLER
+  );
   // Add second strategy to Vault
   await fixture.vault.connect(sGovernor).approveStrategy(cStrategyTwo.address);
   // DAI to second strategy
@@ -269,16 +268,15 @@ async function multiStrategyVaultFixture() {
   });
   const cStrategyThree = await ethers.getContract("StrategyThree");
   // Initialize the third strategy with only DAI
-  await cStrategyThree
-    .connect(sGovernor)
-    [initFunctionName](
-      assetAddresses.AAVE_ADDRESS_PROVIDER,
-      fixture.vault.address,
-      assetAddresses.WAVAX,
-      [assetAddresses.DAI],
-      [assetAddresses.avDAI],
-      assetAddresses.AAVE_INCENTIVES_CONTROLLER
-    );
+  await cStrategyThree.connect(sGovernor)[initFunctionName](
+    // eslint-disable-line
+    assetAddresses.AAVE_ADDRESS_PROVIDER,
+    fixture.vault.address,
+    assetAddresses.WAVAX,
+    [assetAddresses.DAI],
+    [assetAddresses.avDAI],
+    assetAddresses.AAVE_INCENTIVES_CONTROLLER
+  );
 
   fixture.strategyTwo = cStrategyTwo;
   fixture.strategyThree = cStrategyThree;
