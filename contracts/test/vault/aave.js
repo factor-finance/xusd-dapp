@@ -6,6 +6,8 @@ const {
 const { expect } = require("chai");
 const { utils } = require("ethers");
 
+const { getOracleAddresses } = require("../helpers");
+
 const {
   advanceTime,
   xusdUnits,
@@ -38,6 +40,7 @@ describe("Vault with Aave strategy", function () {
     tusd,
     wavax,
     nonStandardToken,
+    oracleRouter,
     aaveIncentivesController;
 
   beforeEach(async function () {
@@ -55,6 +58,7 @@ describe("Vault with Aave strategy", function () {
     tusd = fixture.tusd;
     wavax = fixture.wavax;
     nonStandardToken = fixture.nonStandardToken;
+    oracleRouter = fixture.oracleRouter;
     aaveIncentivesController = fixture.aaveIncentivesController;
   });
 
@@ -603,7 +607,7 @@ describe("Vault with Aave strategy", function () {
   it("Should collect reward tokens and swap via Uniswap", async () => {
     const mockUniswapRouter = await ethers.getContract("MockUniswapRouter");
 
-    mockUniswapRouter.initialize(wavax.address, usdt.address);
+    await mockUniswapRouter.initialize(wavax.address, usdt.address);
 
     const wavaxAmount = utils.parseUnits("100", 18);
     await aaveIncentivesController.setRewardsBalance(
@@ -612,7 +616,6 @@ describe("Vault with Aave strategy", function () {
     );
 
     await vault.connect(governor).setUniswapAddr(mockUniswapRouter.address);
-    await setOracleTokenPriceUsd("WAVAX", "1");
 
     // Add Aave to the Vault as a token that should be swapped
     await vault.connect(governor).addSwapToken(wavax.address);
@@ -654,13 +657,19 @@ describe("Vault with Aave strategy", function () {
   it("Should not swap if slippage is too high", async () => {
     const mockUniswapRouter = await ethers.getContract("MockUniswapRouter");
 
-    mockUniswapRouter.initialize(wavax.address, usdt.address);
-
     // Mock router gives 1:1, if we set this to something high there will be
     // too much slippage
+    await mockUniswapRouter.initialize(wavax.address, usdt.address);
+
+    const oracleAddresses = await getOracleAddresses(hre.deployments);
+    await oracleRouter.setFeed(
+      wavax.address,
+      oracleAddresses.chainlink.WAVAX_USD
+    );
+    await mockUniswapRouter.initialize(wavax.address, usdt.address);
     await setOracleTokenPriceUsd("WAVAX", "1.3");
 
-    const wavaxAmount = utils.parseUnits("1", 18);
+    const wavaxAmount = utils.parseUnits("100", 18);
     await aaveIncentivesController.setRewardsBalance(
       aaveStrategy.address,
       wavaxAmount
@@ -694,8 +703,7 @@ describe("Vault with Aave strategy", function () {
 
   it("Should collect reward tokens and swap as separate calls", async () => {
     const mockUniswapRouter = await ethers.getContract("MockUniswapRouter");
-
-    mockUniswapRouter.initialize(wavax.address, usdt.address);
+    await mockUniswapRouter.initialize(wavax.address, usdt.address);
 
     const wavaxAmount = utils.parseUnits("100", 18);
     await aaveIncentivesController.setRewardsBalance(
