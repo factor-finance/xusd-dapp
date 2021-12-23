@@ -819,20 +819,15 @@ describe("Vault with two Aave strategies", function () {
     this.timeout(0);
   }
 
-  it("these tests are timing` out, so skipping them", async () => {
-    expect(true).to.be.false;
-  });
-
-  xit("Should reallocate from one strategy to another", async () => {
+  it("Should reallocate from one strategy to another", async () => {
     const { vault, dai, governor, aaveStrategy, strategyTwo } =
-      await multiStrategyVaultFixture();
+      await loadFixture(multiStrategyVaultFixture);
 
     expect(await vault.totalValue()).to.approxEqual(
       utils.parseUnits("200", 18)
     );
 
     await vault.allocate();
-
     expect(await aaveStrategy.checkBalance(dai.address)).to.equal(
       daiUnits("0")
     );
@@ -855,9 +850,9 @@ describe("Vault with two Aave strategies", function () {
     expect(await strategyTwo.checkBalance(dai.address)).to.equal(daiUnits("0"));
   });
 
-  xit("Should not reallocate to a strategy that does not support the asset", async () => {
+  it("Should not reallocate to a strategy that does not support the asset", async () => {
     const { vault, usdt, josh, governor, aaveStrategy, strategyTwo } =
-      await multiStrategyVaultFixture();
+      await loadFixture(multiStrategyVaultFixture);
 
     expect(await vault.totalValue()).to.approxEqual(
       utils.parseUnits("200", 18)
@@ -888,9 +883,9 @@ describe("Vault with two Aave strategies", function () {
     ).to.be.revertedWith("Asset unsupported");
   });
 
-  xit("Should not reallocate to strategy that has not been added to the Vault", async () => {
+  it("Should not reallocate to strategy that has not been added to the Vault", async () => {
     const { vault, dai, governor, aaveStrategy, strategyThree } =
-      await multiStrategyVaultFixture();
+      await loadFixture(multiStrategyVaultFixture);
     await expect(
       vault
         .connect(governor)
@@ -903,9 +898,9 @@ describe("Vault with two Aave strategies", function () {
     ).to.be.revertedWith("Invalid to Strategy");
   });
 
-  xit("Should not reallocate from strategy that has not been added to the Vault", async () => {
+  it("Should not reallocate from strategy that has not been added to the Vault", async () => {
     const { vault, dai, governor, aaveStrategy, strategyThree } =
-      await multiStrategyVaultFixture();
+      await loadFixture(multiStrategyVaultFixture);
     await expect(
       vault
         .connect(governor)

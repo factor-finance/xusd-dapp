@@ -241,6 +241,9 @@ const getAssetAddresses = async (deployments) => {
       avUSDT: (await deployments.get("MockAUSDT")).address,
       AAVE: (await deployments.get("MockAave")).address,
       AAVE_ADDRESS_PROVIDER: (await deployments.get("MockAave")).address,
+      AAVE_INCENTIVES_CONTROLLER: (
+        await deployments.get("MockAaveIncentivesController")
+      ).address,
     };
   }
 };
