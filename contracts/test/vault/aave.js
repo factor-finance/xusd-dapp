@@ -1,8 +1,4 @@
-const {
-  defaultFixture,
-  aaveVaultFixture,
-  multiStrategyVaultFixture,
-} = require("../_fixture");
+const { aaveVaultFixture, multiStrategyVaultFixture } = require("../_fixture");
 const { expect } = require("chai");
 const { utils } = require("ethers");
 
@@ -754,8 +750,19 @@ describe("Vault auto allocation", async () => {
     this.timeout(0);
   }
 
+  let anna, vault, governor, usdc, dai, usdt;
+
+  beforeEach(async function () {
+    const fixture = await aaveVaultFixture();
+    anna = fixture.anna;
+    vault = fixture.vault;
+    usdc = fixture.usdc;
+    usdt = fixture.usdt;
+    dai = fixture.dai;
+    governor = fixture.governor;
+  });
+
   const mintDoesAllocate = async (amount) => {
-    const { anna, vault, usdc, governor } = await loadFixture(aaveVaultFixture);
     await vault.connect(governor).setVaultBuffer(0);
     await vault.allocate();
     await usdc.connect(anna).mint(usdcUnits(amount));
@@ -765,7 +772,6 @@ describe("Vault auto allocation", async () => {
   };
 
   const setThreshold = async (amount) => {
-    const { vault, governor } = await loadFixture(aaveVaultFixture);
     await vault.connect(governor).setAutoAllocateThreshold(xusdUnits(amount));
   };
 
@@ -775,18 +781,29 @@ describe("Vault auto allocation", async () => {
   });
 
   it("Alloc with both threshhold and buffer", async () => {
-    const { anna, vault, usdc, dai, governor } = await loadFixture(
-      aaveVaultFixture
+    const initialValue = (await vault.totalValue()).toString();
+    await expect(initialValue).to.be.equal(
+      utils.parseUnits("200", 18),
+      // FIXME: change expects to relative values instead of relying on initial state
+      "confirm initial state of vault"
     );
-
     await vault.allocate();
     await vault.connect(governor).setVaultBuffer(utils.parseUnits("1", 17));
     await vault.connect(governor).setAutoAllocateThreshold(xusdUnits("3"));
+    // DAI was allocated before the vault buffer was set
+    await expect(await dai.balanceOf(vault.address)).to.equal(daiUnits("0"));
+    // USDC was allocated before the vault buffer was set
+    await expect(await usdc.balanceOf(vault.address)).to.equal(usdcUnits("0"));
+    // USDT was allocated before the vault buffer was set
+    await expect(await usdt.balanceOf(vault.address)).to.equal(usdtUnits("0"));
 
     const amount = "4";
     await usdc.connect(anna).mint(usdcUnits(amount));
     await usdc.connect(anna).approve(vault.address, usdcUnits(amount));
     await vault.connect(anna).mint(usdc.address, usdcUnits(amount), 0);
+    await expect(await usdc.balanceOf(vault.address)).to.equal(
+      usdcUnits(amount)
+    );
     // No allocate triggered due to threshold so call manually
     await vault.allocate();
 
@@ -805,7 +822,7 @@ describe("Vault auto allocation", async () => {
     await vault.connect(anna).mint(usdc.address, usdcUnits(allocAmount), 0);
 
     // We should take 10% off for the buffer
-    // 10% * 5204
+    // 10% * 5204 + what we started with
     await expect(await usdc.balanceOf(vault.address)).to.equal(
       usdcUnits("520.4")
     );
@@ -834,7 +851,6 @@ describe("Vault auto allocation", async () => {
   });
 
   it("Non-governor cannot change the threshold", async () => {
-    const { vault, anna } = await loadFixture(defaultFixture);
     await expect(vault.connect(anna).setAutoAllocateThreshold(10000)).to.be
       .reverted;
   });
