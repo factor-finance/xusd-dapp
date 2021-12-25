@@ -60,18 +60,6 @@ for (let i = 0; i <= 10; i++) {
   privateKeys.push(wallet.privateKey);
 }
 
-const FORK_FUJI = false;
-const FORK_MAINNET = false;
-const forkingData = FORK_FUJI
-  ? {
-      url: "https://api.avax-test.network/ext/bc/C/rpc",
-    }
-  : FORK_MAINNET
-  ? {
-      url: "https://api.avax.network/ext/bc/C/rpc",
-    }
-  : undefined;
-
 // Environment tasks.
 task("env", "Check env vars are properly set for a Mainnet deployment", env);
 
@@ -218,11 +206,10 @@ module.exports = {
       },
       initialBaseFeePerGas: 0,
       gasPrice: 225000000000,
-      chainId: 43112,
+      chainId: 43114,
     },
     localhost: {
       timeout: 60000,
-      forking: forkingData,
     },
     fuji: {
       url: `${process.env.PROVIDER_URL}`,
