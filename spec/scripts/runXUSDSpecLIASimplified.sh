@@ -1,1 +1,0 @@
-certoraRun ../spec/harnesses/XUSDHarnessSimplified.sol:XUSDHarness contracts/vault/VaultCore.sol --verify XUSDHarness:../spec/xusd.spec --solc solc5.11 --settings -t=300,-ignoreViewFunctions --cache xusd --staging origin1 --msg "XUSD LIA Simplified"
