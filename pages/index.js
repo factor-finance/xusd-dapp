@@ -1,25 +1,10 @@
-import React from 'react'
-import { fbt } from 'fbt-runtime'
+import { useEffect } from 'react'
+import Router from 'next/router'
 
-const Mint = ({ locale, onLocale }) => {
-  return (
-    <>
-      {fbt('Redirecting...', 'Redirecting...')}
-
-      <style jsx>{`
-        @media (max-width: 799px) {
-        }
-      `}</style>
-    </>
-  )
-}
-
-Mint.getInitialProps = async (ctx) => {
-  ctx.res.writeHead(302, {
-    Location: '/swap',
+export default function Home({ locale, onLocale }) {
+  useEffect(() => {
+    Router.push('/swap')
   })
-  ctx.res.end()
-  return {}
-}
 
-export default Mint
+  return <>Redirecting...</>
+}
