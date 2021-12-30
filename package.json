@@ -11,6 +11,8 @@
     "build": "next build",
     "export": "next export",
     "start": "per-env",
+    "lint": "yarn run lint:js",
+    "lint:js": "eslint \"**/*.js\"",
     "start:development": "NODE_ENV=development ETHEREUM_RPC_PROVIDER=http://localhost:8545 next dev",
     "start:production": "NODE_ENV=production next start -p 8080",
     "fbt:manifest": "node -r @babel/register node_modules/babel-plugin-fbt/bin/manifest --src src pages",
