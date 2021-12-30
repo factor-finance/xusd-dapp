@@ -8,8 +8,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
-    "export": "next export",
+    "build": "next build && next export",
     "start": "per-env",
     "lint": "yarn run lint:js",
     "lint:js": "eslint \"**/*.js\"",
