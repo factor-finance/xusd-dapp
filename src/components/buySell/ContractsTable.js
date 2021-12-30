@@ -26,7 +26,7 @@ const ContractsTable = () => {
       name: fbt('XUSD Swap', 'Contract Table XUSD Swap'),
     },
     vault: {
-      name: fbt('Origin Vault', 'Contract Table Origin Vault'),
+      name: fbt('XUSD Vault', 'Contract Table XUSD Vault'),
     },
   }
 

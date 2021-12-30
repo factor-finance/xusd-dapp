@@ -119,11 +119,14 @@ const Nav = ({ dapp, isMobile, locale, onLocale, page }) => {
         <div className="container p-lg-0">
           <Link href={'/'}>
             <a className="navbar-brand d-flex flex-column justify-content-center">
-              <span><img
-                src="/images/xusd-logo.svg"
-                className="xusd-logo"
-                alt="Factor XUSD logo"
-              /> Factor XUSD</span>
+              <span>
+                <img
+                  src="/images/xusd-logo.svg"
+                  className="xusd-logo"
+                  alt="Factor XUSD logo"
+                />{' '}
+                Factor XUSD
+              </span>
             </a>
           </Link>
           {dapp && (

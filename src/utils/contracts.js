@@ -103,10 +103,7 @@ export async function setupContracts(account, library, chainId, fetchId) {
     chainlinkEthAggregator,
     chainlinkFastGasAggregator
 
-  let iVaultJson,
-    iErc20Json,
-    singleAssetStakingJson,
-    chainlinkAggregatorV3Json
+  let iVaultJson, iErc20Json, singleAssetStakingJson, chainlinkAggregatorV3Json
 
   try {
     iVaultJson = require('../../abis/IVault.json')
