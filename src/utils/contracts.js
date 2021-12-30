@@ -10,12 +10,10 @@ import { sleep } from 'utils/utils'
 
 import AccountStore from 'stores/AccountStore'
 import YieldStore from 'stores/YieldStore'
-import StakeStore from 'stores/StakeStore'
 import addresses from 'constants/contractAddresses'
 import usdtAbi from 'constants/mainnetAbi/usdt.json'
 import usdcAbi from 'constants/mainnetAbi/cUsdc.json'
 import daiAbi from 'constants/mainnetAbi/dai.json'
-import ognAbi from 'constants/mainnetAbi/ogn.json'
 import flipperAbi from 'constants/mainnetAbi/flipper.json'
 
 /* fetchId - used to prevent race conditions.
@@ -96,7 +94,6 @@ export async function setupContracts(account, library, chainId, fetchId) {
 
   const xusdProxy = contracts['XUSDProxy']
   const vaultProxy = contracts['VaultProxy']
-  const OGNStakingProxy = contracts['OGNStakingProxy']
   let liquidityRewardXUSD_USDTProxy,
     liquidityRewardXUSD_DAIProxy,
     liquidityRewardXUSD_USDCProxy
@@ -113,7 +110,6 @@ export async function setupContracts(account, library, chainId, fetchId) {
     usdc,
     xusd,
     vault,
-    ogn,
     flipper,
     uniV2XusdUsdt,
     uniV2XusdUsdt_iErc20,
@@ -135,9 +131,6 @@ export async function setupContracts(account, library, chainId, fetchId) {
     liquidityXusdUsdt,
     liquidityXusdUsdc,
     liquidityXusdDai,
-    ognStaking,
-    ognStakingView,
-    compensation,
     chainlinkEthAggregator,
     chainlinkFastGasAggregator
 
@@ -152,7 +145,6 @@ export async function setupContracts(account, library, chainId, fetchId) {
     uniV2SwapRouterJson,
     uniV3SwapQuoterJson,
     singleAssetStakingJson,
-    compensationClaimsJson,
     chainlinkAggregatorV3Json
 
   try {
@@ -161,7 +153,6 @@ export async function setupContracts(account, library, chainId, fetchId) {
     iErc20Json = require('../../abis/IERC20.json')
     iUniPairJson = require('../../abis/IUniswapV2Pair.json')
     singleAssetStakingJson = require('../../abis/SingleAssetStaking.json')
-    compensationClaimsJson = require('../../abis/CompensationClaims.json')
     uniV3PoolJson = require('../../abis/UniswapV3Pool.json')
     uniV3FactoryJson = require('../../abis/UniswapV3Factory.json')
     uniV3NonfungiblePositionManagerJson = require('../../abis/UniswapV3NonfungiblePositionManager.json')
@@ -190,18 +181,10 @@ export async function setupContracts(account, library, chainId, fetchId) {
     )
   }
 
-  ognStaking = getContract(OGNStakingProxy.address, singleAssetStakingJson.abi)
-  ognStakingView = getContract(
-    OGNStakingProxy.address,
-    singleAssetStakingJson.abi,
-    jsonRpcProvider
-  )
-
   xusd = getContract(xusdProxy.address, network.contracts['XUSD'].abi)
   usdt = getContract(addresses.mainnet.USDT, usdtAbi.abi)
   usdc = getContract(addresses.mainnet.USDC, usdcAbi.abi)
   dai = getContract(addresses.mainnet.DAI, daiAbi.abi)
-  ogn = getContract(addresses.mainnet.OGN, ognAbi)
   flipper = getContract(addresses.mainnet.Flipper, flipperAbi)
 
   uniV3XusdUsdt = getContract(
@@ -242,11 +225,6 @@ export async function setupContracts(account, library, chainId, fetchId) {
       'uniV2XusdUsdt, uniV2XusdUsdc, uniV2XusdDai mainnet address is missing'
     )
   }
-
-  compensation = getContract(
-    addresses.mainnet.CompensationClaims,
-    compensationClaimsJson.abi
-  )
 
   if (process.env.ENABLE_LIQUIDITY_MINING === 'true') {
     uniV2XusdUsdt_iErc20 = getContract(uniV2XusdUsdt.address, iErc20Json.abi)
@@ -304,30 +282,6 @@ export async function setupContracts(account, library, chainId, fetchId) {
     })
   }
 
-  const fetchOgnStats = async () => {
-    try {
-      const response = await fetch(
-        `${process.env.COINGECKO_API}/coins/origin-protocol`
-      )
-      if (response.ok) {
-        const json = await response.json()
-        const price = json.market_data.current_price.usd
-        const circulating_supply = json.market_data.circulating_supply
-        const market_cap = json.market_data.market_cap.usd
-
-        CoinStore.update((s) => {
-          s.ogn = {
-            price,
-            circulating_supply,
-            market_cap,
-          }
-        })
-      }
-    } catch (err) {
-      console.error('Failed to fetch OGN token statistics', err)
-    }
-  }
-
   const fetchAPY = async () => {
     try {
       const response = await fetch(process.env.APR_ANALYTICS_ENDPOINT)
@@ -379,7 +333,6 @@ export async function setupContracts(account, library, chainId, fetchId) {
         fetchCreditsPerToken(),
         fetchCreditsBalance(),
         fetchAPY(),
-        fetchOgnStats(),
       ])
     }, 2)
   }
@@ -409,7 +362,6 @@ export async function setupContracts(account, library, chainId, fetchId) {
     usdc,
     xusd,
     vault,
-    ogn,
     uniV2XusdUsdt,
     uniV2XusdUsdt_iErc20,
     uniV2XusdUsdt_iUniPair,
@@ -430,9 +382,6 @@ export async function setupContracts(account, library, chainId, fetchId) {
     liquidityXusdUsdt,
     liquidityXusdUsdc,
     liquidityXusdDai,
-    ognStaking,
-    ognStakingView,
-    compensation,
     flipper,
     chainlinkEthAggregator,
     chainlinkFastGasAggregator,
@@ -470,7 +419,6 @@ export async function setupContracts(account, library, chainId, fetchId) {
     await setupPools(account, contractsToExport)
   }
 
-  await setupStakes(contractsToExport)
   await afterSetup(contractsToExport)
 
   return contractsToExport
@@ -482,39 +430,6 @@ const afterSetup = async ({ vault }) => {
   YieldStore.update((s) => {
     s.redeemFee = parseFloat(ethers.utils.formatUnits(redeemFee, 4))
   })
-}
-
-const setupStakes = async (contractsToExport) => {
-  try {
-    const [durations, rates] = await Promise.all([
-      await contractsToExport.ognStakingView.getAllDurations(),
-      await contractsToExport.ognStakingView.getAllRates(),
-    ])
-
-    const adjustedRates = durations.map((duration, index) => {
-      const days = duration / (24 * 60 * 60)
-
-      if (
-        process.env.NODE_ENV !== 'production' &&
-        Math.floor(days) !== Math.ceil(days)
-      ) {
-        const largeInt = 100000000
-        // On dev, one has a shorter duration
-        return rates[index]
-          .mul(BigNumber.from(365 * largeInt))
-          .div(BigNumber.from(Math.round(days * largeInt)))
-      } else {
-        return rates[index].mul(BigNumber.from(365)).div(BigNumber.from(days))
-      }
-    })
-
-    StakeStore.update((s) => {
-      s.durations = durations
-      s.rates = adjustedRates
-    })
-  } catch (e) {
-    console.error('Can not read initial public stake data: ', e)
-  }
 }
 
 const setupPools = async (account, contractsToExport) => {

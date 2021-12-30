@@ -306,15 +306,6 @@ const Nav = ({ dapp, isMobile, locale, onLocale, page }) => {
                 </ul>
               )}
               <DappLinks dapp={dapp} page={page} />
-              {dapp && environment !== 'production' && (
-                <ul className="navbar-nav">
-                  <li className="nav-item mr-2">
-                    <Link href="/dashboard">
-                      <a>{fbt('Debug', 'Debugging dashboard link')}</a>
-                    </Link>
-                  </li>
-                </ul>
-              )}
               <div
                 className={`d-flex flex-column ${
                   dapp ? 'flex-lg-row-reverse' : 'flex-lg-row'

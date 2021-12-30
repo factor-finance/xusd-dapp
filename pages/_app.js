@@ -7,7 +7,6 @@ import { useStoreState } from 'pullstate'
 
 import AccountStore from 'stores/AccountStore'
 import RouterStore from 'stores/RouterStore'
-import AccountListener from 'components/AccountListener'
 import UserActivityListener from 'components/UserActivityListener'
 import TransactionListener from 'components/TransactionListener'
 import withWeb3Provider from 'hoc/withWeb3Provider'
@@ -162,7 +161,6 @@ function App({ Component, pageProps, err }) {
   return (
     <>
       <AnalyticsProvider instance={analytics}>
-        <AccountListener />
         <TransactionListener />
         <UserActivityListener />
         <WalletSelectModal />
