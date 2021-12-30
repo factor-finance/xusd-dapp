@@ -15,8 +15,6 @@ import { getDocsLink } from 'utils/getDocsLink'
 import LanguageOptions from 'components/LanguageOptions'
 import LanguageSelected from 'components/LanguageSelected'
 import LocaleDropdown from 'components/LocaleDropdown'
-import XusdDropdown from 'components/earn/XusdDropdown'
-import OgnDropdown from 'components/earn/OgnDropdown'
 import ContractStore from 'stores/ContractStore'
 import AccountStore from 'stores/AccountStore'
 
@@ -36,40 +34,6 @@ const DappLinks = ({ dapp, page }) => {
     <>
       {dapp && (
         <div className="d-flex align-items-center justify-content-center dapp-navigation mr-auto">
-          {(process.env.ENABLE_LIQUIDITY_MINING === 'true' ||
-            process.env.ENABLE_STAKING === 'true') && (
-            <Link href="/swap">
-              <a
-                className={`d-flex align-items-center ml-md-0 ${
-                  page === 'swap' ? 'selected' : ''
-                }`}
-              >
-                {fbt('Swap XUSD', 'Swap XUSD')}
-              </a>
-            </Link>
-          )}
-          {process.env.ENABLE_LIQUIDITY_MINING === 'true' && (
-            <Link href="/earn">
-              <a
-                className={`d-flex align-items-center ${
-                  page === 'earn' || page === 'pool-details' ? 'selected' : ''
-                }`}
-              >
-                {fbt('Earn OGN', 'Earn OGN')}
-              </a>
-            </Link>
-          )}
-          {process.env.ENABLE_STAKING === 'true' && (
-            <Link href="/earn">
-              <a
-                className={`d-flex align-items-center ${
-                  page === 'earn' ? 'selected' : ''
-                }`}
-              >
-                {fbt('Earn OGN', 'Earn OGN')}
-              </a>
-            </Link>
-          )}
           {showHistory && (
             <Link href="/history">
               <a
@@ -155,11 +119,14 @@ const Nav = ({ dapp, isMobile, locale, onLocale, page }) => {
         <div className="container p-lg-0">
           <Link href={'/'}>
             <a className="navbar-brand d-flex flex-column justify-content-center">
-              <img
-                src="/images/xusd-logo.svg"
-                className="origin-logo"
-                alt="XUSD.fi logo"
-              />
+              <span>
+                <img
+                  src="/images/xusd-logo.svg"
+                  className="xusd-logo"
+                  alt="Factor XUSD logo"
+                />{' '}
+                Factor XUSD
+              </span>
             </a>
           </Link>
           {dapp && (
@@ -308,15 +275,6 @@ const Nav = ({ dapp, isMobile, locale, onLocale, page }) => {
                 </ul>
               )}
               <DappLinks dapp={dapp} page={page} />
-              {dapp && environment !== 'production' && (
-                <ul className="navbar-nav">
-                  <li className="nav-item mr-2">
-                    <Link href="/dashboard">
-                      <a>{fbt('Debug', 'Debugging dashboard link')}</a>
-                    </Link>
-                  </li>
-                </ul>
-              )}
               <div
                 className={`d-flex flex-column ${
                   dapp ? 'flex-lg-row-reverse' : 'flex-lg-row'
@@ -529,7 +487,7 @@ const Nav = ({ dapp, isMobile, locale, onLocale, page }) => {
         }
 
         @media (max-width: 799px) {
-          .origin-logo {
+          .xusd-logo {
             max-width: 170px;
           }
 

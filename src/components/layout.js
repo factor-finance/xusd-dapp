@@ -14,7 +14,6 @@ import AccountStore from 'stores/AccountStore'
 import ContractStore from 'stores/ContractStore'
 import withRpcProvider from 'hoc/withRpcProvider'
 import AppFooter from './AppFooter'
-import MarketingFooter from './MarketingFooter'
 
 const UNISWAP_URL =
   'https://app.uniswap.org/#/swap?inputCurrency=0xdac17f958d2ee523a2206206994597c13d831ec7&outputCurrency=0x2A8e1E676Ec238d8A992307B495b45B3fEAa5e86'
@@ -27,7 +26,6 @@ const Layout = ({
   short,
   shorter,
   medium,
-  isStakePage,
   showUniswapNotice,
   storeTransaction,
   storeTransactionError,
@@ -57,36 +55,18 @@ const Layout = ({
   return (
     <>
       <Head>
-        <title>XUSD</title>
+        <title>XUSD by Factor Finance</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        {isStakePage && (
-          <>
-            <meta
-              property="og:image"
-              key="og:image"
-              content="https://xusd.fi/images/staking-facebook.png"
-            />
-            <meta
-              name="twitter:image"
-              key="twitter:image"
-              content="https://xusd.fi/images/staking-twitter.png"
-            />
-          </>
-        )}
-        {!isStakePage && (
-          <>
-            <meta
-              property="og:image"
-              key="og:image"
-              content="https://xusd.fi/images/share-facebook.png"
-            />
-            <meta
-              name="twitter:image"
-              key="twitter:image"
-              content="https://xusd.fi/images/share-twitter.png"
-            />
-          </>
-        )}
+        <meta
+          property="og:image"
+          key="og:image"
+          content="https://xusd.fi/images/share-facebook.png"
+        />
+        <meta
+          name="twitter:image"
+          key="twitter:image"
+          content="https://xusd.fi/images/share-twitter.png"
+        />
       </Head>
       <div
         className={classnames(
@@ -145,7 +125,6 @@ const Layout = ({
         {dapp && <div className="container">{children}</div>}
         {!dapp && children}
       </main>
-      {!dapp && <MarketingFooter locale={locale} />}
       {dapp && <AppFooter dapp={dapp} locale={locale} onLocale={onLocale} />}
       <style jsx>{`
         .notice {

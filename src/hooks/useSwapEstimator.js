@@ -66,20 +66,7 @@ const useSwapEstimator = ({
   const account = useStoreState(AccountStore, (s) => s.account)
   const [ethPrice, setEthPrice] = useState(false)
   const [estimationCallback, setEstimationCallback] = useState(null)
-  const {
-    mintVaultGasEstimate,
-    swapUniswapGasEstimate,
-    swapCurveGasEstimate,
-    swapUniswapV2GasEstimate,
-    swapUniswapV2,
-    swapCurve,
-    quoteUniswap,
-    quoteUniswapV2,
-    quoteSushiSwap,
-    swapSushiswapGasEstimate,
-    quoteCurve,
-    redeemVaultGasEstimate,
-  } = useCurrencySwapper({
+  const { mintVaultGasEstimate, redeemVaultGasEstimate } = useCurrencySwapper({
     swapMode,
     inputAmountRaw,
     selectedCoin,
@@ -177,47 +164,17 @@ const useSwapEstimator = ({
     })
     let usedGasPrice = gasPrice
 
-    let vaultResult,
-      flipperResult,
-      uniswapResult,
-      uniswapV2Result,
-      sushiswapResult,
-      curveResult,
-      ethPrice
+    let vaultResult, flipperResult, ethPrice
     if (swapMode === 'mint') {
-      ;[
-        vaultResult,
-        flipperResult,
-        uniswapResult,
-        uniswapV2Result,
-        sushiswapResult,
-        curveResult,
-        ethPrice,
-      ] = await Promise.all([
+      ;[vaultResult, flipperResult, ethPrice] = await Promise.all([
         estimateMintSuitabilityVault(),
         estimateSwapSuitabilityFlipper(),
-        estimateSwapSuitabilityUniswapV3(),
-        estimateSwapSuitabilityUniswapV2(),
-        estimateSwapSuitabilitySushiSwap(),
-        estimateSwapSuitabilityCurve(),
         fetchEthPrice(),
       ])
     } else {
-      ;[
-        vaultResult,
-        flipperResult,
-        uniswapResult,
-        uniswapV2Result,
-        sushiswapResult,
-        curveResult,
-        ethPrice,
-      ] = await Promise.all([
+      ;[vaultResult, flipperResult, ethPrice] = await Promise.all([
         estimateRedeemSuitabilityVault(),
         estimateSwapSuitabilityFlipper(),
-        estimateSwapSuitabilityUniswapV3(),
-        estimateSwapSuitabilityUniswapV2(),
-        estimateSwapSuitabilitySushiSwap(),
-        estimateSwapSuitabilityCurve(),
         fetchEthPrice(),
       ])
     }
@@ -229,10 +186,6 @@ const useSwapEstimator = ({
     let estimations = {
       vault: vaultResult,
       flipper: flipperResult,
-      uniswap: uniswapResult,
-      curve: curveResult,
-      uniswapV2: uniswapV2Result,
-      sushiswap: sushiswapResult,
     }
 
     estimations = enrichAndFindTheBest(
@@ -357,310 +310,6 @@ const useSwapEstimator = ({
       canDoSwap: true,
       gasUsed: 90000,
       amountReceived: amount,
-    }
-  }
-
-  /* Gives information on suitability of Curve for this swap
-   */
-  const estimateSwapSuitabilityCurve = async () => {
-    const isRedeem = swapMode === 'redeem'
-    if (isRedeem && selectedCoin === 'mix') {
-      return {
-        canDoSwap: false,
-        error: 'unsupported',
-      }
-    }
-
-    try {
-      const priceQuoteBn = await quoteCurve(swapAmount)
-      const amountReceived = ethers.utils.formatUnits(
-        priceQuoteBn,
-        // 18 because xusd has 18 decimals
-        isRedeem ? coinToReceiveDecimals : 18
-      )
-
-      /* Check if Curve router has allowance to spend coin. If not we can not run gas estimation and need
-       * to guess the gas usage.
-       *
-       * We don't check if positive amount is large enough: since we always approve max_int allowance.
-       */
-      if (
-        parseFloat(allowances[isRedeem ? 'xusd' : selectedCoin].curve) === 0 ||
-        !userHasEnoughStablecoin(
-          isRedeem ? 'xusd' : selectedCoin,
-          parseFloat(inputAmountRaw)
-        )
-      ) {
-        return {
-          canDoSwap: true,
-          /* This estimate is from the few ones observed on the mainnet:
-           * https://snowtrace.io/tx/0x3ff7178d8be668649928d86863c78cd249224211efe67f23623017812e7918bb
-           * https://snowtrace.io/tx/0xbf033ffbaf01b808953ca1904d3b0110b50337d60d89c96cd06f3f9a6972d3ca
-           * https://snowtrace.io/tx/0x77d98d0307b53e81f50b39132e038a1c6ef87a599a381675ce44038515a04738
-           * https://snowtrace.io/tx/0xbce1a2f1e76d4b4f900b3952f34f5f53f8be4a65ccff348661d19b9a3827aa04
-           *
-           */
-          gasUsed: 520000,
-          amountReceived,
-        }
-      }
-
-      const {
-        swapAmount: swapAmountQuoted,
-        minSwapAmount: minSwapAmountQuoted,
-      } = calculateSwapAmounts(
-        amountReceived,
-        coinToReceiveDecimals,
-        priceToleranceValue
-      )
-
-      const gasEstimate = await swapCurveGasEstimate(
-        swapAmount,
-        minSwapAmountQuoted
-      )
-
-      return {
-        canDoSwap: true,
-        gasUsed: gasEstimate,
-        amountReceived,
-      }
-    } catch (e) {
-      console.error(
-        `Unexpected error estimating curve swap suitability: ${e.message}`
-      )
-      return {
-        canDoSwap: false,
-        error: 'unexpected_error',
-      }
-    }
-  }
-
-  const estimateSwapSuitabilityUniswapV2 = async () => {
-    return _estimateSwapSuitabilityUniswapV2Variant(false)
-  }
-
-  const estimateSwapSuitabilitySushiSwap = async () => {
-    return _estimateSwapSuitabilityUniswapV2Variant(true)
-  }
-
-  // Gives information on suitability of uniswapV2 / SushiSwap for this swap
-  const _estimateSwapSuitabilityUniswapV2Variant = async (
-    isSushiSwap = false
-  ) => {
-    const isRedeem = swapMode === 'redeem'
-    if (isRedeem && selectedCoin === 'mix') {
-      return {
-        canDoSwap: false,
-        error: 'unsupported',
-      }
-    }
-
-    try {
-      const priceQuoteValues = isSushiSwap
-        ? await quoteSushiSwap(swapAmount)
-        : await quoteUniswapV2(swapAmount)
-      const priceQuoteBn = priceQuoteValues[priceQuoteValues.length - 1]
-
-      // 18 because xusd has 18 decimals
-      const amountReceived = ethers.utils.formatUnits(
-        priceQuoteBn,
-        isRedeem ? coinToReceiveDecimals : 18
-      )
-
-      /* Check if Uniswap router has allowance to spend coin. If not we can not run gas estimation and need
-       * to guess the gas usage.
-       *
-       * We don't check if positive amount is large enough: since we always approve max_int allowance.
-       */
-      const requiredAllowance =
-        allowances[isRedeem ? 'xusd' : selectedCoin][
-          isSushiSwap ? 'sushiRouter' : 'uniswapV2Router'
-        ]
-      if (requiredAllowance === undefined) {
-        throw new Error('Can not find correct allowance for coin')
-      }
-      if (
-        parseFloat(
-          allowances[isRedeem ? 'xusd' : selectedCoin][
-            isSushiSwap ? 'sushiRouter' : 'uniswapV2Router'
-          ]
-        ) === 0 ||
-        !userHasEnoughStablecoin(
-          isRedeem ? 'xusd' : selectedCoin,
-          parseFloat(inputAmountRaw)
-        )
-      ) {
-        return {
-          canDoSwap: true,
-          /* Some example Uniswap transactions. When 2 swaps are done:
-           * - https://snowtrace.io/tx/0x436ef157435c93241257fb0b347db7cc1b2c4f73d749c7e5c1181393f3d0aa26
-           * - https://snowtrace.io/tx/0x504799fecb64a0452f5635245ca313aa5612132dc6fe66c441b61fd98a0e0766
-           * - https://snowtrace.io/tx/0x2e3429fb9f04819a55f85cfdbbaf78dfbb049bff85be84a324650d77ff98dfc3
-           *
-           * And Uniswap when 1 swap:
-           * - https://snowtrace.io/tx/0x6ceca6c6c2a829928bbf9cf97a018b431def8e475577fcc7cc97ed6bd35f9f7b
-           * - https://snowtrace.io/tx/0x02c1fffb94b06d54e0c6d47da460cb6e5e736e43f928b7e9b2dcd964b1390188
-           * - https://snowtrace.io/tx/0xe5a35025ec3fe71ece49a4311319bdc16302b7cc16b3e7a95f0d8e45baa922c7
-           *
-           * Some example Sushiswap transactions. When 2 swaps are done:
-           * - https://snowtrace.io/tx/0x8e66d8d682b8028fd44c916d4318fee7e69704e9f8e386dd7debbfe3157375c5
-           * - https://snowtrace.io/tx/0xbb837c5f001a0d71c75db49ddc22bd75b7800e426252ef1f1135e8e543769bea
-           * - https://snowtrace.io/tx/0xe00ab2125b55fd398b00e361e2fd22f6fc9225e609fb2bb2b712586523c89824
-           * - https://snowtrace.io/tx/0x5c26312ac2bab17aa8895592faa8dc8607f15912de953546136391ee2e955e92
-           *
-           * And Sushiswap when 1 swap:
-           * - https://snowtrace.io/tx/0xa8a0c5d2433bcb6ddbfdfb1db7c55c674714690e353f305e4f3c72878ab6a3a7
-           * - https://snowtrace.io/tx/0x8d2a273d0451ab48c554f8a97d333f7f62b40804946cbd546dc57e2c009514f0
-           *
-           * Both contracts have very similar gas usage (since they share a lot of the code base)
-           */
-          gasUsed: selectedCoin === 'usdt' ? 175000 : 230000,
-          amountReceived,
-        }
-      }
-
-      const {
-        swapAmount: swapAmountQuoted,
-        minSwapAmount: minSwapAmountQuoted,
-      } = calculateSwapAmounts(
-        amountReceived,
-        coinToReceiveDecimals,
-        priceToleranceValue
-      )
-
-      let gasEstimate
-
-      if (isSushiSwap) {
-        gasEstimate = await swapSushiswapGasEstimate(
-          swapAmount,
-          minSwapAmountQuoted
-        )
-      } else {
-        gasEstimate = await swapUniswapV2GasEstimate(
-          swapAmount,
-          minSwapAmountQuoted
-        )
-      }
-
-      return {
-        canDoSwap: true,
-        gasUsed: gasEstimate,
-        amountReceived,
-      }
-    } catch (e) {
-      console.error(
-        `Unexpected error estimating ${
-          isSushiSwap ? 'sushiSwap' : 'uniswap v2'
-        } swap suitability: ${e.message}`
-      )
-
-      if (
-        (e.data &&
-          e.data.message &&
-          e.data.message.includes('INSUFFICIENT_OUTPUT_AMOUNT')) ||
-        e.message.includes('INSUFFICIENT_OUTPUT_AMOUNT')
-      ) {
-        return {
-          canDoSwap: false,
-          error: 'slippage_too_high',
-        }
-      }
-
-      return {
-        canDoSwap: false,
-        error: 'unexpected_error',
-      }
-    }
-  }
-
-  /* Gives information on suitability of uniswap for this swap
-   */
-  const estimateSwapSuitabilityUniswapV3 = async () => {
-    const isRedeem = swapMode === 'redeem'
-    if (isRedeem && selectedCoin === 'mix') {
-      return {
-        canDoSwap: false,
-        error: 'unsupported',
-      }
-    }
-
-    try {
-      const priceQuote = await quoteUniswap(swapAmount)
-      const priceQuoteBn = BigNumber.from(priceQuote)
-      // 18 because xusd has 18 decimals
-      const amountReceived = ethers.utils.formatUnits(
-        priceQuoteBn,
-        isRedeem ? coinToReceiveDecimals : 18
-      )
-
-      /* Check if Uniswap router has allowance to spend coin. If not we can not run gas estimation and need
-       * to guess the gas usage.
-       *
-       * We don't check if positive amount is large enough: since we always approve max_int allowance.
-       */
-      if (
-        parseFloat(
-          allowances[isRedeem ? 'xusd' : selectedCoin].uniswapV3Router
-        ) === 0 ||
-        !userHasEnoughStablecoin(
-          isRedeem ? 'xusd' : selectedCoin,
-          parseFloat(inputAmountRaw)
-        )
-      ) {
-        return {
-          canDoSwap: true,
-          /* This estimate is over the maximum one appearing on mainnet: https://snowtrace.io/tx/0x6b1163b012570819e2951fa95a8287ce16be96b8bf18baefb6e738d448188ed5
-           * Swap gas costs are usually between 142k - 162k
-           *
-           * Other transactions here: https://snowtrace.io/tokentxns?a=0x129360c964e2e13910d603043f6287e5e9383374&p=6
-           */
-          // TODO: if usdc / dai are selected it will cost more gas
-          gasUsed: 165000,
-          amountReceived,
-        }
-      }
-
-      const {
-        swapAmount: swapAmountQuoted,
-        minSwapAmount: minSwapAmountQuoted,
-      } = calculateSwapAmounts(
-        amountReceived,
-        coinToReceiveDecimals,
-        priceToleranceValue
-      )
-
-      const gasEstimate = await swapUniswapGasEstimate(
-        swapAmount,
-        minSwapAmountQuoted
-      )
-
-      return {
-        canDoSwap: true,
-        gasUsed: gasEstimate,
-        amountReceived,
-      }
-    } catch (e) {
-      console.error(
-        `Unexpected error estimating uniswap v3 swap suitability: ${e.message}`
-      )
-
-      // local node and mainnet return errors in different formats, this handles both cases
-      if (
-        (e.data &&
-          e.data.message &&
-          e.data.message.includes('Too little received')) ||
-        e.message.includes('Too little received')
-      ) {
-        return {
-          canDoSwap: false,
-          error: 'slippage_too_high',
-        }
-      }
-
-      return {
-        canDoSwap: false,
-        error: 'unexpected_error',
-      }
     }
   }
 
@@ -962,8 +611,6 @@ const useSwapEstimator = ({
     estimateSwapSuitabilityFlipper,
     estimateMintSuitabilityVault,
     estimateRedeemSuitabilityVault,
-    estimateSwapSuitabilityUniswapV3,
-    estimateSwapSuitabilityCurve,
   }
 }
 

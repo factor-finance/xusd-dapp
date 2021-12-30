@@ -18,6 +18,4 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - run: yarn install
-      working-directory: ./dapp
     - run: yarn prettier:check
-      working-directory: ./dapp

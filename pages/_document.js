@@ -41,17 +41,17 @@ class MyDocument extends Document {
 
           <meta property="og:url" content="https://xusd.fi" />
           <meta property="og:type" content="website" />
-          <meta property="og:title" content="XUSD.fi (XUSD)" />
+          <meta property="og:title" content="Factor XUSD" />
           <meta
             property="og:description"
-            content="The first stablecoin that earns a yield while it’s still in your wallet"
+            content="The first interest bearing stablecoin on the Avalanche C-Chain"
           />
           <meta name="twitter:card" content="summary_large_image" />
-          <meta name="twitter:site" content="@originprotocol" />
-          <meta name="twitter:title" content="XUSD.fi (XUSD)" />
+          <meta name="twitter:site" content="@factor_finance" />
+          <meta name="twitter:title" content="Factor XUSD" />
           <meta
             name="twitter:description"
-            content="The first stablecoin that earns a yield while it’s still in your wallet"
+            content="The first interest bearing stablecoin on the Avalanche C-Chain"
           />
           {/* If not on localhost and request's protocl was HTTP, redirect to HTTPS */}
           <script

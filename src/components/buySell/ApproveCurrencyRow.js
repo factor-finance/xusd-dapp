@@ -28,26 +28,14 @@ const ApproveCurrencyRow = ({
   const connectorName = useStoreState(AccountStore, (s) => s.connectorName)
   const connectorIcon = getConnectorIcon(connectorName)
 
-  const {
-    vault,
-    flipper,
-    uniV3SwapRouter,
-    uniV2Router,
-    sushiRouter,
-    curveXUSDMetaPool,
-    usdt,
-    dai,
-    usdc,
-    xusd,
-  } = useStoreState(ContractStore, (s) => s.contracts || {})
+  const { vault, flipper, usdt, dai, usdc, xusd } = useStoreState(
+    ContractStore,
+    (s) => s.contracts || {}
+  )
 
   const contractMap = {
     vault: vault,
     flipper: flipper,
-    uniswap: uniV3SwapRouter,
-    curve: curveXUSDMetaPool,
-    uniswapV2: uniV2Router,
-    sushiswap: sushiRouter,
   }
 
   useEffect(() => {

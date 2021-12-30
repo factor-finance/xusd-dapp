@@ -36,11 +36,6 @@ import {
   removeCommas,
 } from '../../utils/math'
 
-let ReactPixel
-if (process.browser) {
-  ReactPixel = require('react-facebook-pixel').default
-}
-
 const lastUserSelectedCoinKey = 'last_user_selected_coin'
 const lastSelectedSwapModeKey = 'last_user_selected_swap_mode'
 
@@ -174,10 +169,6 @@ const SwapHomepage = ({
     mintVault,
     redeemVault,
     swapFlipper,
-    swapUniswap,
-    swapUniswapV2,
-    swapSushiSwap,
-    swapCurve,
   } = useCurrencySwapper(
     swapParams(
       swapMode === 'mint' ? selectedBuyCoinAmount : selectedRedeemCoinAmount,
@@ -358,14 +349,6 @@ const SwapHomepage = ({
         } else {
           ;({ result, swapAmount, minSwapAmount } = await redeemVault())
         }
-      } else if (selectedSwap.name === 'uniswap') {
-        ;({ result, swapAmount, minSwapAmount } = await swapUniswap())
-      } else if (selectedSwap.name === 'uniswapV2') {
-        ;({ result, swapAmount, minSwapAmount } = await swapUniswapV2())
-      } else if (selectedSwap.name === 'sushiswap') {
-        ;({ result, swapAmount, minSwapAmount } = await swapSushiSwap())
-      } else if (selectedSwap.name === 'curve') {
-        ;({ result, swapAmount, minSwapAmount } = await swapCurve())
       }
       setBuyWidgetState(`${prependStage}waiting-network`)
 
@@ -399,18 +382,6 @@ const SwapHomepage = ({
         label: metadata.stablecoinUsed,
         value: metadata.swapAmount,
       })
-
-      if (swapMode === 'mint') {
-        ReactPixel.track('InitiateCheckout', {
-          value: selectedRedeemCoinAmount,
-          currency: 'usd',
-        })
-
-        twttr.conversion.trackPid('o73z1', {
-          tw_sale_amount: selectedRedeemCoinAmount,
-          tw_order_quantity: 1,
-        })
-      }
 
       if (localStorage.getItem('addXUSDModalShown') !== 'true') {
         AccountStore.update((s) => {
