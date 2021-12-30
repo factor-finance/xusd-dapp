@@ -174,9 +174,6 @@ const SwapHomepage = ({
     mintVault,
     redeemVault,
     swapFlipper,
-    swapUniswap,
-    swapUniswapV2,
-    swapSushiSwap,
   } = useCurrencySwapper(
     swapParams(
       swapMode === 'mint' ? selectedBuyCoinAmount : selectedRedeemCoinAmount,
@@ -357,12 +354,6 @@ const SwapHomepage = ({
         } else {
           ;({ result, swapAmount, minSwapAmount } = await redeemVault())
         }
-      } else if (selectedSwap.name === 'uniswap') {
-        ;({ result, swapAmount, minSwapAmount } = await swapUniswap())
-      } else if (selectedSwap.name === 'uniswapV2') {
-        ;({ result, swapAmount, minSwapAmount } = await swapUniswapV2())
-      } else if (selectedSwap.name === 'sushiswap') {
-        ;({ result, swapAmount, minSwapAmount } = await swapSushiSwap())
       }
       setBuyWidgetState(`${prependStage}waiting-network`)
 

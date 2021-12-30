@@ -111,23 +111,6 @@ export async function setupContracts(account, library, chainId, fetchId) {
     xusd,
     vault,
     flipper,
-    uniV2XusdUsdt,
-    uniV2XusdUsdt_iErc20,
-    uniV2XusdUsdt_iUniPair,
-    uniV2XusdUsdc,
-    uniV2XusdUsdc_iErc20,
-    uniV2XusdUsdc_iUniPair,
-    uniV2XusdDai,
-    uniV2XusdDai_iErc20,
-    uniV2XusdDai_iUniPair,
-    uniV3XusdUsdt,
-    uniV3DaiUsdt,
-    uniV3UsdcUsdt,
-    uniV3NonfungiblePositionManager,
-    uniV3SwapRouter,
-    uniV2Router,
-    sushiRouter,
-    uniV3SwapQuoter,
     liquidityXusdUsdt,
     liquidityXusdUsdc,
     liquidityXusdDai,
@@ -137,13 +120,6 @@ export async function setupContracts(account, library, chainId, fetchId) {
   let iVaultJson,
     liquidityRewardJson,
     iErc20Json,
-    iUniPairJson,
-    uniV3PoolJson,
-    uniV3FactoryJson,
-    uniV3NonfungiblePositionManagerJson,
-    uniV3SwapRouterJson,
-    uniV2SwapRouterJson,
-    uniV3SwapQuoterJson,
     singleAssetStakingJson,
     chainlinkAggregatorV3Json
 
@@ -151,14 +127,7 @@ export async function setupContracts(account, library, chainId, fetchId) {
     iVaultJson = require('../../abis/IVault.json')
     liquidityRewardJson = require('../../abis/LiquidityReward.json')
     iErc20Json = require('../../abis/IERC20.json')
-    iUniPairJson = require('../../abis/IUniswapV2Pair.json')
     singleAssetStakingJson = require('../../abis/SingleAssetStaking.json')
-    uniV3PoolJson = require('../../abis/UniswapV3Pool.json')
-    uniV3FactoryJson = require('../../abis/UniswapV3Factory.json')
-    uniV3NonfungiblePositionManagerJson = require('../../abis/UniswapV3NonfungiblePositionManager.json')
-    uniV3SwapRouterJson = require('../../abis/UniswapV3SwapRouter.json')
-    uniV2SwapRouterJson = require('../../abis/UniswapV2Router.json')
-    uniV3SwapQuoterJson = require('../../abis/UniswapV3Quoter.json')
     chainlinkAggregatorV3Json = require('../../abis/ChainlinkAggregatorV3Interface.json')
   } catch (e) {
     console.error(`Can not find contract artifact file: `, e)
@@ -187,26 +156,6 @@ export async function setupContracts(account, library, chainId, fetchId) {
   dai = getContract(addresses.mainnet.DAI, daiAbi.abi)
   flipper = getContract(addresses.mainnet.Flipper, flipperAbi)
 
-  uniV3XusdUsdt = getContract(
-    addresses.mainnet.uniswapV3XUSD_USDT,
-    uniV3PoolJson.abi
-  )
-  uniV3SwapRouter = getContract(
-    addresses.mainnet.uniswapV3Router,
-    uniV3SwapRouterJson.abi
-  )
-  uniV3SwapQuoter = getContract(
-    addresses.mainnet.uniswapV3Quoter,
-    uniV3SwapQuoterJson.abi
-  )
-  uniV2Router = getContract(
-    addresses.mainnet.uniswapV2Router,
-    uniV2SwapRouterJson.abi
-  )
-  sushiRouter = getContract(
-    addresses.mainnet.sushiSwapRouter,
-    uniV2SwapRouterJson.abi
-  )
   chainlinkEthAggregator = getContract(
     addresses.mainnet.chainlinkAVAX_USD,
     chainlinkAggregatorV3Json.abi
@@ -216,32 +165,6 @@ export async function setupContracts(account, library, chainId, fetchId) {
     addresses.mainnet.chainlinkFAST_GAS,
     chainlinkAggregatorV3Json.abi
   )
-
-  if (process.env.ENABLE_LIQUIDITY_MINING === 'true') {
-    uniV2XusdUsdt = null
-    uniV2XusdUsdc = null
-    uniV2XusdDai = null
-    throw new Error(
-      'uniV2XusdUsdt, uniV2XusdUsdc, uniV2XusdDai mainnet address is missing'
-    )
-  }
-
-  if (process.env.ENABLE_LIQUIDITY_MINING === 'true') {
-    uniV2XusdUsdt_iErc20 = getContract(uniV2XusdUsdt.address, iErc20Json.abi)
-    uniV2XusdUsdt_iUniPair = getContract(
-      uniV2XusdUsdt.address,
-      iUniPairJson.abi
-    )
-
-    uniV2XusdUsdc_iErc20 = getContract(uniV2XusdUsdc.address, iErc20Json.abi)
-    uniV2XusdUsdc_iUniPair = getContract(
-      uniV2XusdUsdc.address,
-      iUniPairJson.abi
-    )
-
-    uniV2XusdDai_iErc20 = getContract(uniV2XusdDai.address, iErc20Json.abi)
-    uniV2XusdDai_iUniPair = getContract(uniV2XusdDai.address, iUniPairJson.abi)
-  }
 
   const fetchExchangeRates = async () => {
     const coins = {
@@ -362,23 +285,6 @@ export async function setupContracts(account, library, chainId, fetchId) {
     usdc,
     xusd,
     vault,
-    uniV2XusdUsdt,
-    uniV2XusdUsdt_iErc20,
-    uniV2XusdUsdt_iUniPair,
-    uniV2XusdUsdc,
-    uniV2XusdUsdc_iErc20,
-    uniV2XusdUsdc_iUniPair,
-    uniV2XusdDai,
-    uniV2XusdDai_iErc20,
-    uniV2XusdDai_iUniPair,
-    uniV3XusdUsdt,
-    uniV3DaiUsdt,
-    uniV3UsdcUsdt,
-    uniV3SwapRouter,
-    uniV3SwapQuoter,
-    uniV2Router,
-    sushiRouter,
-    uniV3NonfungiblePositionManager,
     liquidityXusdUsdt,
     liquidityXusdUsdc,
     liquidityXusdDai,
