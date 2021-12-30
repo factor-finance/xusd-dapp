@@ -19,32 +19,36 @@ export default function Footer({ onLocale, locale, dapp }) {
           <div className="row">
             <div className="col-12 col-lg-6 pl-lg-0">
               <nav className="nav d-flex justify-content-center justify-content-lg-start">
-                <a
-                  href={analyticsURL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="nav-link"
-                  onClick={() => {
-                    analytics.track('To Analytics', {
-                      category: 'navigation',
-                    })
-                  }}
-                >
-                  {fbt('Analytics', 'Analytics link')}
-                </a>
-                <a
-                  href={jobsURL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="nav-link"
-                  onClick={() => {
-                    analytics.track('To Jobs', {
-                      category: 'navigation',
-                    })
-                  }}
-                >
-                  {fbt('Jobs', 'Jobs link')}
-                </a>
+                {analyticsURL && (
+                  <a
+                    href={analyticsURL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="nav-link"
+                    onClick={() => {
+                      analytics.track('To Analytics', {
+                        category: 'navigation',
+                      })
+                    }}
+                  >
+                    {fbt('Analytics', 'Analytics link')}
+                  </a>
+                )}
+                {jobsURL && (
+                  <a
+                    href={jobsURL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="nav-link"
+                    onClick={() => {
+                      analytics.track('To Jobs', {
+                        category: 'navigation',
+                      })
+                    }}
+                  >
+                    {fbt('Jobs', 'Jobs link')}
+                  </a>
+                )}
                 <a
                   href={getDocsLink(locale)}
                   target="_blank"
@@ -58,45 +62,51 @@ export default function Footer({ onLocale, locale, dapp }) {
                 >
                   {fbt('Docs', 'Documentation link')}
                 </a>
-                <a
-                  href={termsURL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="nav-link"
-                  onClick={() => {
-                    analytics.track('To Terms', {
-                      category: 'navigation',
-                    })
-                  }}
-                >
-                  {fbt('Terms', 'Terms link')}
-                </a>
-                <a
-                  href={privacyURL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="nav-link"
-                  onClick={() => {
-                    analytics.track('To Privacy', {
-                      category: 'navigation',
-                    })
-                  }}
-                >
-                  {fbt('Privacy', 'Privacy link')}
-                </a>
-                <a
-                  href={discordURL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="nav-link"
-                  onClick={() => {
-                    analytics.track('To Help', {
-                      category: 'navigation',
-                    })
-                  }}
-                >
-                  {fbt('Help', 'Help link')}
-                </a>
+                {termsURL && (
+                  <a
+                    href={termsURL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="nav-link"
+                    onClick={() => {
+                      analytics.track('To Terms', {
+                        category: 'navigation',
+                      })
+                    }}
+                  >
+                    {fbt('Terms', 'Terms link')}
+                  </a>
+                )}
+                {privacyURL && (
+                  <a
+                    href={privacyURL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="nav-link"
+                    onClick={() => {
+                      analytics.track('To Privacy', {
+                        category: 'navigation',
+                      })
+                    }}
+                  >
+                    {fbt('Privacy', 'Privacy link')}
+                  </a>
+                )}
+                {discordURL && (
+                  <a
+                    href={discordURL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="nav-link"
+                    onClick={() => {
+                      analytics.track('To Discord', {
+                        category: 'navigation',
+                      })
+                    }}
+                  >
+                    {fbt('Discord', 'Discord link')}
+                  </a>
+                )}
               </nav>
             </div>
             <div className="col-12 col-lg-6 text-center text-lg-right pr-lg-0 d-flex justify-content-end">
