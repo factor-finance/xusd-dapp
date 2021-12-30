@@ -15,8 +15,6 @@ import { getDocsLink } from 'utils/getDocsLink'
 import LanguageOptions from 'components/LanguageOptions'
 import LanguageSelected from 'components/LanguageSelected'
 import LocaleDropdown from 'components/LocaleDropdown'
-import XusdDropdown from 'components/earn/XusdDropdown'
-import OgnDropdown from 'components/earn/OgnDropdown'
 import ContractStore from 'stores/ContractStore'
 import AccountStore from 'stores/AccountStore'
 

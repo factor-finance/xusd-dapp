@@ -109,12 +109,12 @@ export default function Footer({ onLocale, locale, dapp }) {
                 useNativeSelectbox={false}
               />
               <a
-                href="https://originprotocol.com"
+                href="https://github.com/factor-finance"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="nav-link"
               >
-                {fbt('Built by XUSD.fi', 'Built by XUSD.fi')}
+                {fbt('Factor Finance', 'Factor Finance')}
               </a>
             </div>
           </div>

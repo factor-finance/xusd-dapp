@@ -23,7 +23,7 @@ const MissionControl = ({}) => {
               </div>
               <div className="subtext">
                 {fbt(
-                  'Please connect an Ethereum wallet',
+                  'Please connect an Avalanche wallet',
                   'Disconnected dapp subtext'
                 )}
               </div>
