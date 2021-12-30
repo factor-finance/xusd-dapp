@@ -33,11 +33,6 @@ class MyDocument extends Document {
             integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
             crossOrigin="anonymous"
           />
-          {/* Twitter ads tracking */}
-          <script
-            src="//static.ads-twitter.com/oct.js"
-            type="text/javascript"
-          ></script>
 
           <meta property="og:url" content="https://xusd.fi" />
           <meta property="og:type" content="website" />
