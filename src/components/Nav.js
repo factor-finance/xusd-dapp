@@ -119,11 +119,11 @@ const Nav = ({ dapp, isMobile, locale, onLocale, page }) => {
         <div className="container p-lg-0">
           <Link href={'/'}>
             <a className="navbar-brand d-flex flex-column justify-content-center">
-              <img
+              <span><img
                 src="/images/xusd-logo.svg"
-                className="origin-logo"
-                alt="XUSD.fi logo"
-              />
+                className="xusd-logo"
+                alt="Factor XUSD logo"
+              /> Factor XUSD</span>
             </a>
           </Link>
           {dapp && (
@@ -484,7 +484,7 @@ const Nav = ({ dapp, isMobile, locale, onLocale, page }) => {
         }
 
         @media (max-width: 799px) {
-          .origin-logo {
+          .xusd-logo {
             max-width: 170px;
           }
 

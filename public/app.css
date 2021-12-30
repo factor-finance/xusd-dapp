@@ -55,8 +55,6 @@
 }
 
 .navbar-brand {
-  background: url(images/origin-logo-black.svg) no-repeat center;
-  background-size: 100%;
   width: 90px;
   text-indent: -9999px;
 }

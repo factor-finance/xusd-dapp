@@ -26,7 +26,6 @@ const Layout = ({
   short,
   shorter,
   medium,
-  isStakePage,
   showUniswapNotice,
   storeTransaction,
   storeTransactionError,
@@ -58,34 +57,16 @@ const Layout = ({
       <Head>
         <title>XUSD</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        {isStakePage && (
-          <>
-            <meta
-              property="og:image"
-              key="og:image"
-              content="https://xusd.fi/images/staking-facebook.png"
-            />
-            <meta
-              name="twitter:image"
-              key="twitter:image"
-              content="https://xusd.fi/images/staking-twitter.png"
-            />
-          </>
-        )}
-        {!isStakePage && (
-          <>
-            <meta
-              property="og:image"
-              key="og:image"
-              content="https://xusd.fi/images/share-facebook.png"
-            />
-            <meta
-              name="twitter:image"
-              key="twitter:image"
-              content="https://xusd.fi/images/share-twitter.png"
-            />
-          </>
-        )}
+        <meta
+          property="og:image"
+          key="og:image"
+          content="https://xusd.fi/images/share-facebook.png"
+        />
+        <meta
+          name="twitter:image"
+          key="twitter:image"
+          content="https://xusd.fi/images/share-twitter.png"
+        />
       </Head>
       <div
         className={classnames(
