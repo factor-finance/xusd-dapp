@@ -3,11 +3,11 @@
 
 <svg
    version="1.1"
-   width="600"
-   height="600"
+   width="100"
+   height="100"
    viewBox="-0.239051 -0.253756 449.99999 449.99999"
    id="svg63"
-   sodipodi:docname="logo.svg"
+   sodipodi:docname="logo_white.svg"
    inkscape:version="1.1.1 (c3084ef, 2021-09-22)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
@@ -27,7 +27,7 @@
      showguides="true"
      inkscape:guide-bbox="true"
      inkscape:zoom="0.46849365"
-     inkscape:cx="536.82691"
+     inkscape:cx="140.87704"
      inkscape:cy="172.89455"
      inkscape:window-width="1512"
      inkscape:window-height="916"
@@ -65,7 +65,11 @@
        id="use58"
        width="100%"
        height="100%"
-       transform="matrix(68.965401,0,0,68.965426,-3953.5781,-4070.4036)" />
+       transform="matrix(68.965401,0,0,68.965426,-3953.5781,-4070.4036)"
+       inkscape:export-filename="/Users/marshall/orgxusd/logo_white_32.png"
+       inkscape:export-xdpi="5.1306205"
+       inkscape:export-ydpi="5.1306205"
+       style="fill:#ffffff" />
     <use
        x="65.711761"
        y="65.753426"
@@ -73,6 +77,10 @@
        id="use60"
        transform="matrix(68.965401,0,0,68.965426,-4389.1416,-3915.9143)"
        width="100%"
-       height="100%" />
+       height="100%"
+       inkscape:export-filename="/Users/marshall/orgxusd/logo_white_32.png"
+       inkscape:export-xdpi="5.1306205"
+       inkscape:export-ydpi="5.1306205"
+       style="fill:#ffffff" />
   </g>
 </svg>

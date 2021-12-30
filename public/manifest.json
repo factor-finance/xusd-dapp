@@ -1,7 +1,7 @@
 {
   "short_name": "XUSD",
   "name": "XUSD.fi",
-  "description": "The first stablecoin that earns a yield while it's still in your wallet",
+  "description": "Factor XUSD is the first interest bearing stablecoin launched on the Avalanche C-Chain.",
   "iconPath": "logo.svg",
   "icons": [
     {
@@ -20,7 +20,7 @@
       "sizes": "512x512"
     }
   ],
-  "start_url": "https://xusd.fi/mint",
+  "start_url": "https://xusd.fi/swap",
   "display": "standalone",
   "theme_color": "#183140",
   "background_color": "#ffffff"
