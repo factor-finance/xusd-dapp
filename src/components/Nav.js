@@ -34,40 +34,6 @@ const DappLinks = ({ dapp, page }) => {
     <>
       {dapp && (
         <div className="d-flex align-items-center justify-content-center dapp-navigation mr-auto">
-          {(process.env.ENABLE_LIQUIDITY_MINING === 'true' ||
-            process.env.ENABLE_STAKING === 'true') && (
-            <Link href="/swap">
-              <a
-                className={`d-flex align-items-center ml-md-0 ${
-                  page === 'swap' ? 'selected' : ''
-                }`}
-              >
-                {fbt('Swap XUSD', 'Swap XUSD')}
-              </a>
-            </Link>
-          )}
-          {process.env.ENABLE_LIQUIDITY_MINING === 'true' && (
-            <Link href="/earn">
-              <a
-                className={`d-flex align-items-center ${
-                  page === 'earn' || page === 'pool-details' ? 'selected' : ''
-                }`}
-              >
-                {fbt('Earn OGN', 'Earn OGN')}
-              </a>
-            </Link>
-          )}
-          {process.env.ENABLE_STAKING === 'true' && (
-            <Link href="/earn">
-              <a
-                className={`d-flex align-items-center ${
-                  page === 'earn' ? 'selected' : ''
-                }`}
-              >
-                {fbt('Earn OGN', 'Earn OGN')}
-              </a>
-            </Link>
-          )}
           {showHistory && (
             <Link href="/history">
               <a

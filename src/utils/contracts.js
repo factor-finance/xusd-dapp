@@ -1,10 +1,8 @@
 import { ethers, Contract, BigNumber } from 'ethers'
 
 import ContractStore from 'stores/ContractStore'
-import PoolStore from 'stores/PoolStore'
 import CoinStore from 'stores/CoinStore'
 import { aprToApy } from 'utils/math'
-import { pools } from 'constants/Pool'
 import { displayCurrency } from 'utils/math'
 import { sleep } from 'utils/utils'
 
@@ -94,15 +92,6 @@ export async function setupContracts(account, library, chainId, fetchId) {
 
   const xusdProxy = contracts['XUSDProxy']
   const vaultProxy = contracts['VaultProxy']
-  let liquidityRewardXUSD_USDTProxy,
-    liquidityRewardXUSD_DAIProxy,
-    liquidityRewardXUSD_USDCProxy
-
-  if (process.env.ENABLE_LIQUIDITY_MINING === 'true') {
-    liquidityRewardXUSD_USDTProxy = contracts['LiquidityRewardXUSD_USDTProxy']
-    liquidityRewardXUSD_DAIProxy = contracts['LiquidityRewardXUSD_DAIProxy']
-    liquidityRewardXUSD_USDCProxy = contracts['LiquidityRewardXUSD_USDCProxy']
-  }
 
   let usdt,
     dai,
@@ -111,21 +100,16 @@ export async function setupContracts(account, library, chainId, fetchId) {
     xusd,
     vault,
     flipper,
-    liquidityXusdUsdt,
-    liquidityXusdUsdc,
-    liquidityXusdDai,
     chainlinkEthAggregator,
     chainlinkFastGasAggregator
 
   let iVaultJson,
-    liquidityRewardJson,
     iErc20Json,
     singleAssetStakingJson,
     chainlinkAggregatorV3Json
 
   try {
     iVaultJson = require('../../abis/IVault.json')
-    liquidityRewardJson = require('../../abis/LiquidityReward.json')
     iErc20Json = require('../../abis/IERC20.json')
     singleAssetStakingJson = require('../../abis/SingleAssetStaking.json')
     chainlinkAggregatorV3Json = require('../../abis/ChainlinkAggregatorV3Interface.json')
@@ -134,21 +118,6 @@ export async function setupContracts(account, library, chainId, fetchId) {
   }
 
   vault = getContract(vaultProxy.address, iVaultJson.abi)
-
-  if (process.env.ENABLE_LIQUIDITY_MINING === 'true') {
-    liquidityXusdUsdt = getContract(
-      liquidityRewardXUSD_USDTProxy.address,
-      liquidityRewardJson.abi
-    )
-    liquidityXusdUsdc = getContract(
-      liquidityRewardXUSD_USDCProxy.address,
-      liquidityRewardJson.abi
-    )
-    liquidityXusdDai = getContract(
-      liquidityRewardXUSD_DAIProxy.address,
-      liquidityRewardJson.abi
-    )
-  }
 
   xusd = getContract(xusdProxy.address, network.contracts['XUSD'].abi)
   usdt = getContract(addresses.mainnet.USDT, usdtAbi.abi)
@@ -285,9 +254,6 @@ export async function setupContracts(account, library, chainId, fetchId) {
     usdc,
     xusd,
     vault,
-    liquidityXusdUsdt,
-    liquidityXusdUsdc,
-    liquidityXusdDai,
     flipper,
     chainlinkEthAggregator,
     chainlinkFastGasAggregator,
@@ -321,10 +287,6 @@ export async function setupContracts(account, library, chainId, fetchId) {
     s.fetchId = fetchId
   })
 
-  if (process.env.ENABLE_LIQUIDITY_MINING === 'true') {
-    await setupPools(account, contractsToExport)
-  }
-
   await afterSetup(contractsToExport)
 
   return contractsToExport
@@ -336,55 +298,4 @@ const afterSetup = async ({ vault }) => {
   YieldStore.update((s) => {
     s.redeemFee = parseFloat(ethers.utils.formatUnits(redeemFee, 4))
   })
-}
-
-const setupPools = async (account, contractsToExport) => {
-  try {
-    const enrichedPools = await Promise.all(
-      pools.map(async (pool) => {
-        let coin1Address, coin2Address, poolLpTokenBalance
-        const poolContract = contractsToExport[pool.pool_contract_variable_name]
-        const lpContract = contractsToExport[pool.lp_contract_variable_name]
-        const lpContract_uniPair =
-          contractsToExport[pool.lp_contract_variable_name_uniswapPair]
-        const lpContract_ierc20 =
-          contractsToExport[pool.lp_contract_variable_name_ierc20]
-
-        if (pool.lp_contract_type === 'uniswap-v2') {
-          ;[coin1Address, coin2Address, poolLpTokenBalance] = await Promise.all(
-            [
-              await lpContract_uniPair.token0(),
-              await lpContract_uniPair.token1(),
-              await lpContract_ierc20.balanceOf(poolContract.address),
-            ]
-          )
-        }
-
-        return {
-          ...pool,
-          coin_one: {
-            ...pool.coin_one,
-            contract_address: coin1Address,
-          },
-          coin_two: {
-            ...pool.coin_two,
-            contract_address: coin2Address,
-          },
-          pool_deposits: await displayCurrency(
-            poolLpTokenBalance,
-            lpContract_ierc20
-          ),
-          pool_contract_address: poolContract.address,
-          contract: poolContract,
-          lpContract: lpContract,
-        }
-      })
-    )
-
-    PoolStore.update((s) => {
-      s.pools = enrichedPools
-    })
-  } catch (e) {
-    console.error('Error thrown in setting up pools: ', e)
-  }
 }
