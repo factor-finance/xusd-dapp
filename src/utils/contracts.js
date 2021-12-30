@@ -18,58 +18,6 @@ import daiAbi from 'constants/mainnetAbi/dai.json'
 import ognAbi from 'constants/mainnetAbi/ogn.json'
 import flipperAbi from 'constants/mainnetAbi/flipper.json'
 
-const curveFactoryMiniAbi = [
-  {
-    stateMutability: 'view',
-    type: 'function',
-    name: 'get_underlying_coins',
-    inputs: [
-      {
-        name: '_pool',
-        type: 'address',
-      },
-    ],
-    outputs: [
-      {
-        name: '',
-        type: 'address[8]',
-      },
-    ],
-  },
-]
-
-const curveMetapoolMiniAbi = [
-  {
-    name: 'exchange_underlying',
-    outputs: [
-      {
-        type: 'uint256',
-        name: '',
-      },
-    ],
-    inputs: [
-      {
-        type: 'int128',
-        name: 'i',
-      },
-      {
-        type: 'int128',
-        name: 'j',
-      },
-      {
-        type: 'uint256',
-        name: 'dx',
-      },
-      {
-        type: 'uint256',
-        name: 'min_dy',
-      },
-    ],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-]
-
 /* fetchId - used to prevent race conditions.
  * Sometimes "setupContracts" is called twice with very little time in between and it can happen
  * that the call issued first (for example with not yet signed in account) finishes after the second
@@ -191,8 +139,7 @@ export async function setupContracts(account, library, chainId, fetchId) {
     ognStakingView,
     compensation,
     chainlinkEthAggregator,
-    chainlinkFastGasAggregator,
-    curveAddressProvider
+    chainlinkFastGasAggregator
 
   let iVaultJson,
     liquidityRewardJson,
@@ -206,8 +153,7 @@ export async function setupContracts(account, library, chainId, fetchId) {
     uniV3SwapQuoterJson,
     singleAssetStakingJson,
     compensationClaimsJson,
-    chainlinkAggregatorV3Json,
-    curveAddressProviderJson
+    chainlinkAggregatorV3Json
 
   try {
     iVaultJson = require('../../abis/IVault.json')
@@ -223,7 +169,6 @@ export async function setupContracts(account, library, chainId, fetchId) {
     uniV2SwapRouterJson = require('../../abis/UniswapV2Router.json')
     uniV3SwapQuoterJson = require('../../abis/UniswapV3Quoter.json')
     chainlinkAggregatorV3Json = require('../../abis/ChainlinkAggregatorV3Interface.json')
-    curveAddressProviderJson = require('../../abis/CurveAddressProvider.json')
   } catch (e) {
     console.error(`Can not find contract artifact file: `, e)
   }
@@ -287,11 +232,6 @@ export async function setupContracts(account, library, chainId, fetchId) {
   chainlinkFastGasAggregator = getContract(
     addresses.mainnet.chainlinkFAST_GAS,
     chainlinkAggregatorV3Json.abi
-  )
-
-  curveAddressProvider = getContract(
-    addresses.mainnet.CurveAddressProvider,
-    curveAddressProviderJson.abi
   )
 
   if (process.env.ENABLE_LIQUIDITY_MINING === 'true') {
@@ -446,9 +386,6 @@ export async function setupContracts(account, library, chainId, fetchId) {
 
   callWithDelay()
 
-  const [curveRegistryExchange, curveXUSDMetaPool, curveUnderlyingCoins] =
-    await setupCurve(curveAddressProvider, getContract, chainId)
-
   if (ContractStore.currentState.fetchId > fetchId) {
     console.log('Contracts already setup with newer fetchId. Exiting...')
     return
@@ -499,9 +436,6 @@ export async function setupContracts(account, library, chainId, fetchId) {
     flipper,
     chainlinkEthAggregator,
     chainlinkFastGasAggregator,
-    curveAddressProvider,
-    curveRegistryExchange,
-    curveXUSDMetaPool,
   }
 
   const coinInfoList = {
@@ -529,7 +463,6 @@ export async function setupContracts(account, library, chainId, fetchId) {
     s.walletConnected = walletConnected
     s.chainId = chainId
     s.readOnlyProvider = jsonRpcProvider
-    s.curveMetapoolUnderlyingCoins = curveUnderlyingCoins
     s.fetchId = fetchId
   })
 
@@ -541,31 +474,6 @@ export async function setupContracts(account, library, chainId, fetchId) {
   await afterSetup(contractsToExport)
 
   return contractsToExport
-}
-
-// calls to be executed only once after setup
-const setupCurve = async (curveAddressProvider, getContract, chainId) => {
-  const registryExchangeAddress = await curveAddressProvider.get_address(2)
-  const registryExchangeJson = require('../../abis/CurveRegistryExchange.json')
-
-  const factoryAddress = await curveAddressProvider.get_address(3)
-  const factory = getContract(factoryAddress, curveFactoryMiniAbi)
-  const curveUnderlyingCoins = (
-    await factory.get_underlying_coins(addresses.mainnet.CurveXUSDMetaPool)
-  ).map((address) => address.toLowerCase())
-
-  const curveXUSDMetaPool = getContract(
-    addresses.mainnet.CurveXUSDMetaPool,
-    curveMetapoolMiniAbi
-  )
-
-  return [
-    getContract(registryExchangeAddress, registryExchangeJson.abi),
-    curveXUSDMetaPool,
-    curveUnderlyingCoins,
-  ]
-
-  return []
 }
 
 // calls to be executed only once after setup

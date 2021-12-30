@@ -33,13 +33,7 @@ const useCurrencySwapper = ({
     uniV2Router,
     sushiRouter,
     uniV3SwapQuoter,
-    curveRegistryExchange,
-    curveXUSDMetaPool,
   } = useStoreState(ContractStore, (s) => s.contracts)
-  const curveMetapoolUnderlyingCoins = useStoreState(
-    ContractStore,
-    (s) => s.curveMetapoolUnderlyingCoins
-  )
 
   const coinInfoList = useStoreState(ContractStore, (s) => s.coinInfoList)
 
@@ -91,7 +85,6 @@ const useCurrencySwapper = ({
       flipper: 'flipper',
       uniswap: 'uniswapV3Router',
       uniswapV2: 'uniswapV2Router',
-      curve: 'curve',
       sushiswap: 'sushiRouter',
     }
 
@@ -311,52 +304,6 @@ const useCurrencySwapper = ({
     return path
   }
 
-  const _swapCurve = async (swapAmount, minSwapAmount, isGasEstimate) => {
-    return await (isGasEstimate
-      ? curveXUSDMetaPool.estimateGas
-      : curveXUSDMetaPool
-    ).exchange_underlying(
-      curveMetapoolUnderlyingCoins.indexOf(coinContract.address.toLowerCase()),
-      curveMetapoolUnderlyingCoins.indexOf(
-        coinToReceiveContract.address.toLowerCase()
-      ),
-      swapAmount,
-      minSwapAmount
-    )
-  }
-
-  const swapCurveGasEstimate = async (swapAmount, minSwapAmount) => {
-    return (await _swapCurve(swapAmount, minSwapAmount, true)).toNumber()
-  }
-
-  const swapCurve = async () => {
-    const { minSwapAmount: minSwapAmountReceived } = calculateSwapAmounts(
-      outputAmount,
-      coinToReceiveDecimals,
-      priceToleranceValue
-    )
-
-    return {
-      result: await _swapCurve(swapAmount, minSwapAmountReceived, false),
-      swapAmount,
-      minSwapAmount,
-    }
-  }
-
-  const quoteCurve = async (swapAmount) => {
-    const coinsReceived = await curveRegistryExchange.get_exchange_amount(
-      addresses.mainnet.CurveXUSDMetaPool,
-      coinContract.address,
-      coinToReceiveContract.address,
-      swapAmount,
-      {
-        gasLimit: 1000000,
-      }
-    )
-
-    return coinsReceived
-  }
-
   const _swapUniswap = async (swapAmount, minSwapAmount, isGasEstimate) => {
     const isMintMode = swapMode === 'mint'
     if (selectedCoin === 'usdt') {
@@ -551,9 +498,6 @@ const useCurrencySwapper = ({
     quoteSushiSwap,
     swapSushiSwap,
     swapSushiswapGasEstimate,
-    quoteCurve,
-    swapCurve,
-    swapCurveGasEstimate,
   }
 }
 

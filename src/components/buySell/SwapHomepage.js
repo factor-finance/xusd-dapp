@@ -177,7 +177,6 @@ const SwapHomepage = ({
     swapUniswap,
     swapUniswapV2,
     swapSushiSwap,
-    swapCurve,
   } = useCurrencySwapper(
     swapParams(
       swapMode === 'mint' ? selectedBuyCoinAmount : selectedRedeemCoinAmount,
@@ -364,8 +363,6 @@ const SwapHomepage = ({
         ;({ result, swapAmount, minSwapAmount } = await swapUniswapV2())
       } else if (selectedSwap.name === 'sushiswap') {
         ;({ result, swapAmount, minSwapAmount } = await swapSushiSwap())
-      } else if (selectedSwap.name === 'curve') {
-        ;({ result, swapAmount, minSwapAmount } = await swapCurve())
       }
       setBuyWidgetState(`${prependStage}waiting-network`)
 

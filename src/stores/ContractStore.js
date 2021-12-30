@@ -51,7 +51,6 @@ const ContractStore = new Store({
   isGasPriceUserOverriden: false,
   readOnlyProvider: false,
   showAllContracts: false,
-  curveMetapoolUnderlyingCoins: false,
   fetchId: -1,
 })
 

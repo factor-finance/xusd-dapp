@@ -105,7 +105,6 @@ const AccountListener = (props) => {
       flipper,
       ognStaking,
       ognStakingView,
-      curveXUSDMetaPool,
     } = contracts
 
     const loadbalancesDev = async () => {
@@ -450,86 +449,6 @@ const AccountListener = (props) => {
           displayCurrency(await xusd.allowance(account, flipper.address), xusd),
         ])
 
-        let usdtAllowanceCurvePool,
-          daiAllowanceCurvePool,
-          usdcAllowanceCurvePool,
-          xusdAllowanceCurvePool,
-          usdtAllowanceRouterV2,
-          daiAllowanceRouterV2,
-          usdcAllowanceRouterV2,
-          xusdAllowanceRouterV2,
-          usdtAllowanceSushiRouter,
-          daiAllowanceSushiRouter,
-          usdcAllowanceSushiRouter,
-          xusdAllowanceSushiRouter
-
-        // curve pool functionality supported on mainnet and hardhat fork
-        if (curveXUSDMetaPool) {
-          ;[
-            usdtAllowanceCurvePool,
-            daiAllowanceCurvePool,
-            usdcAllowanceCurvePool,
-            xusdAllowanceCurvePool,
-            usdtAllowanceRouterV2,
-            daiAllowanceRouterV2,
-            usdcAllowanceRouterV2,
-            xusdAllowanceRouterV2,
-            usdtAllowanceSushiRouter,
-            daiAllowanceSushiRouter,
-            usdcAllowanceSushiRouter,
-            xusdAllowanceSushiRouter,
-          ] = await Promise.all([
-            displayCurrency(
-              await usdt.allowance(account, curveXUSDMetaPool.address),
-              usdt
-            ),
-            displayCurrency(
-              await dai.allowance(account, curveXUSDMetaPool.address),
-              dai
-            ),
-            displayCurrency(
-              await usdc.allowance(account, curveXUSDMetaPool.address),
-              usdc
-            ),
-            displayCurrency(
-              await xusd.allowance(account, curveXUSDMetaPool.address),
-              xusd
-            ),
-            displayCurrency(
-              await usdt.allowance(account, uniV2Router.address),
-              usdt
-            ),
-            displayCurrency(
-              await dai.allowance(account, uniV2Router.address),
-              dai
-            ),
-            displayCurrency(
-              await usdc.allowance(account, uniV2Router.address),
-              usdc
-            ),
-            displayCurrency(
-              await xusd.allowance(account, uniV2Router.address),
-              xusd
-            ),
-            displayCurrency(
-              await usdt.allowance(account, sushiRouter.address),
-              usdt
-            ),
-            displayCurrency(
-              await dai.allowance(account, sushiRouter.address),
-              dai
-            ),
-            displayCurrency(
-              await usdc.allowance(account, sushiRouter.address),
-              usdc
-            ),
-            displayCurrency(
-              await xusd.allowance(account, sushiRouter.address),
-              xusd
-            ),
-          ])
-        }
-
         AccountStore.update((s) => {
           s.allowances = {
             usdt: {
@@ -538,7 +457,6 @@ const AccountListener = (props) => {
               uniswapV2Router: usdtAllowanceRouterV2,
               sushiRouter: usdtAllowanceSushiRouter,
               flipper: usdtAllowanceFlipper,
-              curve: usdtAllowanceCurvePool,
             },
             dai: {
               vault: daiAllowanceVault,
@@ -546,7 +464,6 @@ const AccountListener = (props) => {
               uniswapV2Router: daiAllowanceRouterV2,
               sushiRouter: daiAllowanceSushiRouter,
               flipper: daiAllowanceFlipper,
-              curve: daiAllowanceCurvePool,
             },
             usdc: {
               vault: usdcAllowanceVault,
@@ -554,7 +471,6 @@ const AccountListener = (props) => {
               uniswapV2Router: usdcAllowanceRouterV2,
               sushiRouter: usdcAllowanceSushiRouter,
               flipper: usdcAllowanceFlipper,
-              curve: usdcAllowanceCurvePool,
             },
             xusd: {
               vault: xusdAllowanceVault,
@@ -562,7 +478,6 @@ const AccountListener = (props) => {
               uniswapV2Router: xusdAllowanceRouterV2,
               sushiRouter: xusdAllowanceSushiRouter,
               flipper: xusdAllowanceFlipper,
-              curve: xusdAllowanceCurvePool,
             },
           }
         })
