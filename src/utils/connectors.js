@@ -8,12 +8,12 @@ import { get } from 'lodash'
 import { providerName } from 'utils/web3'
 
 const POLLING_INTERVAL = 12000
-const isProduction = process.env.NODE_ENV === 'production'
 const RPC_PROVIDER = process.env.ETHEREUM_RPC_PROVIDER
 const WS_PROVIDER = process.env.ETHEREUM_WEBSOCKET_PROVIDER
+const CHAIN_ID = process.env.ETHEREUM_RPC_CHAIN_ID
 
 export const injectedConnector = new InjectedConnector({
-  supportedChainIds: [43112, 43113, 43114],
+  supportedChainIds: [CHAIN_ID],
 })
 
 export const gnosisConnector = () => {
@@ -27,10 +27,11 @@ export const myEtherWalletConnector = new MewConnectConnector({
   url: WS_PROVIDER,
 })
 
+const walletConnectRpc = {}
+walletConnectRpc[CHAIN_ID] = RPC_PROVIDER
+
 export const walletConnectConnector = new WalletConnectConnector({
-  rpc: {
-    1: RPC_PROVIDER,
-  },
+  rpc: walletConnectRpc,
   pollingInterval: POLLING_INTERVAL,
 })
 
@@ -41,7 +42,7 @@ walletConnectConnector.on('disconnect', () => {
 })
 
 export const ledgerConnector = new LedgerConnector({
-  chainId: isProduction ? 43114 : 43113,
+  chainId: CHAIN_ID,
   url: RPC_PROVIDER,
 })
 

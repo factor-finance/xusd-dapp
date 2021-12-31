@@ -4,18 +4,16 @@ const networkInfo = {
   43112: 'Localhost',
 }
 
+const CHAIN_ID = process.env.ETHEREUM_RPC_CHAIN_ID
+
 export function isCorrectNetwork(chainId) {
-  if (process.env.NODE_ENV === 'production') {
-    return chainId === 43114
-  } else {
-    return chainId === 43112
-  }
+  return chainId === CHAIN_ID
 }
 
 export async function switchEthereumChain() {
   await window.ethereum.request({
     method: 'wallet_switchEthereumChain',
-    params: [{ chainId: 43114 }],
+    params: [{ chainId: CHAIN_ID }],
   })
 }
 
