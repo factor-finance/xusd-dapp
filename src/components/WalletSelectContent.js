@@ -4,7 +4,7 @@ import { fbt } from 'fbt-runtime'
 import { useWeb3React } from '@web3-react/core'
 import { injectedConnector } from 'utils/connectors'
 import { walletConnectConnector } from 'utils/connectors'
-import { myEtherWalletConnector } from 'utils/connectors'
+import { walletLinkConnector, connectorNameIconMap } from 'utils/connectors'
 
 import AccountStore from 'stores/AccountStore'
 
@@ -55,8 +55,8 @@ const WalletSelectContent = ({}) => {
         s.walletSelectModalState = 'LedgerDerivation'
       })
       return
-    } else if (name === 'MyEtherWallet') {
-      connector = myEtherWalletConnector
+    } else if (name === 'Coinbase Wallet') {
+      connector = walletLinkConnector
     } else if (name === 'WalletConnect') {
       connector = walletConnectConnector
     }
@@ -89,23 +89,21 @@ const WalletSelectContent = ({}) => {
             'Connect a wallet to get started'
           )}
         </h2>
-        {['MetaMask', 'Ledger', 'MyEtherWallet', 'WalletConnect'].map(
-          (name) => {
-            return (
-              <button
-                key={name}
-                className="connector-button d-flex align-items-center"
-                onClick={() => onConnect(name)}
-              >
-                <div className="col-2">
-                  <img src={`/images/${name.toLowerCase()}-icon.svg`} />
-                </div>
-                <div className="col-8">{name}</div>
-                <div className="col-2"></div>
-              </button>
-            )
-          }
-        )}
+        {Object.keys(connectorNameIconMap).map((name) => {
+          return (
+            <button
+              key={name}
+              className="connector-button d-flex align-items-center"
+              onClick={() => onConnect(name)}
+            >
+              <div className="col-2">
+                <img src={`/images/${connectorNameIconMap[name]}`} />
+              </div>
+              <div className="col-8">{name}</div>
+              <div className="col-2"></div>
+            </button>
+          )
+        })}
         {error && (
           <div className="error d-flex align-items-center justify-content-center">
             {errorMessageMap(error)}
