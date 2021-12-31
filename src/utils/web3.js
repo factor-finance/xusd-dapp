@@ -4,7 +4,7 @@ const networkInfo = {
   43112: 'Localhost',
 }
 
-const CHAIN_ID = process.env.ETHEREUM_RPC_CHAIN_ID
+const CHAIN_ID = parseInt(process.env.ETHEREUM_RPC_CHAIN_ID) || 43114
 
 export function isCorrectNetwork(chainId) {
   return chainId === CHAIN_ID
