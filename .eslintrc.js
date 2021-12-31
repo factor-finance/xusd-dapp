@@ -1,22 +1,21 @@
 module.exports = {
   env: {
     es6: true,
-    node: true,
+    node: false,
     browser: true,
     amd: true,
     mocha: true,
   },
-  extends: "eslint:recommended",
+  extends: [
+    "eslint:recommended",
+    "plugin:react/jsx-runtime"
+  ],
+  globals: {
+    process: "readable",
+    module: "writable"
+  },
   parserOptions: {
     ecmaVersion: 11,
     sourceType: "module",
-  },
-  globals: {
-    waffle: "readable",
-    ethers: "readable",
-    deployments: "readable",
-    getNamedAccounts: "readable",
-    hre: "readable",
-  },
-  rules: {},
+  }
 };

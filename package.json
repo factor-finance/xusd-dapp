@@ -127,7 +127,8 @@
   },
   "eslintIgnore": [
     "node_modules",
-    "public"
+    "public",
+    "out"
   ],
   "prettier": {
     "semi": false,
