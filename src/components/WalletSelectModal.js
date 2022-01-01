@@ -4,8 +4,6 @@ import { useStoreState } from 'pullstate'
 
 import AccountStore from 'stores/AccountStore'
 import WalletSelectContent from 'components/WalletSelectContent'
-import LedgerDerivationContent from 'components/LedgerDerivationContent'
-import LedgerAccountContent from 'components/LedgerAccountContent'
 
 const WalletSelectModal = ({}) => {
   const modalState = useStoreState(
@@ -30,8 +28,6 @@ const WalletSelectModal = ({}) => {
           }}
         >
           {modalState === 'Wallet' && <WalletSelectContent />}
-          {modalState === 'LedgerDerivation' && <LedgerDerivationContent />}
-          {modalState === 'LedgerAccounts' && <LedgerAccountContent />}
         </div>
       )}
       <style jsx>{`

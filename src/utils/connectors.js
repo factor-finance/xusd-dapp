@@ -2,7 +2,7 @@ import { InjectedConnector } from '@web3-react/injected-connector'
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
 import { WalletLinkConnector } from '@web3-react/walletlink-connector'
 import { SafeAppConnector } from '@gnosis.pm/safe-apps-web3-react'
-import { LedgerConnector } from 'utils/LedgerConnector'
+import { LedgerConnector } from '@web3-react/ledger-connector'
 import { get } from 'lodash'
 
 import { providerName } from 'utils/web3'
