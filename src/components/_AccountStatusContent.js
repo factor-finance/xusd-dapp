@@ -76,9 +76,9 @@ const AccountStatusContent = ({ className, onOpen }) => {
                   href={etherscanLink}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="ml-auto etherscan-icon"
+                  className="ml-auto snowtrace-icon"
                 >
-                  <img src="/images/etherscan-icon.svg" />
+                  <img src="/images/snowtrace-icon.svg" />
                 </a>
               </div>
             </>
@@ -170,12 +170,12 @@ const AccountStatusContent = ({ className, onOpen }) => {
           margin-bottom: 10px;
         }
 
-        .etherscan-icon img {
+        .snowtrace-icon img {
           width: 15px;
           height: 15px;
         }
 
-        .etherscan-icon {
+        .snowtrace-icon {
           padding: 15px;
           margin-top: -15px;
           margin-right: -15px;
