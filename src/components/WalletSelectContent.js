@@ -5,6 +5,7 @@ import { useWeb3React } from '@web3-react/core'
 import { injectedConnector } from 'utils/connectors'
 import { walletConnectConnector } from 'utils/connectors'
 import { walletLinkConnector, connectorNameIconMap } from 'utils/connectors'
+import { ledgerConnector } from 'utils/connectors'
 
 import AccountStore from 'stores/AccountStore'
 
@@ -50,11 +51,7 @@ const WalletSelectContent = ({}) => {
       connector = injectedConnector
       localStorage.setItem('eagerConnect', name)
     } else if (name === 'Ledger') {
-      // Display window with derivation path select
-      AccountStore.update((s) => {
-        s.walletSelectModalState = 'LedgerDerivation'
-      })
-      return
+      connector = ledgerConnector
     } else if (name === 'Coinbase Wallet') {
       connector = walletLinkConnector
     } else if (name === 'WalletConnect') {
