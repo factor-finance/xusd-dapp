@@ -17,9 +17,9 @@ export default function EtherscanLink({
         href={href}
       >
         <img
-          className="etherscan-icon"
+          className="snowtrace-icon"
           src={`/images/${
-            white ? 'etherscan-icon-white.svg' : 'etherscan-icon-earn.svg'
+            white ? 'snowtrace-icon-white.svg' : 'snowtrace-icon-earn.svg'
           }`}
         />
         {text}
@@ -45,7 +45,7 @@ export default function EtherscanLink({
           border-color: white;
         }
 
-        .etherscan-icon {
+        .snowtrace-icon {
           width: 15px;
           height: 15px;
           margin-right: 9px;
