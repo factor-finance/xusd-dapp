@@ -1,5 +1,4 @@
 import Analytics from 'analytics'
-import googleAnalytics from '@analytics/google-analytics'
 import mixpanel from '@analytics/mixpanel'
 
 const MIXPANEL_ID = process.env.MIXPANEL_ID
@@ -13,13 +12,6 @@ if (isProduction && !isStaging) {
 }
 
 const plugins = []
-if (process.env.GA_ID) {
-  plugins.push(
-    googleAnalytics({
-      trackingId: process.env.GA_ID,
-    })
-  )
-}
 
 plugins.push(
   mixpanel({
