@@ -121,7 +121,6 @@ const AccountListener = (props) => {
         referrerPolicy: 'no-referrer',
         body: JSON.stringify(data),
       })
-      console.log(response)
       if (response.ok) {
         const responseJson = await response.json()
         const balanceData = {}
@@ -168,7 +167,7 @@ const AccountListener = (props) => {
     const loadBalances = async () => {
       if (!account) return
 
-      if (isProduction) {
+      if (false) {
         await loadBalancesProd()
       } else {
         await loadbalancesDev()
