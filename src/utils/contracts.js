@@ -111,7 +111,6 @@ export async function setupContracts(account, library, chainId, fetchId) {
   }
 
   vault = getContract(vaultProxy.address, iVaultJson.abi)
-  console.log(vault)
 
   xusd = getContract(xusdProxy.address, network.contracts['XUSD'].abi)
   usdt = getContract(addresses[networkKey].USDT, usdtAbi.abi)
@@ -242,7 +241,6 @@ export async function setupContracts(account, library, chainId, fetchId) {
     xusd,
     vault,
     chainlinkEthAggregator,
-    flipper,
   }
 
   const coinInfoList = {
