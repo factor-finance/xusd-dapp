@@ -12,7 +12,6 @@ import addresses from 'constants/contractAddresses'
 import usdtAbi from 'constants/mainnetAbi/usdt.json'
 import usdcAbi from 'constants/mainnetAbi/cUsdc.json'
 import daiAbi from 'constants/mainnetAbi/dai.json'
-import flipperAbi from 'constants/mainnetAbi/flipper.json'
 
 /* fetchId - used to prevent race conditions.
  * Sometimes "setupContracts" is called twice with very little time in between and it can happen
@@ -32,7 +31,6 @@ export async function setupContracts(account, library, chainId, fetchId) {
     process.env.ETHEREUM_RPC_PROVIDER,
     { chainId: parseInt(process.env.ETHEREUM_RPC_CHAIN_ID) }
   )
-
   let provider = jsonRpcProvider
 
   let walletConnected = false
@@ -62,11 +60,19 @@ export async function setupContracts(account, library, chainId, fetchId) {
 
   let network
   try {
-    network = require(`../../${chainId === 1 ? 'prod.' : ''}network.json`)
+    network = require(`../../${chainId === 43114 ? 'prod.' : ''}network.json`)
   } catch (e) {
     console.error('network.json file not present')
     // contract addresses not present no need to continue initialisation
     return
+  }
+  let networkKey
+  if (network.chainId === '43113') {
+    networkKey = 'fuji'
+  } else if (network.chainId === '43114') {
+    networkKey = 'mainnet'
+  } else {
+    throw new Error('No network for contracts')
   }
 
   const contracts = {}
@@ -93,42 +99,27 @@ export async function setupContracts(account, library, chainId, fetchId) {
   const xusdProxy = contracts['XUSDProxy']
   const vaultProxy = contracts['VaultProxy']
 
-  let usdt,
-    dai,
-    tusd,
-    usdc,
-    xusd,
-    vault,
-    flipper,
-    chainlinkEthAggregator,
-    chainlinkFastGasAggregator
+  let usdt, dai, tusd, usdc, xusd, vault, chainlinkEthAggregator
 
-  let iVaultJson, iErc20Json, singleAssetStakingJson, chainlinkAggregatorV3Json
+  let iVaultJson, chainlinkAggregatorV3Json
 
   try {
     iVaultJson = require('../../abis/IVault.json')
-    iErc20Json = require('../../abis/IERC20.json')
-    singleAssetStakingJson = require('../../abis/SingleAssetStaking.json')
     chainlinkAggregatorV3Json = require('../../abis/ChainlinkAggregatorV3Interface.json')
   } catch (e) {
     console.error(`Can not find contract artifact file: `, e)
   }
 
   vault = getContract(vaultProxy.address, iVaultJson.abi)
+  console.log(vault)
 
   xusd = getContract(xusdProxy.address, network.contracts['XUSD'].abi)
-  usdt = getContract(addresses.mainnet.USDT, usdtAbi.abi)
-  usdc = getContract(addresses.mainnet.USDC, usdcAbi.abi)
-  dai = getContract(addresses.mainnet.DAI, daiAbi.abi)
-  flipper = getContract(addresses.mainnet.Flipper, flipperAbi)
+  usdt = getContract(addresses[networkKey].USDT, usdtAbi.abi)
+  usdc = getContract(addresses[networkKey].USDC, usdcAbi.abi)
+  dai = getContract(addresses[networkKey].DAI, daiAbi.abi)
 
   chainlinkEthAggregator = getContract(
-    addresses.mainnet.chainlinkAVAX_USD,
-    chainlinkAggregatorV3Json.abi
-  )
-
-  chainlinkFastGasAggregator = getContract(
-    addresses.mainnet.chainlinkFAST_GAS,
+    addresses[networkKey].chainlinkAVAX_USD,
     chainlinkAggregatorV3Json.abi
   )
 
@@ -146,7 +137,6 @@ export async function setupContracts(account, library, chainId, fetchId) {
     if (!userActive) {
       return
     }
-
     for (const name in coins) {
       const coin = coins[name]
       try {
@@ -251,9 +241,7 @@ export async function setupContracts(account, library, chainId, fetchId) {
     usdc,
     xusd,
     vault,
-    flipper,
     chainlinkEthAggregator,
-    chainlinkFastGasAggregator,
   }
 
   const coinInfoList = {

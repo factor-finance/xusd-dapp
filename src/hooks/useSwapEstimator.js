@@ -164,17 +164,15 @@ const useSwapEstimator = ({
     })
     let usedGasPrice = gasPrice
 
-    let vaultResult, flipperResult, ethPrice
+    let vaultResult, ethPrice
     if (swapMode === 'mint') {
-      ;[vaultResult, flipperResult, ethPrice] = await Promise.all([
+      ;[vaultResult, ethPrice] = await Promise.all([
         estimateMintSuitabilityVault(),
-        estimateSwapSuitabilityFlipper(),
         fetchEthPrice(),
       ])
     } else {
-      ;[vaultResult, flipperResult, ethPrice] = await Promise.all([
+      ;[vaultResult, ethPrice] = await Promise.all([
         estimateRedeemSuitabilityVault(),
-        estimateSwapSuitabilityFlipper(),
         fetchEthPrice(),
       ])
     }
@@ -185,7 +183,6 @@ const useSwapEstimator = ({
 
     let estimations = {
       vault: vaultResult,
-      flipper: flipperResult,
     }
 
     estimations = enrichAndFindTheBest(
@@ -270,47 +267,6 @@ const useSwapEstimator = ({
 
   const userHasEnoughStablecoin = (coin, swapAmount) => {
     return parseFloat(balances[coin]) > swapAmount
-  }
-
-  /* Gives information on suitability of flipper for this swap
-   */
-  const estimateSwapSuitabilityFlipper = async () => {
-    const amount = parseFloat(inputAmountRaw)
-    if (amount > 25000) {
-      return {
-        canDoSwap: false,
-        error: 'amount_too_high',
-      }
-    }
-
-    if (swapMode === 'redeem' && selectedCoin === 'mix') {
-      return {
-        canDoSwap: false,
-        error: 'unsupported',
-      }
-    }
-
-    const coinToReceiveBn = ethers.utils.parseUnits(
-      amount.toString(),
-      coinToReceiveDecimals
-    )
-
-    const contractCoinBalance = await coinToReceiveContract.balanceOf(
-      contracts.flipper.address
-    )
-
-    if (contractCoinBalance.lt(coinToReceiveBn)) {
-      return {
-        canDoSwap: false,
-        error: 'not_enough_funds_contract',
-      }
-    }
-
-    return {
-      canDoSwap: true,
-      gasUsed: 90000,
-      amountReceived: amount,
-    }
   }
 
   /* Gives information on suitability of vault mint
@@ -608,7 +564,6 @@ const useSwapEstimator = ({
   }
 
   return {
-    estimateSwapSuitabilityFlipper,
     estimateMintSuitabilityVault,
     estimateRedeemSuitabilityVault,
   }
