@@ -104,7 +104,7 @@ const AccountListener = (props) => {
     const loadBalancesProd = async () => {
       const data = {
         jsonrpc: '2.0',
-        method: 'getTokenBalances',
+        method: 'eth_getTokenBalances',
         params: [
           account,
           [xusd.address, usdt.address, dai.address, usdc.address],
