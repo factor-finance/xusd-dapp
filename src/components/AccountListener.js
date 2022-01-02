@@ -12,9 +12,7 @@ import { useStoreState } from 'pullstate'
 import { setupContracts } from 'utils/contracts'
 import { login } from 'utils/account'
 
-import { mergeDeep } from 'utils/utils'
 import { displayCurrency } from 'utils/math'
-import addresses from 'constants/contractAddresses'
 
 const AccountListener = (props) => {
   const web3react = useWeb3React()
@@ -22,7 +20,7 @@ const AccountListener = (props) => {
   const prevAccount = usePrevious(account)
   const prevActive = usePrevious(active)
   const [contracts, setContracts] = useState(null)
-  const [cookies, setCookie, removeCookie] = useCookies(['loggedIn'])
+  const [setCookie] = useCookies(['loggedIn'])
   const {
     active: userActive,
     refetchUserData,
@@ -32,7 +30,6 @@ const AccountListener = (props) => {
   const prevRefetchUserData = usePrevious(refetchUserData)
   const isDevelopment = process.env.NODE_ENV === 'development'
   const isProduction = process.env.NODE_ENV === 'production'
-  const AIR_DROPPED_STAKE_TYPE = 1
 
   useEffect(() => {
     if ((prevActive && !active) || prevAccount !== account) {
@@ -60,14 +57,10 @@ const AccountListener = (props) => {
     fetchVaultThresholds()
   }, [contracts])
 
-  const loadData = async (contracts, { onlyStaking } = {}) => {
+  const loadData = async (contracts, {} = {}) => {
     if (!account) {
       return
     }
-    // if (!contracts.ogn.provider) {
-    //   console.warn('Contract provider not yet set')
-    //   return
-    // }
     if (!contracts) {
       console.warn('Contracts not yet loaded!')
       return
@@ -76,16 +69,7 @@ const AccountListener = (props) => {
       return
     }
 
-    const {
-      usdt,
-      dai,
-      usdc,
-      xusd,
-      vault,
-      // uniV3SwapRouter,
-      // uniV2Router,
-      // sushiRouter,
-    } = contracts
+    const { usdt, dai, usdc, xusd, vault } = contracts
 
     const loadbalancesDev = async () => {
       try {
@@ -206,86 +190,6 @@ const AccountListener = (props) => {
           displayCurrency(await usdc.allowance(account, vault.address), usdc),
           displayCurrency(await xusd.allowance(account, vault.address), xusd),
         ])
-
-        let usdtAllowanceCurvePool,
-          daiAllowanceCurvePool,
-          usdcAllowanceCurvePool,
-          xusdAllowanceCurvePool,
-          usdtAllowanceRouterV2,
-          daiAllowanceRouterV2,
-          usdcAllowanceRouterV2,
-          xusdAllowanceRouterV2,
-          usdtAllowanceSushiRouter,
-          daiAllowanceSushiRouter,
-          usdcAllowanceSushiRouter,
-          xusdAllowanceSushiRouter
-
-        // curve pool functionality supported on mainnet and hardhat fork
-        if (curveXUSDMetaPool) {
-          ;[
-            usdtAllowanceCurvePool,
-            daiAllowanceCurvePool,
-            usdcAllowanceCurvePool,
-            xusdAllowanceCurvePool,
-            usdtAllowanceRouterV2,
-            daiAllowanceRouterV2,
-            usdcAllowanceRouterV2,
-            xusdAllowanceRouterV2,
-            usdtAllowanceSushiRouter,
-            daiAllowanceSushiRouter,
-            usdcAllowanceSushiRouter,
-            xusdAllowanceSushiRouter,
-          ] = await Promise.all([
-            displayCurrency(
-              await usdt.allowance(account, curveXUSDMetaPool.address),
-              usdt
-            ),
-            displayCurrency(
-              await dai.allowance(account, curveXUSDMetaPool.address),
-              dai
-            ),
-            displayCurrency(
-              await usdc.allowance(account, curveXUSDMetaPool.address),
-              usdc
-            ),
-            displayCurrency(
-              await xusd.allowance(account, curveXUSDMetaPool.address),
-              xusd
-            ),
-            displayCurrency(
-              await usdt.allowance(account, uniV2Router.address),
-              usdt
-            ),
-            displayCurrency(
-              await dai.allowance(account, uniV2Router.address),
-              dai
-            ),
-            displayCurrency(
-              await usdc.allowance(account, uniV2Router.address),
-              usdc
-            ),
-            displayCurrency(
-              await xusd.allowance(account, uniV2Router.address),
-              xusd
-            ),
-            displayCurrency(
-              await usdt.allowance(account, sushiRouter.address),
-              usdt
-            ),
-            displayCurrency(
-              await dai.allowance(account, sushiRouter.address),
-              dai
-            ),
-            displayCurrency(
-              await usdc.allowance(account, sushiRouter.address),
-              usdc
-            ),
-            displayCurrency(
-              await xusd.allowance(account, sushiRouter.address),
-              xusd
-            ),
-          ])
-        }
 
         AccountStore.update((s) => {
           s.allowances = {
