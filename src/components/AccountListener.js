@@ -104,7 +104,7 @@ const AccountListener = (props) => {
     const loadBalancesProd = async () => {
       const data = {
         jsonrpc: '2.0',
-        method: 'alchemy_getTokenBalances',
+        method: 'getTokenBalances',
         params: [
           account,
           [xusd.address, usdt.address, dai.address, usdc.address],
@@ -121,7 +121,7 @@ const AccountListener = (props) => {
         referrerPolicy: 'no-referrer',
         body: JSON.stringify(data),
       })
-
+      console.log(response)
       if (response.ok) {
         const responseJson = await response.json()
         const balanceData = {}

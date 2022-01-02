@@ -1,5 +1,5 @@
 {
-  "name": "localhost",
+  "name": "fuji",
   "chainId": "43113",
   "contracts": {
     "AaveStrategy": {
@@ -5284,7 +5284,7 @@
       ]
     },
     "Flipper": {
-      "address": "0xaB5E7B701B605f74AaC1b749Fd50715f0DEd7Bc5",
+      "address": "0x4D79d332537DC0C007E01C99D1Ca9233CdA86E36",
       "abi": [
         {
           "inputs": [
