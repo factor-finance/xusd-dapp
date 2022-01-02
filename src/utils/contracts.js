@@ -242,6 +242,7 @@ export async function setupContracts(account, library, chainId, fetchId) {
     xusd,
     vault,
     chainlinkEthAggregator,
+    flipper,
   }
 
   const coinInfoList = {
