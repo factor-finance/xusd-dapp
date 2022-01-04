@@ -159,7 +159,7 @@ const AccountListener = (props) => {
         })
       } else {
         throw new Error(
-          `Could not fetch balances from Alchemy http status: ${response.status}`
+          `Could not fetch balances http status: ${response.status}`
         )
       }
     }
