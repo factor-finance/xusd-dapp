@@ -441,7 +441,7 @@ const useSwapEstimator = ({
   const _fetchEthPriceCryptoApi = async () => {
     try {
       const ethPriceRequest = await fetch(
-        'https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=USD'
+        'https://min-api.cryptocompare.com/data/price?fsym=AVAX&tsyms=USD'
       )
 
       // floor so we can convert to BN without a problem
@@ -452,28 +452,6 @@ const useSwapEstimator = ({
       return ethPrice
     } catch (e) {
       console.error(`Can not fetch eth prices: ${e.message}`)
-    }
-
-    return BigNumber.from(0)
-  }
-
-  const _fetchGasPriceChainlink = async () => {
-    if (chainId !== 1) {
-      throw new Error('Chainlink fast gas supported only on mainnet')
-    }
-
-    try {
-      const priceFeed =
-        await contracts.chainlinkFastGasAggregator.latestRoundData()
-
-      if (!isGasPriceUserOverriden) {
-        ContractStore.update((s) => {
-          s.gasPrice = priceFeed.answer
-        })
-      }
-      return priceFeed.answer
-    } catch (e) {
-      console.error('Error happened fetching fast gas chainlink data:', e)
     }
 
     return BigNumber.from(0)
@@ -495,33 +473,63 @@ const useSwapEstimator = ({
 
   // Fetches current gas price
   const fetchGasPrice = async () => {
-    try {
-      const gasPriceRequest = await fetchWithTimeout(
-        `https://ethgasstation.info/api/ethgasAPI.json?api-key=${process.env.DEFI_PULSE_API_KEY}`,
-        // allow for 5 seconds timeout before falling back to chainlink
-        {
-          timeout: 5000,
-        }
-      )
+    // https://docs.avax.network/learn/platform-overview/transaction-fees/#dynamic-fee-transactions
+    let jsonCallId = 1
+    let gasPriorityFee = BigNumber.from(0)
+    const nAVAX = '000000000'
+    let gasPrice = BigNumber.from('25' + nAVAX)
 
-      const gasPrice = BigNumber.from(
-        get(await gasPriceRequest.json(), 'average') + '00000000'
+    const fetchMethodResult = async (method) => {
+      const data = {
+        jsonrpc: '2.0',
+        method: method,
+        params: [],
+        id: jsonCallId.toString(),
+      }
+      jsonCallId++
+
+      const response = await fetch(process.env.ETHEREUM_RPC_PROVIDER, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        referrerPolicy: 'no-referrer',
+        body: JSON.stringify(data),
+      })
+      if (response.ok) {
+        return get(await response.json(), 'result')
+      }
+    }
+
+    try {
+      const gasPriceResponse = await fetchMethodResult('eth_baseFee')
+      if (gasPriceResponse.ok) {
+        gasPrice = BigNumber.from(
+          get(await gasPriceResponse.json(), 'result') + nAVAX
+        )
+      }
+
+      const gasPriorityFeeResponse = await fetchMethodResult(
+        'eth_maxPriorityFeePerGas'
       )
+      if (gasPriorityFeeResponse.ok) {
+        gasPriorityFee = BigNumber.from(
+          get(await gasPriorityFeeResponse.json(), 'result') + nAVAX
+        )
+      }
 
       if (!isGasPriceUserOverriden) {
         ContractStore.update((s) => {
           s.gasPrice = gasPrice
         })
       }
-      return gasPrice
     } catch (e) {
       console.error(
-        `Can not fetch gas prices, using chainlink as fallback method: ${e.message}`
+        `Can not fetch gas prices, defaulting to 25 nAVAX: ${e.message}`
       )
+      // fall back to base fee instead of throwing
     }
-
-    // fallback to chainlink
-    return await _fetchGasPriceChainlink()
+    return gasPrice.add(gasPriorityFee)
   }
 
   const _calculateSplits = async (sellAmount) => {
