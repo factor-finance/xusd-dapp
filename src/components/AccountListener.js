@@ -102,6 +102,7 @@ const AccountListener = (props) => {
 
     let jsonCallId = 1
     const loadBalancesProd = async () => {
+      // FIXME call using provider.call?
       const data = {
         jsonrpc: '2.0',
         method: 'eth_getTokenBalances',
@@ -239,7 +240,7 @@ const AccountListener = (props) => {
     const loadLifetimeEarnings = async () => {
       if (!account) return
 
-      // FIXME: set up analytics
+      // FIXME: replace analytics with RPC calls
       let response
       response = await fetch(
         `${
