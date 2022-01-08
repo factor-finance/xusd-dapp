@@ -183,40 +183,24 @@ export async function setupContracts(account, library, chainId, fetchId) {
     return rebasingCreditsPerToken
   }
 
-  const _rebasingCredits = async (block = 'latest') => {
-    if (block === 'latest' && ContractStore.rebasingCredits) {
-      return ContractStore.rebasingCredits
-    }
-    const rebasingCreditsHex = await jsonRpcProvider.call(
-      {
-        to: ContractStore.XUSD,
-        data: '0x077f22b7', // rebasingCreditsPerToken()
-      },
-      block
-    )
-    const rebasingCredits =
-      rebasingCreditsHex === '0x'
-        ? '0'
-        : ethers.utils.formatUnits(rebasingCreditsHex, 16)
-    if (block === 'latest') {
-      ContractStore.update((s) => {
-        s.rebasingCredits = rebasingCredits
-      })
-    }
-    return rebasingCredits
-  }
-
   const fetchAPY = async (days = 30) => {
     try {
-      const isDemoMode = process.env.ETHEREUM_RPC_CHAIN_ID == 43113
+      const isDemoMode = process.env.DEMO_MODE === 'true'
       let current, past
       const block = await jsonRpcProvider.getBlockNumber()
 
       if (!isDemoMode) {
-        // FIXME using block.timestamp to get 30 days ago efficiently
+        // FIXME using block.timestamp to get 30 days ago efficiently instead of 2 seconds per block
         const pastBlock = block - ((3600 * 24) / 2) * days
         current = await _rebasingCreditsPerToken(block)
         past = await _rebasingCreditsPerToken(pastBlock)
+        console.log(
+          'past block',
+          block,
+          pastBlock,
+          pastBlock.toString(),
+          (await jsonRpcProvider.getBlock(pastBlock)).timestamp
+        )
       } else {
         current = 822910590285928237
         past = 837910590285928237
@@ -224,6 +208,7 @@ export async function setupContracts(account, library, chainId, fetchId) {
       const ratio = past / current // FIXME maths?
       const apr = ((ratio - 1) * 100 * 365.25) / days
       const apy = aprToApy(apr, days)
+      console.log('The apy is', apy, days, current, past)
       ContractStore.update((s) => {
         s.apy = apy
       })
@@ -234,56 +219,15 @@ export async function setupContracts(account, library, chainId, fetchId) {
 
   const fetchCreditsPerToken = async () => {
     try {
-      // const computedSupply = ethers.utils.formatUnits(
-      //   await xusd.totalSupply(),
-      //   18
-      // )
-      const allCoinsData = [
-        { name: 'usdt', decimals: 6, contract: usdt },
-        { name: 'dai', decimals: 18, contract: dai },
-        { name: 'usdc', decimals: 6, contract: usdc },
-      ]
-      const balances = []
-      await allCoinsData.forEach(async (coinData) => {
-        let balance
-        try {
-          balance = await coinData.contract.balanceOf(vault.address)
-        } catch (err) {
-          console.log('Error getting balance', coinData.name, err)
-          balance = 0
-        }
-        balances.push(
-          balance === '0x'
-            ? '0'
-            : ethers.utils.parseUnits(
-                BigNumber.from(balance).toString(),
-                coinData.decimals
-              )
-        )
-      })
-
-      const computedSupply = balances
-      console.log(
-        'balance',
-        balances,
-        balances.length
-        // balances[0].add(balances[1]).add(balances[2]),
-        // computedSupply
-      )
-
-      const rebasingCredits = await _rebasingCredits()
-      YieldStore.update((s) => {
-        s.currentCreditsPerToken = _rebasingCreditsPerToken('latest')
-        // https://github.com/OriginProtocol/ousd-analytics/blob/f32e99b3b15eaaad5999e45fd67add0ccd6b6ee8/eagleproject/core/blockchain/harvest/snapshots.py#L216
-        // 1 / rebasing_credits_ratio
-        s.nextCreditsPerToken =
-          (rebasingCredits + 0) /
-          (daiBalance +
-            usdcBalance +
-            usdtBalance -
-            s.non_rebasing_supply -
-            future_fee)
-      })
+      // TODO: replace with RPC-call
+      const response = await fetch(process.env.CREDITS_ANALYTICS_ENDPOINT)
+      if (response.ok) {
+        const json = await response.json()
+        YieldStore.update((s) => {
+          s.currentCreditsPerToken = parseFloat(json.current_credits_per_token)
+          s.nextCreditsPerToken = parseFloat(json.next_credits_per_token)
+        })
+      }
     } catch (err) {
       console.error('Failed to fetch credits per token', err)
     }
