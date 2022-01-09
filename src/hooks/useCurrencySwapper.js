@@ -9,8 +9,6 @@ import {
   mintPercentGasLimitBuffer,
   redeemPercentGasLimitBuffer,
 } from 'utils/constants'
-import { find } from 'lodash'
-import addresses from 'constants/contractAddresses'
 
 import { calculateSwapAmounts } from 'utils/math'
 
