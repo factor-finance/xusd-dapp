@@ -1,4 +1,6 @@
 import { ethers, Contract, BigNumber } from 'ethers'
+const EthDater = require('ethereum-block-by-date')
+const moment = require('moment')
 
 import ContractStore from 'stores/ContractStore'
 import CoinStore from 'stores/CoinStore'
@@ -190,17 +192,11 @@ export async function setupContracts(account, library, chainId, fetchId) {
       const block = await jsonRpcProvider.getBlockNumber()
 
       if (!isDemoMode) {
-        // FIXME using block.timestamp to get 30 days ago efficiently instead of 2 seconds per block
-        const pastBlock = block - ((3600 * 24) / 2) * days
+        const dater = new EthDater(jsonRpcProvider)
+        const pastBlock = (await dater.getDate(moment().subtract(days, 'days')))
+          .block
         current = await _rebasingCreditsPerToken(block)
         past = await _rebasingCreditsPerToken(pastBlock)
-        console.log(
-          'past block',
-          block,
-          pastBlock,
-          pastBlock.toString(),
-          (await jsonRpcProvider.getBlock(pastBlock)).timestamp
-        )
       } else {
         current = 822910590285928237
         past = 837910590285928237
@@ -208,7 +204,6 @@ export async function setupContracts(account, library, chainId, fetchId) {
       const ratio = past / current // FIXME maths?
       const apr = ((ratio - 1) * 100 * 365.25) / days
       const apy = aprToApy(apr, days)
-      console.log('The apy is', apy, days, current, past)
       ContractStore.update((s) => {
         s.apy = apy
       })
