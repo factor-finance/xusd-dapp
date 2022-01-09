@@ -1,4 +1,6 @@
 import { ethers, Contract, BigNumber } from 'ethers'
+const EthDater = require('ethereum-block-by-date')
+const moment = require('moment')
 
 import ContractStore from 'stores/ContractStore'
 import CoinStore from 'stores/CoinStore'
@@ -160,23 +162,59 @@ export async function setupContracts(account, library, chainId, fetchId) {
     })
   }
 
-  const fetchAPY = async () => {
+  const _rebasingCreditsPerToken = async (block = 'latest') => {
+    if (block === 'latest' && ContractStore.rebasingCreditsPerToken) {
+      return ContractStore.rebasingCreditsPerToken
+    }
+    const rebasingCreditsPerTokenHex = await jsonRpcProvider.call(
+      {
+        to: ContractStore.XUSD,
+        data: '0x6691cb3d', // rebasingCreditsPerToken()
+      },
+      block
+    )
+    const rebasingCreditsPerToken =
+      rebasingCreditsPerTokenHex === '0x'
+        ? '0'
+        : ethers.utils.formatUnits(rebasingCreditsPerTokenHex, 16)
+    if (block === 'latest') {
+      ContractStore.update((s) => {
+        s.rebasingCreditsPerToken = rebasingCreditsPerToken
+      })
+    }
+    return rebasingCreditsPerToken
+  }
+
+  const fetchAPY = async (days = 30) => {
     try {
-      const response = await fetch(process.env.APR_ANALYTICS_ENDPOINT)
-      if (response.ok) {
-        const json = await response.json()
-        const apy = aprToApy(parseFloat(json.apr), 7)
-        ContractStore.update((s) => {
-          s.apy = apy
-        })
+      const isDemoMode = process.env.DEMO_MODE === 'true'
+      let current, past
+      const block = await jsonRpcProvider.getBlockNumber()
+
+      if (!isDemoMode) {
+        const dater = new EthDater(jsonRpcProvider)
+        const pastBlock = (await dater.getDate(moment().subtract(days, 'days')))
+          .block
+        current = await _rebasingCreditsPerToken(block)
+        past = await _rebasingCreditsPerToken(pastBlock)
+      } else {
+        current = 822910590285928237
+        past = 837910590285928237
       }
+      const ratio = past / current // FIXME maths?
+      const apr = ((ratio - 1) * 100 * 365.25) / days
+      const apy = aprToApy(apr, days)
+      ContractStore.update((s) => {
+        s.apy = apy
+      })
     } catch (err) {
-      console.error('Failed to fetch APY', err)
+      console.error('Failed to fetch the APY', err)
     }
   }
 
   const fetchCreditsPerToken = async () => {
     try {
+      // TODO: replace with RPC-call
       const response = await fetch(process.env.CREDITS_ANALYTICS_ENDPOINT)
       if (response.ok) {
         const json = await response.json()
@@ -207,10 +245,10 @@ export async function setupContracts(account, library, chainId, fetchId) {
   const callWithDelay = () => {
     setTimeout(async () => {
       Promise.all([
+        fetchAPY(),
         fetchExchangeRates(),
         fetchCreditsPerToken(),
         fetchCreditsBalance(),
-        fetchAPY(),
       ])
     }, 2)
   }
