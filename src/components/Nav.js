@@ -27,8 +27,9 @@ const DappLinks = ({ dapp, page }) => {
   const xusdBalance = useStoreState(AccountStore, (s) => s.balances['xusd'])
   const lifetimeYield = useStoreState(AccountStore, (s) => s.lifetimeYield)
   const showHistory =
-    (xusdBalance && parseFloat(xusdBalance) > 0) ||
-    (lifetimeYield && parseFloat(lifetimeYield) > 0)
+    ((xusdBalance && parseFloat(xusdBalance) > 0) ||
+      (lifetimeYield && parseFloat(lifetimeYield) > 0)) &&
+    process.env.HIDE_INACTIVE_PAGES != 'true'
 
   return (
     <>

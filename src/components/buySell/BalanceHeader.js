@@ -189,7 +189,11 @@ const BalanceHeader = ({
             >
               <Statistic
                 title={fbt('30-day trailing APY', '30-day trailing APY')}
-                titleLink="https://analytics.xusd.fi/apy"
+                titleLink={
+                  process.env.HIDE_INACTIVE_PAGES == 'true'
+                    ? false
+                    : 'https://analytics.xusd.fi/apy'
+                }
                 value={
                   typeof apy === 'number'
                     ? formatCurrency(apy * 100, 2)
@@ -222,7 +226,7 @@ const BalanceHeader = ({
                 'Lifetime XUSD balance header earnings'
               )}
               titleLink={
-                account
+                account && process.env.HIDE_INACTIVE_PAGES != 'true'
                   ? `${
                       process.env.ANALYTICS_ENDPOINT
                     }/address/${account.toLowerCase()}`
