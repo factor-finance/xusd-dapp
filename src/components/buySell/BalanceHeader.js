@@ -222,13 +222,13 @@ const BalanceHeader = ({
                 'Lifetime earnings',
                 'Lifetime XUSD balance header earnings'
               )}
-              titleLink={
-                account
-                  ? `${
-                      process.env.ANALYTICS_ENDPOINT
-                    }/address/${account.toLowerCase()}`
-                  : false
-              }
+              // titleLink={
+              //   account
+              //     ? `${
+              //         process.env.ANALYTICS_ENDPOINT
+              //       }/address/${account.toLowerCase()}`
+              //     : false
+              // }
               value={lifetimeYield ? formatCurrency(lifetimeYield, 2) : '--.--'}
               type={'number'}
             />
