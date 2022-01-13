@@ -189,8 +189,11 @@ const BalanceHeader = ({
             >
               <Statistic
                 title={fbt('30-day trailing APY', '30-day trailing APY')}
-                // TODO: implement API for history page
-                // titleLink="https://analytics.xusd.fi/apy"
+                titleLink={
+                  process.env.HIDE_INACTIVE_PAGES == 'true'
+                    ? false
+                    : 'https://analytics.xusd.fi/apy'
+                }
                 value={
                   typeof apy === 'number'
                     ? formatCurrency(apy * 100, 2)
@@ -222,13 +225,13 @@ const BalanceHeader = ({
                 'Lifetime earnings',
                 'Lifetime XUSD balance header earnings'
               )}
-              // titleLink={
-              //   account
-              //     ? `${
-              //         process.env.ANALYTICS_ENDPOINT
-              //       }/address/${account.toLowerCase()}`
-              //     : false
-              // }
+              titleLink={
+                account && process.env.HIDE_INACTIVE_PAGES != 'true'
+                  ? `${
+                      process.env.ANALYTICS_ENDPOINT
+                    }/address/${account.toLowerCase()}`
+                  : false
+              }
               value={lifetimeYield ? formatCurrency(lifetimeYield, 2) : '--.--'}
               type={'number'}
             />

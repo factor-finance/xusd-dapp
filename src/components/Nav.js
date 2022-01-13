@@ -29,7 +29,7 @@ const DappLinks = ({ dapp, page }) => {
   const showHistory =
     ((xusdBalance && parseFloat(xusdBalance) > 0) ||
       (lifetimeYield && parseFloat(lifetimeYield) > 0)) &&
-    false
+    process.env.HIDE_INACTIVE_PAGES != 'true'
 
   return (
     <>
