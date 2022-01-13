@@ -189,7 +189,8 @@ const BalanceHeader = ({
             >
               <Statistic
                 title={fbt('30-day trailing APY', '30-day trailing APY')}
-                titleLink="https://analytics.xusd.fi/apy"
+                // TODO: implement API for history page
+                // titleLink="https://analytics.xusd.fi/apy"
                 value={
                   typeof apy === 'number'
                     ? formatCurrency(apy * 100, 2)
