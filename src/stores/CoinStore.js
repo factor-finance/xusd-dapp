@@ -1,7 +1,7 @@
 import { Store } from 'pullstate'
 
 const CoinStore = new Store({
-  ogn: {},
+  fact: {},
   xusd: {},
 })
 
