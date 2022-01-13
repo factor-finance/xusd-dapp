@@ -168,14 +168,14 @@ export async function setupContracts(account, library, chainId, fetchId) {
     }
     const rebasingCreditsPerTokenHex = await jsonRpcProvider.call(
       {
-        to: ContractStore.XUSD,
+        to: xusd.address,
         data: '0x6691cb3d', // rebasingCreditsPerToken()
       },
       block
     )
     const rebasingCreditsPerToken =
       rebasingCreditsPerTokenHex === '0x'
-        ? '0'
+        ? '0.0000001' // initial value
         : ethers.utils.formatUnits(rebasingCreditsPerTokenHex, 16)
     if (block === 'latest') {
       ContractStore.update((s) => {
@@ -187,21 +187,14 @@ export async function setupContracts(account, library, chainId, fetchId) {
 
   const fetchAPY = async (days = 30) => {
     try {
-      const isDemoMode = process.env.DEMO_MODE === 'true'
-      let current, past
       const block = await jsonRpcProvider.getBlockNumber()
 
-      if (!isDemoMode) {
-        const dater = new EthDater(jsonRpcProvider)
-        const pastBlock = (await dater.getDate(moment().subtract(days, 'days')))
-          .block
-        current = await _rebasingCreditsPerToken(block)
-        past = await _rebasingCreditsPerToken(pastBlock)
-      } else {
-        current = 822910590285928237
-        past = 837910590285928237
-      }
-      const ratio = past / current // FIXME maths?
+      const dater = new EthDater(jsonRpcProvider)
+      const pastBlock = (await dater.getDate(moment().subtract(days, 'days')))
+        .block
+      const current = await _rebasingCreditsPerToken(block)
+      const past = await _rebasingCreditsPerToken(pastBlock)
+      const ratio = past / current
       const apr = ((ratio - 1) * 100 * 365.25) / days
       const apy = aprToApy(apr, days)
       ContractStore.update((s) => {
