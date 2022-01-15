@@ -229,24 +229,21 @@ export async function setupContracts(account, library, chainId, fetchId) {
 
       const credits = nonRebasingSupply.add(rebasingCredits)
       const computedSupply = vaultDai.add(vaultUsdt).add(vaultUsdc)
+      // TODO: get fee bps from vault
       const futureFee = computedSupply
         .sub(totalSupply)
         .div(BigNumber.from('10'))
       const nextRebaseSupply = computedSupply
         .sub(nonRebasingSupply)
         .sub(futureFee)
-      const rebasingCreditsRatio = nextRebaseSupply.div(credits)
+      const rebasingCreditsRatio = nextRebaseSupply.div(credits) // E_9
       const nextCreditsPerToken = rebasingCreditsRatio
       YieldStore.update((s) => {
         s.currentCreditsPerToken = parseFloat(
           ethers.utils.formatUnits(creditsPerToken, 9)
         )
-        s.nextCreditsPerToken = parseFloat(
-          ethers.utils.formatUnits(
-            BigNumber.from('1000000000').div(nextCreditsPerToken),
-            9
-          )
-        )
+        s.nextCreditsPerToken =
+          1.0 / parseFloat(ethers.utils.formatUnits(nextCreditsPerToken, 9))
       })
     } catch (err) {
       console.error('Failed to fetch credits per token', err)
