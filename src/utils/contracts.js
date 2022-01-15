@@ -257,7 +257,7 @@ export async function setupContracts(account, library, chainId, fetchId) {
       }
       const credits = await xusd.creditsBalanceOf(account)
       AccountStore.update((s) => {
-        s.creditsBalanceOf = ethers.utils.formatUnits(credits[0], 18)
+        s.creditsBalanceOf = ethers.utils.formatUnits(credits[0], 9)
       })
     } catch (err) {
       console.error('Failed to fetch credits balance', err)
