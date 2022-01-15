@@ -207,16 +207,18 @@ export async function setupContracts(account, library, chainId, fetchId) {
 
   const fetchCreditsPerToken = async () => {
     try {
-      const creditsPerToken = await xusd.rebasingCreditsPerToken()
+      const creditsPerToken = await xusd.rebasingCreditsPerToken() // E_9
 
       const rebasingCredits = await xusd.rebasingCredits()
       const nonRebasingSupply = await xusd.nonRebasingSupply()
-      const totalSupply = await xusd.totalSupply()
+      const totalSupply = await xusd.totalSupply() // E_18
 
       // TODO: iterate over supported coins
-      const vaultDai = await dai.balanceOf(vault.address)
-      const vaultUsdt = await usdt.balanceOf(vault.address)
-      const vaultUsdc = await usdc.balanceOf(vault.address)
+      const vaultDai = (await dai.balanceOf(vault.address)) // E_6
+        .mul(BigNumber.from('1000000000000')) // E_18
+      const vaultUsdt = (await usdt.balanceOf(vault.address)) // E_6
+        .mul(BigNumber.from('1000000000000')) // E_18
+      const vaultUsdc = await usdc.balanceOf(vault.address) // E_18
 
       // const credits = nonRebasingSupply + rebasingCredits
       // const computed_supply = vaultDai + vaultUsdt + vaultUsdc
