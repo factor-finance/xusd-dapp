@@ -207,15 +207,46 @@ export async function setupContracts(account, library, chainId, fetchId) {
 
   const fetchCreditsPerToken = async () => {
     try {
-      // TODO: replace with RPC-call
-      const response = await fetch(process.env.CREDITS_ANALYTICS_ENDPOINT)
-      if (response.ok) {
-        const json = await response.json()
-        YieldStore.update((s) => {
-          s.currentCreditsPerToken = parseFloat(json.current_credits_per_token)
-          s.nextCreditsPerToken = parseFloat(json.next_credits_per_token)
+      const creditsPerToken = await xusd.rebasingCreditsPerToken()
+
+      const rebasingCredits = await xusd.rebasingCredits()
+      const nonRebasingSupply = await xusd.nonRebasingSupply()
+      const totalSupply = await xusd.totalSupply()
+
+      const coinBalances = await Promise.all(
+        ['usdt', 'usdc', 'dai'].map(async (coinName) => {
+          return ethers.utils.parseUnits(
+            ethers.utils.formatUnits(
+              await coinInfoList[coinName].contract.balanceOf(vault.address),
+              coinInfoList[coinName].decimals
+            ),
+            coinInfoList.xusd.decimals
+          )
         })
-      }
+      )
+      const computedSupply = coinBalances.reduce(
+        (a, b) => a.add(b),
+        BigNumber.from('0')
+      )
+      const vaultFeeBps = await vault.trusteeFeeBps()
+      const credits = nonRebasingSupply.add(rebasingCredits)
+      const futureFee = computedSupply
+        .sub(totalSupply)
+        .mul(vaultFeeBps)
+        // turn basis points -> fraction
+        .div(BigNumber.from('10000'))
+      const nextRebaseSupply = computedSupply
+        .sub(nonRebasingSupply)
+        .sub(futureFee)
+      const rebasingCreditsRatio = nextRebaseSupply.div(credits)
+      const nextCreditsPerToken =
+        1 / parseFloat(ethers.utils.formatUnits(rebasingCreditsRatio, 9))
+      YieldStore.update((s) => {
+        s.currentCreditsPerToken = parseFloat(
+          ethers.utils.formatUnits(creditsPerToken, 9)
+        )
+        s.nextCreditsPerToken = nextCreditsPerToken
+      })
     } catch (err) {
       console.error('Failed to fetch credits per token', err)
     }
@@ -228,7 +259,8 @@ export async function setupContracts(account, library, chainId, fetchId) {
       }
       const credits = await xusd.creditsBalanceOf(account)
       AccountStore.update((s) => {
-        s.creditsBalanceOf = ethers.utils.formatUnits(credits[0], 18)
+        // FIXME: Use resolution of 9 until high resolution upgrade
+        s.creditsBalanceOf = ethers.utils.formatUnits(credits[0], 18 - 9)
       })
     } catch (err) {
       console.error('Failed to fetch credits balance', err)
