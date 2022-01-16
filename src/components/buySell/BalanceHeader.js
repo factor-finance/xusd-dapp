@@ -216,7 +216,11 @@ const BalanceHeader = ({
             />
             <Statistic
               title={fbt('Pending yield', 'Pending yield')}
-              value={formatCurrency(animatedExpectedIncrease, 2)}
+              value={
+                animatedExpectedIncrease
+                  ? formatCurrency(animatedExpectedIncrease, 2)
+                  : '--.--'
+              }
               type={'number'}
               marginBottom={true}
             />
