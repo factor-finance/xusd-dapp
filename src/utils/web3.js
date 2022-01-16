@@ -1,7 +1,21 @@
-const networkInfo = {
-  43114: 'Mainnet',
-  43113: 'Fuji',
-  43112: 'Localhost',
+const chainIdToNetwork = {
+  43114: {
+    network: 'Mainnet',
+    fullName: 'Avalanche C-Chain',
+    rpcUrl: 'https://api.avax.network/ext/bc/C/rpc',
+    scanUri: 'https://snowtrace.io',
+  },
+  43113: {
+    network: 'Fuji',
+    fullName: 'C-Chain (Fuji)',
+    rpcUrl: 'https://api.avax-test.network/ext/bc/C/rpc',
+    scanUri: 'https://testnet.snowtrace.io',
+  },
+  43112: {
+    network: 'Localhost',
+    fullName: 'Local RPC',
+    rpcUrl: process.env.ETHEREUM_RPC_PROVIDER || 'http://localhost:8545/',
+  },
 }
 
 const CHAIN_ID = parseInt(process.env.ETHEREUM_RPC_CHAIN_ID) || 43114
@@ -18,17 +32,14 @@ export async function switchEthereumChain() {
 }
 
 export function getEtherscanHost(web3React) {
-  const chainIdToEtherscan = {
-    43114: 'https://snowtrace.io',
-    43113: 'https://testnet.snowtrace.io',
-    43112: 'https://snowtrace.io',
-  }
-
-  if (chainIdToEtherscan[web3React.chainId]) {
-    return chainIdToEtherscan[web3React.chainId]
+  if (
+    chainIdToNetwork[web3React.chainId] &&
+    chainIdToNetwork[web3React.chainId].scanUri
+  ) {
+    return chainIdToNetwork[web3React.chainId].scanUri
   } else {
     // by default just return mainNet url
-    return chainIdToEtherscan[1]
+    return chainIdToNetwork[43114].scanUri
   }
 }
 
@@ -41,7 +52,7 @@ export function shortenAddress(address) {
 }
 
 export function networkIdToName(chainId) {
-  return networkInfo[chainId]
+  return chainIdToNetwork[chainId] && chainIdToNetwork[chainId].network
 }
 
 export function truncateAddress(address) {
@@ -58,8 +69,29 @@ export function trackXUSDInMetaMask(xusdAddress) {
           address: xusdAddress,
           symbol: 'XUSD',
           decimals: 18,
-          image: 'https://xusd.fi/images/xusd-token-icon.svg',
+          image: 'https://app.xusd.fi/images/currency/xusd-icon-small.svg',
         },
+      },
+    },
+    console.log
+  )
+}
+
+export function addNetworkInMetaMask(chainId) {
+  if (!chainIdToNetwork[chainId]) return
+  web3.currentProvider.sendAsync(
+    {
+      method: 'metamask_addEthereumChain',
+      params: {
+        chainId,
+        chainName: chainIdToNetwork[chainId].fullName,
+        nativeCurrency: {
+          name: 'Avalanche',
+          symbol: 'AVAX',
+          decimals: 18,
+        },
+        rpcUrls: [chainIdToNetwork[chainId].rpcUrl],
+        blockExplorerUrls: [chainIdToNetwork[chainId].scanUri],
       },
     },
     console.log
