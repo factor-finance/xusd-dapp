@@ -18,6 +18,7 @@ const chainIdToNetwork = {
   },
 }
 
+// The chainId the dapp wants to use. There can be only one.
 const CHAIN_ID = parseInt(process.env.ETHEREUM_RPC_CHAIN_ID) || 43114
 
 export function isCorrectNetwork(chainId) {
@@ -27,7 +28,7 @@ export function isCorrectNetwork(chainId) {
 export async function switchEthereumChain() {
   await window.ethereum.request({
     method: 'wallet_switchEthereumChain',
-    params: [{ chainId: CHAIN_ID }],
+    params: [{ chainId: '0x' + CHAIN_ID.toString(16) }],
   })
 }
 

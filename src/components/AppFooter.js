@@ -6,7 +6,11 @@ import ContractStore from 'stores/ContractStore'
 import analytics from 'utils/analytics'
 import { getDocsLink } from 'utils/getDocsLink'
 import LocaleDropdown from 'components/LocaleDropdown'
-import { providerName, trackXUSDInMetaMask } from 'utils/web3'
+import {
+  providerName,
+  trackXUSDInMetaMask,
+  switchEthereumChain,
+} from 'utils/web3'
 
 const analyticsURL = process.env.ANALYTICS_URL
 const jobsURL = process.env.JOBS_URL
@@ -124,6 +128,16 @@ export default function Footer({ onLocale, locale, dapp }) {
                     }}
                   >
                     {fbt('Add XUSD to MetaMask', 'Add XUSD to MetaMask')}
+                  </a>
+                )}
+                {provider === 'metamask' && (
+                  <a
+                    href="#"
+                    rel="noreferrer"
+                    className="nav-link"
+                    onClick={async () => await switchEthereumChain()}
+                  >
+                    {fbt('Switch Network', 'Switch Network')}
                   </a>
                 )}
               </nav>
