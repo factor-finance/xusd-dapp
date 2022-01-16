@@ -85,8 +85,6 @@ const AccountListener = (props) => {
             displayCurrency(await usdc.balanceOf(account), usdc),
           ])
 
-        const lifetimeYield = await accountLifetimeYield(account, xusdBalance)
-
         AccountStore.update((s) => {
           s.balances = {
             usdt: usdtBalance,
@@ -94,7 +92,6 @@ const AccountListener = (props) => {
             usdc: usdcBalance,
             xusd: xusdBalance,
           }
-          s.lifetimeYield = lifetimeYield
         })
       } catch (e) {
         console.error(
@@ -233,25 +230,30 @@ const AccountListener = (props) => {
       })
     }
 
-    await Promise.all([loadBalances(), loadAllowances(), loadRebaseStatus()])
+    const loadLifetimeEarnings = async () => {
+      if (!account) return
+
+      const xusdBalance = AccountStore.currentState.balances['xusd']
+      if (!xusdBalance) return
+
+      const lifetimeYield = await accountLifetimeYield(account, xusdBalance)
+
+      AccountStore.update((s) => {
+        s.lifetimeYield = lifetimeYield
+      })
+    }
+
+    await Promise.all([
+      loadBalances().then(loadLifetimeEarnings),
+      loadAllowances(),
+      loadRebaseStatus(),
+    ])
   }
 
   useEffect(() => {
     if (account) {
       login(account, setCookie)
     }
-
-    // const loadLifetimeEarnings = async () => {
-    //   if (!account) return
-
-    //   const lifetimeYield = await accountLifetimeYield(
-    //     account,
-    //     AccountStore.currentState.balances['xusd']);
-
-    //   AccountStore.update((s) => {
-    //     s.lifetimeYield = lifetimeYield
-    //   })
-    // }
 
     const setupContractsAndLoad = async () => {
       /* If we have a web3 provider present and is signed into the allowed network:
@@ -289,7 +291,6 @@ const AccountListener = (props) => {
     }
 
     setupContractsAndLoad()
-    //loadLifetimeEarnings()
   }, [account, chainId])
 
   useEffect(() => {
