@@ -11,6 +11,7 @@ import { isCorrectNetwork } from 'utils/web3'
 import { useStoreState } from 'pullstate'
 import { setupContracts } from 'utils/contracts'
 import { login } from 'utils/account'
+import { accountLifetimeYield } from 'utils/moralis'
 
 import { displayCurrency } from 'utils/math'
 
@@ -240,21 +241,11 @@ const AccountListener = (props) => {
     const loadLifetimeEarnings = async () => {
       if (!account) return
 
-      // FIXME: replace analytics with RPC calls
-      let response
-      response = await fetch(
-        `${
-          process.env.ANALYTICS_ENDPOINT
-        }/api/v1/address/${account.toLowerCase()}/yield`
-      )
-      if (!response) return
+      const lifetimeYield = await accountLifetimeYield(account)
 
-      if (response.ok) {
-        const lifetimeYield = (await response.json()).lifetime_yield
-        AccountStore.update((s) => {
-          s.lifetimeYield = lifetimeYield
-        })
-      }
+      AccountStore.update((s) => {
+        s.lifetimeYield = lifetimeYield
+      })
     }
 
     const setupContractsAndLoad = async () => {
