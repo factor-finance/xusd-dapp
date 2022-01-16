@@ -11,6 +11,7 @@ import { isCorrectNetwork } from 'utils/web3'
 import { useStoreState } from 'pullstate'
 import { setupContracts } from 'utils/contracts'
 import { login } from 'utils/account'
+import { accountLifetimeYield } from 'utils/moralis'
 
 import { displayCurrency } from 'utils/math'
 
@@ -229,32 +230,29 @@ const AccountListener = (props) => {
       })
     }
 
-    await Promise.all([loadBalances(), loadAllowances(), loadRebaseStatus()])
+    const loadLifetimeEarnings = async () => {
+      if (!account) return
+
+      const xusdBalance = AccountStore.currentState.balances['xusd']
+      if (!xusdBalance) return
+
+      const lifetimeYield = await accountLifetimeYield(account, xusdBalance)
+
+      AccountStore.update((s) => {
+        s.lifetimeYield = lifetimeYield
+      })
+    }
+
+    await Promise.all([
+      loadBalances().then(loadLifetimeEarnings),
+      loadAllowances(),
+      loadRebaseStatus(),
+    ])
   }
 
   useEffect(() => {
     if (account) {
       login(account, setCookie)
-    }
-
-    const loadLifetimeEarnings = async () => {
-      if (!account) return
-
-      // FIXME: replace analytics with RPC calls
-      let response
-      response = await fetch(
-        `${
-          process.env.ANALYTICS_ENDPOINT
-        }/api/v1/address/${account.toLowerCase()}/yield`
-      )
-      if (!response) return
-
-      if (response.ok) {
-        const lifetimeYield = (await response.json()).lifetime_yield
-        AccountStore.update((s) => {
-          s.lifetimeYield = lifetimeYield
-        })
-      }
     }
 
     const setupContractsAndLoad = async () => {
@@ -293,7 +291,6 @@ const AccountListener = (props) => {
     }
 
     setupContractsAndLoad()
-    loadLifetimeEarnings()
   }, [account, chainId])
 
   useEffect(() => {
