@@ -35,15 +35,15 @@ const AccountStatusDropdown = ({ className, showLogin, dapp }) => {
           }`}
           onClick={async (e) => {
             e.preventDefault()
-            if (dapp && !active) {
-              showLogin()
-            } else if (active && !correctNetwork) {
+            if (!correctNetwork) {
               analytics.track('On Change network', {
                 category: 'settings',
               })
               // open the dropdown to allow disconnecting, while also requesting an auto switch to mainnet
               await switchEthereumChain()
               setOpen(true)
+            } else if (dapp && !active) {
+              showLogin()
             } else if (dapp) {
               setOpen(true)
             }

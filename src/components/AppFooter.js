@@ -130,16 +130,6 @@ export default function Footer({ onLocale, locale, dapp }) {
                     {fbt('Add XUSD to MetaMask', 'Add XUSD to MetaMask')}
                   </a>
                 )}
-                {provider === 'metamask' && (
-                  <a
-                    href="#"
-                    rel="noreferrer"
-                    className="nav-link"
-                    onClick={async () => await switchEthereumChain()}
-                  >
-                    {fbt('Switch Network', 'Switch Network')}
-                  </a>
-                )}
               </nav>
             </div>
             <div className="col-12 col-lg-6 text-center text-lg-right pr-lg-0 d-flex justify-content-end">
