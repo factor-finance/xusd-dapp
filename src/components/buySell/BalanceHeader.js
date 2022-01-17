@@ -338,7 +338,7 @@ const BalanceHeader = ({
           min-height: 118px;
           border-radius: 10px;
           box-shadow: 0 0 14px 0 rgba(0, 0, 0, 0.1);
-          border: solid 1px black;
+          border: solid 1px white;
           color: white;
         }
 
