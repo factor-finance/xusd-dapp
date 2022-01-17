@@ -51,7 +51,9 @@ const WalletSelectContent = ({}) => {
 
     let connector
     if (name === 'MetaMask') {
-      if (!active && chainId && !correctNetwork) await switchEthereumChain()
+      if (!active && chainId && !correctNetwork) {
+        await switchEthereumChain()
+      }
       connector = injectedConnector
       localStorage.setItem('eagerConnect', name)
     } else if (name === 'Ledger') {

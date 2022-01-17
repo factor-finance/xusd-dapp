@@ -6,11 +6,7 @@ import ContractStore from 'stores/ContractStore'
 import analytics from 'utils/analytics'
 import { getDocsLink } from 'utils/getDocsLink'
 import LocaleDropdown from 'components/LocaleDropdown'
-import {
-  providerName,
-  trackXUSDInMetaMask,
-  switchEthereumChain,
-} from 'utils/web3'
+import { providerName, trackXUSDInWallet } from 'utils/web3'
 
 const analyticsURL = process.env.ANALYTICS_URL
 const jobsURL = process.env.JOBS_URL
@@ -118,18 +114,18 @@ export default function Footer({ onLocale, locale, dapp }) {
                     {fbt('Discord', 'Discord link')}
                   </a>
                 )}
-                {provider === 'metamask' && (
+                {
                   <a
                     href="#"
                     rel="noreferrer"
                     className="nav-link"
                     onClick={() => {
-                      trackXUSDInMetaMask(xusdAddr)
+                      trackXUSDInWallet(xusdAddr)
                     }}
                   >
-                    {fbt('Add XUSD to MetaMask', 'Add XUSD to MetaMask')}
+                    {fbt('Add XUSD to Wallet', 'Add XUSD to Wallet')}
                   </a>
-                )}
+                }
               </nav>
             </div>
             <div className="col-12 col-lg-6 text-center text-lg-right pr-lg-0 d-flex justify-content-end">

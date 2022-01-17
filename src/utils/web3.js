@@ -60,10 +60,10 @@ export function truncateAddress(address) {
   return `${address.slice(0, 6)}...${address.slice(-4)}`
 }
 
-export function trackXUSDInMetaMask(xusdAddress) {
+export function trackXUSDInWallet(xusdAddress) {
   web3.currentProvider.sendAsync(
     {
-      method: 'metamask_watchAsset',
+      method: 'wallet_watchAsset',
       params: {
         type: 'ERC20',
         options: {
@@ -78,11 +78,11 @@ export function trackXUSDInMetaMask(xusdAddress) {
   )
 }
 
-export function addNetworkInMetaMask(chainId) {
+export function addNetwork(chainId) {
   if (!chainIdToNetwork[chainId]) return
   web3.currentProvider.sendAsync(
     {
-      method: 'metamask_addEthereumChain',
+      method: 'wallet_addEthereumChain',
       params: {
         chainId,
         chainName: chainIdToNetwork[chainId].fullName,
