@@ -82,7 +82,7 @@ const PrimarySidePanel = () => {
           padding: 10px;
           max-width: 374px;
           min-width: 290px;
-          min-height: 794px;
+          min-height: 470px;
           max-height: 794px;
           border-radius: 10px;
           background-color: #fafbfc;
@@ -93,7 +93,7 @@ const PrimarySidePanel = () => {
         }
 
         .primary-side-panel.larger {
-          min-height: 988px;
+          min-height: 470px;
           max-height: 988px;
         }
 

@@ -203,7 +203,7 @@ const BalanceHeader = ({
               />
             </div>
           </div>
-          <div className="d-flex flex-column flex-md-row align-items-center justify-content-between box box-narrow w-100">
+          <div className="d-flex flex-column flex-md-row align-items-center justify-content-between box box-narrow box-dark w-100">
             <Statistic
               title={fbt('Balance', 'XUSD Balance')}
               value={
@@ -350,6 +350,10 @@ const BalanceHeader = ({
           background-color: black;
           margin-right: 10px;
           min-width: 230px;
+        }
+
+        .box.box-dark {
+          background-color: #001f3f;
         }
 
         @media (max-width: 799px) {
