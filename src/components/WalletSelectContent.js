@@ -7,13 +7,16 @@ import { walletConnectConnector } from 'utils/connectors'
 import { walletLinkConnector, connectorNameIconMap } from 'utils/connectors'
 import { ledgerConnector } from 'utils/connectors'
 
+import { isCorrectNetwork, switchEthereumChain } from 'utils/web3'
+
 import AccountStore from 'stores/AccountStore'
 
 import analytics from 'utils/analytics'
 
 const WalletSelectContent = ({}) => {
-  const { connector, activate, deactivate, active } = useWeb3React()
+  const { connector, activate, deactivate, active, chainId } = useWeb3React()
   const [error, setError] = useState(null)
+  const correctNetwork = isCorrectNetwork(chainId)
 
   useEffect(() => {
     if (active) {
@@ -45,6 +48,17 @@ const WalletSelectContent = ({}) => {
     })
 
     setError(null)
+
+    if (!active && chainId && !correctNetwork) {
+      try {
+        await switchEthereumChain()
+      } catch (e) {
+        console.log(
+          `Error switching chain on ${name} from chainId ${chainId}`,
+          e
+        )
+      }
+    }
 
     let connector
     if (name === 'MetaMask') {

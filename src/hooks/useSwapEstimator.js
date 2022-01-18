@@ -431,7 +431,7 @@ const useSwapEstimator = ({
   // Fetches current eth price
   const fetchEthPrice = async () => {
     // if production
-    if (chainId === 1) {
+    if (chainId === 43114) {
       return await _fetchEthPriceChainlink()
     } else {
       return await _fetchEthPriceCryptoApi()

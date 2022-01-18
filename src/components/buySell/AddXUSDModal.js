@@ -7,7 +7,7 @@ import { get } from 'lodash'
 import AccountStore from 'stores/AccountStore'
 import ContractStore from 'stores/ContractStore'
 import withIsMobile from 'hoc/withIsMobile'
-import { providerName, trackXUSDInMetaMask, shortenAddress } from 'utils/web3'
+import { providerName, trackXUSDInWallet, shortenAddress } from 'utils/web3'
 import analytics from 'utils/analytics'
 import { connectorNameIconMap, getConnectorIcon } from 'utils/connectors'
 
@@ -44,15 +44,12 @@ const AddXUSDModal = ({ onClose, isMobile }) => {
           {provider === 'metamask' && (
             <>
               <div className="title">
-                {fbt(
-                  'Track XUSD balance in MetaMask',
-                  'Track XUSD in MetaMask'
-                )}
+                {fbt('Track XUSD balance in Wallet', 'Track XUSD in Wallet')}
               </div>
               <button
                 className="btn-blue mt-4 ml-auto mr-auto"
                 onClick={(e) => {
-                  trackXUSDInMetaMask(xusdAddress)
+                  trackXUSDInWallet(xusdAddress)
                   onClose()
                 }}
               >
