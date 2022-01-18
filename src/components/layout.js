@@ -14,6 +14,7 @@ import AccountStore from 'stores/AccountStore'
 import ContractStore from 'stores/ContractStore'
 import withRpcProvider from 'hoc/withRpcProvider'
 import AppFooter from './AppFooter'
+import StarryBackground from './Stars'
 
 const UNISWAP_URL =
   'https://app.uniswap.org/#/swap?inputCurrency=0xdac17f958d2ee523a2206206994597c13d831ec7&outputCurrency=0x2A8e1E676Ec238d8A992307B495b45B3fEAa5e86'
@@ -121,6 +122,7 @@ const Layout = ({
           </a>
         </div>
       </div>
+      <StarryBackground />
       <main className={classnames({ dapp, short, shorter, medium })}>
         {dapp && <div className="container">{children}</div>}
         {!dapp && children}
