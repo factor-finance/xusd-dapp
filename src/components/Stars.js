@@ -65,31 +65,31 @@ const StarryBackground = () => {
           left: 0;
           right: 0;
           bottom: 0;
-          width: 200%;
-          height: 200%;
+          width: 100%;
+          height: 100%;
           display: block;
         }
 
         .stars {
           background: black url(images/stars.png) repeat top center;
           z-index: -2;
-          -webkit-animation-name: rotate;
-          -webkit-animation-duration: 400s;
-          -webkit-animation-iteration-count: infinite;
-          -webkit-animation-timing-function: linear;
-          -moz-animation-name: rotate;
-          -moz-animation-duration: 400s;
-          -moz-animation-iteration-count: infinite;
-          -moz-animation-timing-function: linear;
-          -ms-animation-name: rotate;
-          -ms-animation-duration: 400s;
-          -ms-animation-iteration-count: infinite;
-          -ms-animation-timing-function: linear;
-          animation: rotate 400s linear infinite;
-          -webkit-transform: translate3d(0, 0, 0);
-          -moz-transform: translate3d(0, 0, 0);
-          -ms-transform: translate3d(0, 0, 0);
-          transform: translate3d(0, 0, 0);
+          // -webkit-animation-name: rotate;
+          // -webkit-animation-duration: 400s;
+          // -webkit-animation-iteration-count: infinite;
+          // -webkit-animation-timing-function: linear;
+          // -moz-animation-name: rotate;
+          // -moz-animation-duration: 400s;
+          // -moz-animation-iteration-count: infinite;
+          // -moz-animation-timing-function: linear;
+          // -ms-animation-name: rotate;
+          // -ms-animation-duration: 400s;
+          // -ms-animation-iteration-count: infinite;
+          // -ms-animation-timing-function: linear;
+          // animation: rotate 400s linear infinite;
+          // -webkit-transform: translate3d(0, 0, 0);
+          // -moz-transform: translate3d(0, 0, 0);
+          // -ms-transform: translate3d(0, 0, 0);
+          // transform: translate3d(0, 0, 0);
         }
 
         .twinkling {
