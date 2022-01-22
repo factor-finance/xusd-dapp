@@ -192,11 +192,18 @@ export async function setupContracts(account, library, chainId, fetchId) {
       const dater = new EthDater(jsonRpcProvider)
       const pastBlock = (await dater.getDate(moment().subtract(days, 'days')))
         .block
+      let past
+      past = await _rebasingCreditsPerToken(pastBlock)
+      // resolution upgrade shim on Fuji removable after 30 days from Jan 22.
+      if (pastBlock < 5175854) {
+        past = past * BigNumber.from('1e9')
+      }
       const current = await _rebasingCreditsPerToken(block)
-      const past = await _rebasingCreditsPerToken(pastBlock)
       const ratio = past / current
       const apr = ((ratio - 1) * 100 * 365.25) / days
       const apy = aprToApy(apr, days)
+      console.log('apy', current, past, ratio, apr, apy)
+
       ContractStore.update((s) => {
         s.apy = apy
       })
@@ -240,10 +247,10 @@ export async function setupContracts(account, library, chainId, fetchId) {
         .sub(futureFee)
       const rebasingCreditsRatio = nextRebaseSupply.div(credits)
       const nextCreditsPerToken =
-        1 / parseFloat(ethers.utils.formatUnits(rebasingCreditsRatio, 9))
+        1 / parseFloat(ethers.utils.formatUnits(rebasingCreditsRatio, 18))
       YieldStore.update((s) => {
         s.currentCreditsPerToken = parseFloat(
-          ethers.utils.formatUnits(creditsPerToken, 9)
+          ethers.utils.formatUnits(creditsPerToken, 18)
         )
         s.nextCreditsPerToken = nextCreditsPerToken
       })
@@ -259,8 +266,7 @@ export async function setupContracts(account, library, chainId, fetchId) {
       }
       const credits = await xusd.creditsBalanceOf(account)
       AccountStore.update((s) => {
-        // FIXME: Use resolution of 9 until high resolution upgrade
-        s.creditsBalanceOf = ethers.utils.formatUnits(credits[0], 18 - 9)
+        s.creditsBalanceOf = ethers.utils.formatUnits(credits[0], 18)
       })
     } catch (err) {
       console.error('Failed to fetch credits balance', err)
