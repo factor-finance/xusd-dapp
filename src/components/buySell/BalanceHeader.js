@@ -24,7 +24,7 @@ const BalanceHeader = ({
   isMobile,
 }) => {
   const { connector, account } = useWeb3React()
-  const apy = useStoreState(ContractStore, (s) => s.apy || 0)
+  const apy = useStoreState(ContractStore, (s) => s.apy)
   const vault = useStoreState(ContractStore, (s) => _get(s, 'contracts.vault'))
   const xusdContract = useStoreState(ContractStore, (s) =>
     _get(s, 'contracts.xusd')
