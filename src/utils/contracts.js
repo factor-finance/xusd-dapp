@@ -196,7 +196,7 @@ export async function setupContracts(account, library, chainId, fetchId) {
       past = await _rebasingCreditsPerToken(pastBlock)
       // resolution upgrade shim on Fuji removable after 30 days from Jan 22.
       if (pastBlock < 5175854) {
-        past = past * BigNumber.from('1e9')
+        past = past * BigNumber.from('0x3B9ACA00') // 1e9
       }
       const current = await _rebasingCreditsPerToken(block)
       const ratio = past / current
