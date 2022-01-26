@@ -205,7 +205,7 @@ const BalanceHeader = ({
           </div>
           <div className="d-flex flex-column flex-md-row align-items-center justify-content-between box box-narrow box-dark w-100">
             <Statistic
-              title={fbt('Balance', 'XUSD Balance')}
+              title={fbt('XUSD Balance', 'XUSD Balance')}
               value={
                 !isNaN(parseFloat(displayedBalance)) && xusdBalanceLoaded
                   ? displayedBalance
