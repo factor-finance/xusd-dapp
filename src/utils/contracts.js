@@ -202,7 +202,6 @@ export async function setupContracts(account, library, chainId, fetchId) {
       const ratio = past / current
       const apr = ((ratio - 1) * 100 * 365.25) / days
       const apy = aprToApy(apr, days)
-      console.log('apy', current, past, ratio, apr, apy)
 
       ContractStore.update((s) => {
         s.apy = apy
