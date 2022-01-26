@@ -138,7 +138,7 @@ const TransactionListener = ({ rpcProvider }) => {
       handlePossibleReplacedTransaction(log.transactionHash)
     })
 
-    wsProvider.on(xusd.filters.TotalSupplyUpdatedHighres(), (log, event) => {
+    wsProvider.on(xusd.filters.TotalSupplyUpdated(), (log, event) => {
       handlePossibleReplacedTransaction(log.transactionHash)
     })
 
