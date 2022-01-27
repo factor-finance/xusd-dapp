@@ -16,6 +16,8 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - run: yarn install
     - run: yarn build
+      env: # Or as an environment variable
+        MIXPANEL_ID: ${{ secrets.MIXPANEL_ID }}
     - run: touch ./out/.nojekyll
 
     - name: Deploy to GitHub Pages
