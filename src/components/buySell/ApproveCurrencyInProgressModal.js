@@ -24,7 +24,7 @@ const ApproveCurrencyInProgressModal = ({ show }) => {
   const connectorIcon = getConnectorIcon(connectorName)
 
   const coinName = pendingApprovalCoins
-    .map((c) => coinDisplayName[c] || c.toUpperCase())
+    .map((c) => coinDisplayName(c))
     .join(', ')
 
   if (pendingApprovalTransactions.length === 0) {

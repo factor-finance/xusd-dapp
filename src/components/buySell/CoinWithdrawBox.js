@@ -39,7 +39,7 @@ const CoinWithdrawBox = ({
     return cancelAnimation
   }, [amount])
 
-  const coinName = coinDisplayName[coin] || coin.toUpperCase()
+  const coinName = coinDisplayName(coin)
 
   return (
     <>

@@ -78,7 +78,7 @@ const SidePanelTransactionMessage = ({
 
   const coinName = coin
     .split(',')
-    .map((c) => coinDisplayName[c] || c.toUpperCase())
+    .map((c) => coinDisplayName(c))
     .join(' & ')
 
   return (
@@ -443,7 +443,7 @@ const SidePanelTransactionMessage = ({
                             2,
                             0
                           )}{' '}
-                          {coinDisplayName['usdt']}
+                          {coinDisplayName('usdt')}
                         </div>
                       )}
                       {parseFloat(transaction.data.dai) > 0 && (
@@ -454,7 +454,7 @@ const SidePanelTransactionMessage = ({
                             2,
                             0
                           )}{' '}
-                          {coinDisplayName['dai']}
+                          {coinDisplayName('dai')}
                         </div>
                       )}
                       {parseFloat(transaction.data.usdc) > 0 && (
@@ -465,7 +465,7 @@ const SidePanelTransactionMessage = ({
                             2,
                             0
                           )}{' '}
-                          {coinDisplayName['usdc']}
+                          {coinDisplayName('usdc')}
                         </div>
                       )}
                     </>
@@ -485,7 +485,7 @@ const SidePanelTransactionMessage = ({
                             2,
                             0
                           )}{' '}
-                          {coinDisplayName['usdt']}
+                          {coinDisplayName('usdt')}
                         </div>
                       )}
                       {parseFloat(transaction.data.dai) > 0 && (
@@ -496,7 +496,7 @@ const SidePanelTransactionMessage = ({
                             2,
                             0
                           )}{' '}
-                          {coinDisplayName['dai']}
+                          {coinDisplayName('dai')}
                         </div>
                       )}
                       {parseFloat(transaction.data.usdc) > 0 && (
@@ -507,7 +507,7 @@ const SidePanelTransactionMessage = ({
                             2,
                             0
                           )}{' '}
-                          {coinDisplayName['usdc']}
+                          {coinDisplayName('usdc')}
                         </div>
                       )}
                     </>

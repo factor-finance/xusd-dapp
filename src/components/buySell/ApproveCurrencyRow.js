@@ -51,7 +51,7 @@ const ApproveCurrencyRow = ({
     }
   }, [])
 
-  const coinName = coinDisplayName[coin] || coin.toUpperCase()
+  const coinName = coinDisplayName(coin)
 
   return (
     <>
