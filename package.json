@@ -2,9 +2,9 @@
   "name": "xusd-dapp",
   "version": "0.1.0",
   "private": true,
-  "description": "XUSD Dapp",
+  "description": "Factor XUSD Dapp",
   "main": "index.js",
-  "author": "XUSD.fi",
+  "author": "Factor Finance",
   "license": "MIT",
   "scripts": {
     "dev": "next dev",

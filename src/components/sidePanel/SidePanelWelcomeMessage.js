@@ -23,7 +23,7 @@ const SidePanelWelcomeMessage = () => {
         <div className="title">{fbt('Welcome!', 'Welcome!')}</div>
         <div className="text">
           {fbt(
-            `The XUSD.fi lets you easily convert other stablecoins into XUSD so you can instantly earn yields.`,
+            `Factor XUSD lets you easily convert other stablecoins into XUSD so you can instantly earn yields.`,
             'welcome-message'
           )}{' '}
           {xusdToBuy > 0 &&
