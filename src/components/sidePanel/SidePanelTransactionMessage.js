@@ -7,6 +7,7 @@ import { useStoreState } from 'pullstate'
 import CoinCircleGraphics from 'components/sidePanel/CoinCircleGraphics'
 import TransactionStore from 'stores/TransactionStore'
 import { formatCurrency, formatCurrencyConditional } from 'utils/math'
+import { coinDisplayName } from 'utils/coins'
 
 const SidePanelTransactionMessage = ({
   transaction,
@@ -74,6 +75,11 @@ const SidePanelTransactionMessage = ({
     transaction.data.usdc !== undefined
   const redeemDataAvailable = isRedeemTransaction && coinDataPresent
   const mintDataAvailable = isMintTransaction && coinDataPresent
+
+  const coinName = coin
+    .split(',')
+    .map((c) => coinDisplayName(c))
+    .join(' & ')
 
   return (
     <>
@@ -226,7 +232,7 @@ const SidePanelTransactionMessage = ({
                     <div className="title">
                       {fbt(
                         'Granting permission to move your ' +
-                          fbt.param('coin', coin.toUpperCase()),
+                          fbt.param('coin', coinName),
                         'Granting permission to move your coin'
                       )}
                     </div>
@@ -235,7 +241,7 @@ const SidePanelTransactionMessage = ({
                     <div className="title">
                       {fbt(
                         'Permission granted to move your ' +
-                          fbt.param('coin', coin.toUpperCase()),
+                          fbt.param('coin', coinName),
                         'Permission granted to move your coin'
                       )}
                     </div>
@@ -244,7 +250,7 @@ const SidePanelTransactionMessage = ({
                     <div className="title">
                       {fbt(
                         'Failed granting permission to move your ' +
-                          fbt.param('coin', coin.toUpperCase()),
+                          fbt.param('coin', coinName),
                         'Failed granting permission to move your coin'
                       )}
                     </div>
@@ -302,11 +308,7 @@ const SidePanelTransactionMessage = ({
                   {!transaction.mined && (
                     <div className="title">
                       {fbt(
-                        'Swapping XUSD for ' +
-                          fbt.param(
-                            'coin',
-                            coin.split(',').join(' & ').toUpperCase()
-                          ),
+                        'Swapping XUSD for ' + fbt.param('coin', coinName),
                         'Swapping XUSD for coins'
                       )}
                     </div>
@@ -314,11 +316,7 @@ const SidePanelTransactionMessage = ({
                   {transaction.mined && !transaction.isError && (
                     <div className="title">
                       {fbt(
-                        'Swapped XUSD for ' +
-                          fbt.param(
-                            'coin',
-                            coin.split(',').join(' & ').toUpperCase()
-                          ),
+                        'Swapped XUSD for ' + fbt.param('coin', coinName),
                         'Swapped XUSD for coins'
                       )}
                     </div>
@@ -327,10 +325,7 @@ const SidePanelTransactionMessage = ({
                     <div className="title">
                       {fbt(
                         'Failed swapping XUSD for ' +
-                          fbt.param(
-                            'coin',
-                            coin.split(',').join(' & ').toUpperCase()
-                          ),
+                          fbt.param('coin', coinName),
                         'Failed swapping XUSD for coins'
                       )}
                     </div>
@@ -386,12 +381,7 @@ const SidePanelTransactionMessage = ({
                   {!transaction.mined && (
                     <div className="title">
                       {fbt(
-                        'Swapping ' +
-                          fbt.param(
-                            'coin',
-                            coin.split(',').join(' & ').toUpperCase()
-                          ) +
-                          ' for XUSD',
+                        'Swapping ' + fbt.param('coin', coinName) + ' for XUSD',
                         'Swapping coins for XUSD'
                       )}
                     </div>
@@ -399,10 +389,7 @@ const SidePanelTransactionMessage = ({
                   {transaction.mined && !transaction.isError && (
                     <div className="title">
                       {fbt(
-                        fbt.param(
-                          'coin',
-                          coin.split(',').join(' & ').toUpperCase()
-                        ) + ' swapped for XUSD',
+                        fbt.param('coin', coinName) + ' swapped for XUSD',
                         'Swapped coins for XUSD'
                       )}
                     </div>
@@ -411,10 +398,7 @@ const SidePanelTransactionMessage = ({
                     <div className="title">
                       {fbt(
                         'Failed swapping ' +
-                          fbt.param(
-                            'coin',
-                            coin.split(',').join(' & ').toUpperCase()
-                          ) +
+                          fbt.param('coin', coinName) +
                           ' for XUSD',
                         'Failed swapping for XUSD'
                       )}
@@ -459,7 +443,7 @@ const SidePanelTransactionMessage = ({
                             2,
                             0
                           )}{' '}
-                          USDT
+                          {coinDisplayName('usdt')}
                         </div>
                       )}
                       {parseFloat(transaction.data.dai) > 0 && (
@@ -470,7 +454,7 @@ const SidePanelTransactionMessage = ({
                             2,
                             0
                           )}{' '}
-                          DAI
+                          {coinDisplayName('dai')}
                         </div>
                       )}
                       {parseFloat(transaction.data.usdc) > 0 && (
@@ -481,7 +465,7 @@ const SidePanelTransactionMessage = ({
                             2,
                             0
                           )}{' '}
-                          USDC
+                          {coinDisplayName('usdc')}
                         </div>
                       )}
                     </>
@@ -501,7 +485,7 @@ const SidePanelTransactionMessage = ({
                             2,
                             0
                           )}{' '}
-                          USDT
+                          {coinDisplayName('usdt')}
                         </div>
                       )}
                       {parseFloat(transaction.data.dai) > 0 && (
@@ -512,7 +496,7 @@ const SidePanelTransactionMessage = ({
                             2,
                             0
                           )}{' '}
-                          DAI
+                          {coinDisplayName('dai')}
                         </div>
                       )}
                       {parseFloat(transaction.data.usdc) > 0 && (
@@ -523,7 +507,7 @@ const SidePanelTransactionMessage = ({
                             2,
                             0
                           )}{' '}
-                          USDC
+                          {coinDisplayName('usdc')}
                         </div>
                       )}
                     </>

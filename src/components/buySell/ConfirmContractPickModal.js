@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { fbt } from 'fbt-runtime'
 import { formatCurrency } from 'utils/math'
-import { capitalize } from 'utils/utils'
 
 import analytics from 'utils/analytics'
 

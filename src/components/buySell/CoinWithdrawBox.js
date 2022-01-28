@@ -4,6 +4,7 @@ import { useStoreState } from 'pullstate'
 import { currencies } from 'constants/Contract'
 import { formatCurrency } from 'utils/math'
 import { animateValue } from 'utils/animation'
+import { coinDisplayName } from 'utils/coins'
 
 const CoinWithdrawBox = ({
   coin,
@@ -38,6 +39,8 @@ const CoinWithdrawBox = ({
     return cancelAnimation
   }, [amount])
 
+  const coinName = coinDisplayName(coin)
+
   return (
     <>
       <div
@@ -63,10 +66,10 @@ const CoinWithdrawBox = ({
             </div>
           )}
           <div className="exchange-rate d-none d-md-block">
-            {`@ ${formatCurrency(exchangeRate, 4)}/${coin.toUpperCase()}`}
+            {`@ ${formatCurrency(exchangeRate, 4)}/${coinName}`}
           </div>
           <div className="exchange-rate d-md-none">
-            {`@ ${formatCurrency(exchangeRate, 4)}/${coin.toUpperCase()}`}
+            {`@ ${formatCurrency(exchangeRate, 4)}/${coinName}`}
           </div>
         </div>
       </div>

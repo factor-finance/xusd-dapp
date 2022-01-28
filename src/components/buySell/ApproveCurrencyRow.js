@@ -9,6 +9,7 @@ import withRpcProvider from 'hoc/withRpcProvider'
 import ContractStore from 'stores/ContractStore'
 import analytics from 'utils/analytics'
 import { connectorNameIconMap, getConnectorIcon } from 'utils/connectors'
+import { coinDisplayName } from 'utils/coins'
 
 const ApproveCurrencyRow = ({
   coin,
@@ -50,6 +51,8 @@ const ApproveCurrencyRow = ({
     }
   }, [])
 
+  const coinName = coinDisplayName(coin)
+
   return (
     <>
       <div
@@ -61,7 +64,7 @@ const ApproveCurrencyRow = ({
         {stage === 'approve' && (
           <>
             {fbt(
-              'Permission to use ' + fbt.param('coin-name', coin.toUpperCase()),
+              'Permission to use ' + fbt.param('coin-name', coinName),
               'permission to use coin'
             )}
             <a
@@ -132,7 +135,7 @@ const ApproveCurrencyRow = ({
         {stage === 'waiting-network' && (
           <>
             {fbt(
-              'Approving ' + fbt.param('coin-name', coin.toUpperCase() + '...'),
+              'Approving ' + fbt.param('coin-name', coinName + '...'),
               'approving coin'
             )}
             <img
@@ -144,7 +147,7 @@ const ApproveCurrencyRow = ({
         {stage === 'done' && (
           <>
             {fbt(
-              fbt.param('coin-name', coin.toUpperCase() + ' approved'),
+              fbt.param('coin-name', coinName + ' approved'),
               'Coin approved'
             )}
             <img
