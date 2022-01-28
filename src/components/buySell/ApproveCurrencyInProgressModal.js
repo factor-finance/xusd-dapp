@@ -7,6 +7,7 @@ import AccountStore from 'stores/AccountStore'
 import TransactionStore from 'stores/TransactionStore'
 import { currencies } from 'constants/Contract'
 import { connectorNameIconMap, getConnectorIcon } from 'utils/connectors'
+import { coinDisplayName } from 'utils/coins'
 
 const ApproveCurrencyInProgressModal = ({ show }) => {
   const transactions = useStoreState(TransactionStore, (s) => s.transactions)
@@ -21,6 +22,10 @@ const ApproveCurrencyInProgressModal = ({ show }) => {
   )
   const connectorName = useStoreState(AccountStore, (s) => s.connectorName)
   const connectorIcon = getConnectorIcon(connectorName)
+
+  const coinName = pendingApprovalCoins
+    .map((c) => coinDisplayName[c] || c.toUpperCase())
+    .join(', ')
 
   if (pendingApprovalTransactions.length === 0) {
     return ''
@@ -41,10 +46,7 @@ const ApproveCurrencyInProgressModal = ({ show }) => {
             <h2>
               {fbt(
                 'Waiting for ' +
-                  fbt.param(
-                    'coins-name',
-                    pendingApprovalCoins.join(', ').toUpperCase()
-                  ) +
+                  fbt.param('coins-name', coinName) +
                   ' to be approved',
                 'Waiting for coin to be approved'
               )}
