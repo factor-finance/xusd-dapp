@@ -34,10 +34,6 @@ export function mergeDeep(target, ...sources) {
   return mergeDeep(target, ...sources)
 }
 
-export function capitalize([first, ...rest]) {
-  return first.toUpperCase() + rest.join('').toLowerCase()
-}
-
 export function exportToCsv(filename, rows) {
   var processRow = function (row) {
     var finalVal = ''
