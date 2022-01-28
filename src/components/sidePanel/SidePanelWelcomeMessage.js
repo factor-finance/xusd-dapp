@@ -22,21 +22,23 @@ const SidePanelWelcomeMessage = () => {
       <div className="side-panel-message">
         <div className="title">{fbt('Welcome!', 'Welcome!')}</div>
         <div className="text">
-          {fbt(
-            `Factor XUSD lets you easily convert other stablecoins into XUSD so you can instantly earn yields.`,
-            'welcome-message'
-          )}{' '}
+          <p>
+            {fbt(
+              'Convert other stablecoins into Factor XUSD so you can instantly earn yields.',
+              'welcome-message'
+            )}
+          </p>
           {xusdToBuy > 0 &&
             fbt(
               'You can buy up to ~' +
                 fbt.param('xusd-coin', formatCurrency(xusdToBuy, 2)) +
                 ' XUSD with the ' +
                 fbt.param('usdt-coin', formatCurrency(balances['usdt'], 0)) +
-                ' USDT, ' +
+                ' USDT.e, ' +
                 fbt.param('usdc-coin', formatCurrency(balances['usdc'], 0)) +
-                ' USDC, and ' +
+                ' USDC.e, and ' +
                 fbt.param('dai-coin', formatCurrency(balances['dai'], 0)) +
-                ' DAI in your wallet.',
+                ' DAI.e in your wallet.',
               'welcome-message-buying-power'
             )}
         </div>
