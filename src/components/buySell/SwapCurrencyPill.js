@@ -13,6 +13,7 @@ import {
   checkValidInputForCoin,
   removeCommas,
 } from 'utils/math'
+import { coinDisplayName } from 'utils/coins'
 import { currencies } from 'constants/Contract'
 
 const DownCaret = ({ color = '#608fcf', size = '30' }) => (
@@ -102,7 +103,7 @@ const CoinSelect = ({ selected, onChange, options = [] }) => {
           className={`coin-select d-flex align-items-center justify-content-start`}
         >
           <CoinImage coin={selected} />
-          <div className="coin text-uppercase mr-auto">{selected}</div>
+          <div className="coin mr-auto">{coinDisplayName[selected]}</div>
         </div>
         <style jsx>{`
           .coin-select {
@@ -142,13 +143,7 @@ const CoinSelect = ({ selected, onChange, options = [] }) => {
                     coin={option}
                     isSemiTransparent={option === 'xusd'}
                   />
-                  <div
-                    className={`coin ${
-                      option === 'mix' ? 'text-capitalize' : 'text-uppercase'
-                    } mr-auto`}
-                  >
-                    {option}
-                  </div>
+                  <div className="coin mr-auto">{coinDisplayName[option]}</div>
                 </div>
               )
             })}
@@ -165,13 +160,7 @@ const CoinSelect = ({ selected, onChange, options = [] }) => {
           }}
         >
           <CoinImage coin={selected} />
-          <div
-            className={`coin ${
-              selected === 'mix' ? 'text-capitalize' : 'text-uppercase'
-            } mr-auto`}
-          >
-            {selected}
-          </div>
+          <div className="coin mr-auto">{coinDisplayName[selected]}</div>
           <DownCaret />
         </div>
       </Dropdown>
@@ -293,7 +282,7 @@ const SwapCurrencyPill = ({
     }
     if (showXusd) {
       return {
-        coin: 'xusd',
+        coin: coinDisplayName['xusd'],
         balance: roundTo2Decimals(coinBalances.xusd),
         detailedBalance: roundTo2to6Decimals(coinBalances.xusd),
       }
@@ -303,7 +292,7 @@ const SwapCurrencyPill = ({
         return null
       } else {
         return {
-          coin: selectedCoin,
+          coin: coinDisplayName[selectedCoin],
           balance: roundTo2Decimals(coinBalances[selectedCoin]),
           detailedBalance: roundTo2to6Decimals(coinBalances[selectedCoin]),
         }
@@ -420,9 +409,7 @@ const SwapCurrencyPill = ({
                         fbt.param('coin-balance', displayBalance.balance),
                       'Coin balance'
                     )}
-                    <span className="text-uppercase ml-1">
-                      {displayBalance.coin}
-                    </span>
+                    <span className="ml-1">{displayBalance.coin}</span>
                   </div>
                 )}
                 {balanceClickable && (
@@ -498,7 +485,7 @@ const SwapCurrencyPill = ({
                 >
                   <div className="d-flex justify-content-start align-items-center">
                     <CoinImage small coin={split.coin} />
-                    <div className="text-uppercase ml-5px">{split.coin}</div>
+                    <div className="ml-5px">{coinDisplayName[split.coin]}</div>
                   </div>
                   <div>{formatCurrency(split.amount, 2)}</div>
                 </div>
