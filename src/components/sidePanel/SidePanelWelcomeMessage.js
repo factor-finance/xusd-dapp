@@ -5,6 +5,7 @@ import { useStoreState } from 'pullstate'
 import { formatCurrency } from 'utils/math'
 import AccountStore from 'stores/AccountStore'
 import ContractStore from 'stores/ContractStore'
+import { getDocsLink } from 'utils/getDocsLink'
 
 const SidePanelWelcomeMessage = () => {
   const xusdExchangeRates = useStoreState(
@@ -28,19 +29,26 @@ const SidePanelWelcomeMessage = () => {
               'welcome-message'
             )}
           </p>
-          {xusdToBuy > 0 &&
-            fbt(
-              'You can buy up to ~' +
-                fbt.param('xusd-coin', formatCurrency(xusdToBuy, 2)) +
-                ' XUSD with the ' +
-                fbt.param('usdt-coin', formatCurrency(balances['usdt'], 0)) +
-                ' USDT.e, ' +
-                fbt.param('usdc-coin', formatCurrency(balances['usdc'], 0)) +
-                ' USDC.e, and ' +
-                fbt.param('dai-coin', formatCurrency(balances['dai'], 0)) +
-                ' DAI.e in your wallet.',
-              'welcome-message-buying-power'
-            )}
+          {xusdToBuy > 0 && (
+            <p>
+              {fbt(
+                'You can buy up to ~' +
+                  fbt.param('xusd-coin', formatCurrency(xusdToBuy, 2)) +
+                  ' XUSD with the ' +
+                  fbt.param('usdt-coin', formatCurrency(balances['usdt'], 0)) +
+                  ' USDT.e, ' +
+                  fbt.param('usdc-coin', formatCurrency(balances['usdc'], 0)) +
+                  ' USDC.e, and ' +
+                  fbt.param('dai-coin', formatCurrency(balances['dai'], 0)) +
+                  ' DAI.e in your wallet.',
+                'welcome-message-buying-power'
+              )}
+            </p>
+          )}
+          <a href="https://docs.xusd.fi" target="_blank">
+            Learn more about Factor XUSD
+          </a>
+          .
         </div>
       </div>
       <style jsx>{`
@@ -65,6 +73,19 @@ const SidePanelWelcomeMessage = () => {
           font-size: 14px;
           line-height: 1.5;
           color: #8293a4;
+        }
+
+        .side-panel-message .text p {
+          margin-bottom: 7px;
+        }
+
+        .side-panel-message .text a {
+          color: #1a82ff;
+          cursor: pointer;
+        }
+
+        .side-panel-message .text a:hover {
+          text-decoration: underline;
         }
       `}</style>
     </>
