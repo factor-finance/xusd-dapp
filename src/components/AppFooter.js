@@ -138,7 +138,7 @@ export default function Footer({ onLocale, locale, dapp }) {
                 useNativeSelectbox={false}
               />
               <a
-                href="https://github.com/factor-finance"
+                href="https://factor.finance"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="nav-link"
