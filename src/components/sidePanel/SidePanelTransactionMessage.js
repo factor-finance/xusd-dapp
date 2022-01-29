@@ -662,7 +662,6 @@ const SidePanelTransactionMessage = ({
         .contents-body {
           opacity: 1;
           max-height: 300px;
-          margin-top: 12px;
         }
 
         .animate .contents-body.hidden {
