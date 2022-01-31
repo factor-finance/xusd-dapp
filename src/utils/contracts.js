@@ -175,7 +175,7 @@ export async function setupContracts(account, library, chainId, fetchId) {
     )
     const rebasingCreditsPerToken =
       rebasingCreditsPerTokenHex === '0x'
-        ? '0.0000001' // initial value
+        ? BigNumber.from('0x0de0b6b3a7640000') // 1e18
         : ethers.utils.formatUnits(rebasingCreditsPerTokenHex, 16)
     if (block === 'latest') {
       ContractStore.update((s) => {
@@ -194,15 +194,15 @@ export async function setupContracts(account, library, chainId, fetchId) {
         .block
       let past
       past = await _rebasingCreditsPerToken(pastBlock)
-      // resolution upgrade shim on Fuji removable after 30 days from Jan 22.
-      if (pastBlock < 5175854) {
+
+      if (pastBlock < 5175854 && chainId == 43113) {
+        // resolution upgrade shim on Fuji removable after 30 days from Jan 22.
         past = past * BigNumber.from('0x3B9ACA00') // 1e9
       }
       const current = await _rebasingCreditsPerToken(block)
       const ratio = past / current
       const apr = ((ratio - 1) * 100 * 365.25) / days
       const apy = aprToApy(apr, days)
-
       ContractStore.update((s) => {
         s.apy = apy
       })
