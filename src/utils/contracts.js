@@ -175,8 +175,8 @@ export async function setupContracts(account, library, chainId, fetchId) {
     )
     const rebasingCreditsPerToken =
       rebasingCreditsPerTokenHex === '0x'
-        ? BigNumber.from('0x0de0b6b3a7640000') // 1e18
-        : ethers.utils.formatUnits(rebasingCreditsPerTokenHex, 16)
+        ? ethers.utils.formatUnits(BigNumber.from('0x0de0b6b3a7640000'), 16) // 1e18
+        : ethers.utils.formatUnits(rebasingCreditsPerTokenHex, 16) // 16 decimals to make it ~100
     if (block === 'latest') {
       ContractStore.update((s) => {
         s.rebasingCreditsPerToken = rebasingCreditsPerToken
@@ -195,14 +195,22 @@ export async function setupContracts(account, library, chainId, fetchId) {
       let past
       past = await _rebasingCreditsPerToken(pastBlock)
 
+      // remove elapsedDays after Feb 25th 2022
+      const elapsedDays =
+        moment().subtract(days, 'days') < moment('20220125', 'YYYYMMDD')
+          ? moment().diff(
+              moment(chainId == 43114 ? '20220125' : '20220122', 'YYYYMMDD'),
+              'days'
+            )
+          : days
       if (pastBlock < 5175854 && chainId == 43113) {
         // resolution upgrade shim on Fuji removable after 30 days from Jan 22.
         past = past * BigNumber.from('0x3B9ACA00') // 1e9
       }
       const current = await _rebasingCreditsPerToken(block)
       const ratio = past / current
-      const apr = ((ratio - 1) * 100 * 365.25) / days
-      const apy = aprToApy(apr, days)
+      const apr = ((ratio - 1) * 100 * 365.25) / elapsedDays
+      const apy = aprToApy(apr, elapsedDays)
       ContractStore.update((s) => {
         s.apy = apy
       })
