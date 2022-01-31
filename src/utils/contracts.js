@@ -193,28 +193,25 @@ export async function setupContracts(account, library, chainId, fetchId) {
     try {
       const block = await jsonRpcProvider.getBlockNumber()
 
+      const startDate = chainId == 43114 ? '20220125' : '20220122'
+      days = Math.min(
+        moment().diff(moment(startDate, 'YYYYMMDD'), 'days'),
+        days
+      )
+
       const dater = new EthDater(jsonRpcProvider)
       const pastBlock = (await dater.getDate(moment().subtract(days, 'days')))
         .block
-      let past
-      past = await _rebasingCreditsPerToken(pastBlock)
-
-      // remove elapsedDays after Feb 25th 2022
-      const elapsedDays =
-        moment().subtract(days, 'days') < moment('20220125', 'YYYYMMDD')
-          ? moment().diff(
-              moment(chainId == 43114 ? '20220125' : '20220122', 'YYYYMMDD'),
-              'days'
-            )
-          : days
+      let past = await _rebasingCreditsPerToken(pastBlock)
       if (pastBlock < 5175854 && chainId == 43113) {
         // resolution upgrade shim on Fuji removable after 30 days from Jan 22.
         past = past * BigNumber.from('0x3B9ACA00') // 1e9
       }
+
       const current = await _rebasingCreditsPerToken(block)
       const ratio = past / current
-      const apr = ((ratio - 1) * 100 * 365.25) / elapsedDays
-      const apy = aprToApy(apr, elapsedDays)
+      const apr = ((ratio - 1) * 100 * 365.25) / days
+      const apy = aprToApy(apr, days)
       ContractStore.update((s) => {
         s.apy = apy
       })
