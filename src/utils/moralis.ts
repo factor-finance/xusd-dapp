@@ -39,3 +39,15 @@ export async function accountLifetimeYield(
 
   return parseFloat(ethers.utils.formatUnits(lifetimeYield, 18))
 }
+
+export async function totalSupplyEvents(): Promise<any[]> {
+  await init()
+
+  const XUSDProxyTotalSupplyUpdated = Moralis.Object.extend(
+    'XUSDProxyTotalSupplyUpdated'
+  )
+  const query = new Moralis.Query(XUSDProxyTotalSupplyUpdated)
+  const results = await query.find()
+
+  return results
+}

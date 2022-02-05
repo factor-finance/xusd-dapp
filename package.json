@@ -14,8 +14,8 @@
     "lint:js": "eslint \"**/*.js\"",
     "start:development": "NODE_ENV=development ETHEREUM_RPC_PROVIDER=http://localhost:8545 next dev",
     "start:production": "NODE_ENV=production next start -p 8080",
-    "prettier": "prettier --write \"src/**/*.js\" \"src/**/*.ts\" \"pages/**/*.js\"",
-    "prettier:check": "prettier -c \"src/**/*.js\" \"src/**/*.ts\" \"pages/**/*.js\"",
+    "prettier": "prettier --write \"src/**/*.js\" \"src/**/*.ts\" \"pages/**/*.js\" \"pages/**/*.tsx\"",
+    "prettier:check": "prettier -c \"src/**/*.js\" \"src/**/*.ts\" \"pages/**/*.js\" \"pages/**/*.tsx\"",
     "prepare": "husky install .husky"
   },
   "dependencies": {
