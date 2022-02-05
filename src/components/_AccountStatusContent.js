@@ -11,6 +11,7 @@ import { currencies } from 'constants/Contract'
 import { formatCurrency } from 'utils/math'
 import { connectorNameIconMap, getConnectorIcon } from 'utils/connectors'
 import analytics from 'utils/analytics'
+import { coinDisplayName } from 'utils/coins'
 
 const AccountStatusContent = ({ className, onOpen }) => {
   const web3react = useWeb3React()
@@ -68,7 +69,8 @@ const AccountStatusContent = ({ className, onOpen }) => {
                       }`}
                       key={currency}
                     >
-                      {formatCurrency(get(balances, currency, 0), 2)} {currency}
+                      {formatCurrency(get(balances, currency, 0), 2)}{' '}
+                      {coinDisplayName(currency)}
                     </div>
                   ))}
                 </div>
@@ -186,7 +188,6 @@ const AccountStatusContent = ({ className, onOpen }) => {
           font-size: 12px;
           color: #8293a4;
           margin-bottom: 5px;
-          text-transform: uppercase;
         }
 
         .currency.last {
