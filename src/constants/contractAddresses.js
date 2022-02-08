@@ -16,6 +16,9 @@ addresses.mainnet.DAI = addresses.mainnet.DAIe
 addresses.mainnet.USDC = addresses.mainnet.USDCe
 addresses.mainnet.USDT = addresses.mainnet.USDTe
 
+addresses.mainnet.USDC_native = '0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e'
+addresses.mainnet.USDT_native = '0x9702230a8ea53601f5cd2dc00fdbc13d4df4a8c7'
+
 // Chainlink feeds
 // Source https://data.chain.link/avalanche/mainnet
 addresses.mainnet.chainlinkAVAX_USD =

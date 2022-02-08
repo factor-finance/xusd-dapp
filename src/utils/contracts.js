@@ -105,7 +105,7 @@ export async function setupContracts(account, library, chainId, fetchId) {
   const xusdProxy = contracts['XUSDProxy']
   const vaultProxy = contracts['VaultProxy']
 
-  let usdt, dai, tusd, usdc, xusd, vault, chainlinkEthAggregator
+  let usdt, dai, tusd, usdc, usdc_native, xusd, vault, chainlinkEthAggregator
 
   let iVaultJson, chainlinkAggregatorV3Json
 
@@ -121,6 +121,7 @@ export async function setupContracts(account, library, chainId, fetchId) {
   xusd = getContract(xusdProxy.address, network.contracts['XUSD'].abi)
   usdt = getContract(addresses[networkKey].USDT, usdtAbi.abi)
   usdc = getContract(addresses[networkKey].USDC, usdcAbi.abi)
+  usdc_native = getContract(addresses[networkKey].USDC_native, usdcAbi.abi)
   dai = getContract(addresses[networkKey].DAI, daiAbi.abi)
 
   chainlinkEthAggregator = getContract(
@@ -315,6 +316,7 @@ export async function setupContracts(account, library, chainId, fetchId) {
     dai,
     tusd,
     usdc,
+    usdc_native,
     xusd,
     vault,
     chainlinkEthAggregator,
@@ -327,6 +329,10 @@ export async function setupContracts(account, library, chainId, fetchId) {
     },
     usdc: {
       contract: usdc,
+      decimals: 6,
+    },
+    usdc_native: {
+      contract: usdc_native,
       decimals: 6,
     },
     dai: {
