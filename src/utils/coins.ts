@@ -1,6 +1,7 @@
 const displayName = {
   usdt: 'USDT.e',
   usdc: 'USDC.e',
+  usdc_native: 'USDC',
   dai: 'DAI.e',
   xusd: 'XUSD',
   mix: 'Mix',
