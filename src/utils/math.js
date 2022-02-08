@@ -166,6 +166,9 @@ export function checkValidInputForCoin(amount, coin) {
     case 'usdc':
       decimals = 6
       break
+    case 'usdc_native':
+      decimals = 6
+      break
     case 'usdt':
       decimals = 6
       break
