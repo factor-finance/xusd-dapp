@@ -8,4 +8,7 @@ export const currencies = {
   usdc: {
     localStorageSettingKey: 'usdc-manual-setting',
   },
+  usdc_native: {
+    localStorageSettingKey: 'usdc_native-manual-setting',
+  },
 }

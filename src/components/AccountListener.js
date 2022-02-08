@@ -70,26 +70,33 @@ const AccountListener = (props) => {
       return
     }
 
-    const { usdt, dai, usdc, xusd, vault } = contracts
+    const { usdt, dai, usdc, usdc_native, xusd, vault } = contracts
 
     const loadbalancesDev = async () => {
       try {
-        const [xusdBalance, usdtBalance, daiBalance, usdcBalance] =
-          await Promise.all([
-            /* IMPORTANT (!) production uses a different method to load balances. Any changes here need to
-             * also happen in production version of this function.
-             */
-            displayCurrency(await xusd.balanceOf(account), xusd),
-            displayCurrency(await usdt.balanceOf(account), usdt),
-            displayCurrency(await dai.balanceOf(account), dai),
-            displayCurrency(await usdc.balanceOf(account), usdc),
-          ])
+        const [
+          xusdBalance,
+          usdtBalance,
+          daiBalance,
+          usdcBalance,
+          usdcNativeBalance,
+        ] = await Promise.all([
+          /* IMPORTANT (!) production uses a different method to load balances. Any changes here need to
+           * also happen in production version of this function.
+           */
+          displayCurrency(await xusd.balanceOf(account), xusd),
+          displayCurrency(await usdt.balanceOf(account), usdt),
+          displayCurrency(await dai.balanceOf(account), dai),
+          displayCurrency(await usdc.balanceOf(account), usdc),
+          displayCurrency(await usdc_native.balanceOf(account), usdc_native),
+        ])
 
         AccountStore.update((s) => {
           s.balances = {
             usdt: usdtBalance,
             dai: daiBalance,
             usdc: usdcBalance,
+            usdc_native: usdcNativeBalance,
             xusd: xusdBalance,
           }
         })
@@ -184,11 +191,16 @@ const AccountListener = (props) => {
           usdtAllowanceVault,
           daiAllowanceVault,
           usdcAllowanceVault,
+          usdcNativeAllowanceVault,
           xusdAllowanceVault,
         ] = await Promise.all([
           displayCurrency(await usdt.allowance(account, vault.address), usdt),
           displayCurrency(await dai.allowance(account, vault.address), dai),
           displayCurrency(await usdc.allowance(account, vault.address), usdc),
+          displayCurrency(
+            await usdc_native.allowance(account, vault.address),
+            usdc_native
+          ),
           displayCurrency(await xusd.allowance(account, vault.address), xusd),
         ])
 
@@ -202,6 +214,9 @@ const AccountListener = (props) => {
             },
             usdc: {
               vault: usdcAllowanceVault,
+            },
+            usdc_native: {
+              vault: usdcNativeAllowanceVault,
             },
             xusd: {
               vault: xusdAllowanceVault,

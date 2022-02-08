@@ -261,8 +261,15 @@ const SwapCurrencyPill = ({
 }) => {
   const coinBalances = useStoreState(AccountStore, (s) => s.balances)
   const [error, setError] = useState(null)
-  const stableCoinMintOptions = ['xusd', 'dai', 'usdt', 'usdc']
-  const coinRedeemOptions = ['xusd', 'mix', 'dai', 'usdt', 'usdc']
+  const stableCoinMintOptions = ['xusd', 'dai', 'usdt', 'usdc', 'usdc_native']
+  const coinRedeemOptions = [
+    'xusd',
+    'mix',
+    'dai',
+    'usdt',
+    'usdc',
+    'usdc_native',
+  ]
 
   const bottomItem = !topItem
   const showXusd =

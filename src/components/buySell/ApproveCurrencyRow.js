@@ -29,7 +29,7 @@ const ApproveCurrencyRow = ({
   const connectorName = useStoreState(AccountStore, (s) => s.connectorName)
   const connectorIcon = getConnectorIcon(connectorName)
 
-  const { vault, flipper, usdt, dai, usdc, xusd } = useStoreState(
+  const { vault, flipper, usdt, dai, usdc, usdc_native, xusd } = useStoreState(
     ContractStore,
     (s) => s.contracts || {}
   )
@@ -46,6 +46,8 @@ const ApproveCurrencyRow = ({
       setContract(usdt)
     } else if (coin === 'usdc') {
       setContract(usdc)
+    } else if (coin === 'usdc_native') {
+      setContract(usdc_native)
     } else if (coin === 'xusd') {
       setContract(xusd)
     }

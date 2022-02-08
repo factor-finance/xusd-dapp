@@ -93,25 +93,9 @@ const SwapHomepage = ({
   const [selectedBuyCoinAmount, setSelectedBuyCoinAmount] = useState('')
   const [selectedRedeemCoinAmount, setSelectedRedeemCoinAmount] = useState('')
   const [showApproveModal, _setShowApproveModal] = useState(false)
-  const {
-    vault: vaultContract,
-    usdt: usdtContract,
-    dai: daiContract,
-    usdc: usdcContract,
-    xusd: xusdContract,
-    flipper,
-  } = useStoreState(ContractStore, (s) => s.contracts || {})
 
   const [formError, setFormError] = useState(null)
   const [buyFormWarnings, setBuyFormWarnings] = useState({})
-  const totalStablecoins =
-    parseFloat(balances['dai']) +
-    parseFloat(balances['usdt']) +
-    parseFloat(balances['usdc'])
-  const stableCoinsLoaded =
-    typeof balances['dai'] === 'string' &&
-    typeof balances['usdt'] === 'string' &&
-    typeof balances['usdc'] === 'string'
   const {
     setPriceToleranceValue,
     priceToleranceValue,
@@ -238,12 +222,15 @@ const SwapHomepage = ({
                 dai: parseFloat(a.dai) + parseFloat(b.dai),
                 usdt: parseFloat(a.usdt) + parseFloat(b.usdt),
                 usdc: parseFloat(a.usdc) + parseFloat(b.usdc),
+                usdc_native:
+                  parseFloat(a.usdc_native) + parseFloat(b.usdc_native),
               }
             },
             {
               dai: 0,
               usdt: 0,
               usdc: 0,
+              usdc_native: 0,
             }
           )
 

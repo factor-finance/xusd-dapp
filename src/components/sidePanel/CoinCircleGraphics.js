@@ -52,7 +52,8 @@ const CoinCircleGraphics = ({
               </div>
             )}
             {(drawType === 'all-same' ||
-              (Array.isArray(coin) && coin.length === 3)) && (
+              // show 3 icons even if more coins involved
+              (Array.isArray(coin) && coin.length >= 3)) && (
               <>
                 <img
                   className={`coin coin-3-1 ${

@@ -134,6 +134,7 @@ export async function setupContracts(account, library, chainId, fetchId) {
       dai: dai,
       usdt: usdt,
       usdc: usdc,
+      usdc_native: usdc_native,
     }
     const xusdExchangeRates = {
       ...ContractStore.currentState.xusdExchangeRates,
@@ -230,7 +231,7 @@ export async function setupContracts(account, library, chainId, fetchId) {
       const totalSupply = await xusd.totalSupply()
 
       const coinBalances = await Promise.all(
-        ['usdt', 'usdc', 'dai'].map(async (coinName) => {
+        ['usdt', 'usdc', 'dai', 'usdc_native'].map(async (coinName) => {
           return ethers.utils.parseUnits(
             ethers.utils.formatUnits(
               await coinInfoList[coinName].contract.balanceOf(vault.address),
