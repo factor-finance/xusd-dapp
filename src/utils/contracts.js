@@ -193,7 +193,7 @@ export async function setupContracts(account, library, chainId, fetchId) {
     try {
       const block = await jsonRpcProvider.getBlockNumber()
 
-      const startDate = chainId == 43114 ? '20220125' : '20220122'
+      const startDate = chainId == 43114 ? '20220208' : '20220122'
       days = Math.min(
         moment().diff(moment(startDate, 'YYYYMMDD'), 'days'),
         days
