@@ -196,11 +196,11 @@ export async function setupContracts(account, library, chainId, fetchId) {
       const block = await jsonRpcProvider.getBlockNumber()
 
       const startDate = chainId == 43114 ? '20220208' : '20220122'
-      days = Math.min(
-        moment().diff(moment(startDate, 'YYYYMMDD'), 'days'),
-        days
-      )
-
+      days =
+        Math.min(
+          moment().diff(moment(startDate, 'YYYYMMDD'), 'hours'),
+          days * 24
+        ) / 24
       const dater = new EthDater(jsonRpcProvider)
       const pastBlock = (await dater.getDate(moment().subtract(days, 'days')))
         .block
@@ -209,7 +209,6 @@ export async function setupContracts(account, library, chainId, fetchId) {
         // resolution upgrade shim on Fuji removable after 30 days from Jan 22.
         past = past * BigNumber.from('0x3B9ACA00') // 1e9
       }
-
       const current = await _rebasingCreditsPerToken(block)
       const ratio = past / current
       const apr = ((ratio - 1) * 100 * 365.25) / days
@@ -221,7 +220,6 @@ export async function setupContracts(account, library, chainId, fetchId) {
       console.error('Failed to fetch the APY', err)
     }
   }
-
   const fetchCreditsPerToken = async () => {
     try {
       const creditsPerToken = await xusd.rebasingCreditsPerToken()
