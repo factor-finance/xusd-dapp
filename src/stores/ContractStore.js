@@ -17,6 +17,10 @@ const ContractStore = new Store({
       mint: 1,
       redeem: 1,
     },
+    usdc_native: {
+      mint: 1,
+      redeem: 1,
+    },
   },
   // 'null' -> default zero state, 'loading' -> loading the estimates
   swapEstimations: null,
@@ -27,6 +31,10 @@ const ContractStore = new Store({
       decimals: 6,
     },
     usdc: {
+      contract: null,
+      decimals: 6,
+    },
+    usdc_native: {
       contract: null,
       decimals: 6,
     },

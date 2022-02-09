@@ -14,7 +14,7 @@ const SidePanelWelcomeMessage = () => {
   )
   const balances = useStoreState(AccountStore, (s) => s.balances)
 
-  const xusdToBuy = ['dai', 'usdt', 'usdc']
+  const xusdToBuy = ['dai', 'usdt', 'usdc', 'usdc_native']
     .map((coin) => balances[coin] * xusdExchangeRates[coin].mint)
     .reduce((a, b) => a + b)
 
@@ -39,6 +39,11 @@ const SidePanelWelcomeMessage = () => {
                   ' USDT.e, ' +
                   fbt.param('usdc-coin', formatCurrency(balances['usdc'], 0)) +
                   ' USDC.e, and ' +
+                  fbt.param(
+                    'usdc_native-coin',
+                    formatCurrency(balances['usdc_native'], 0)
+                  ) +
+                  ' USDC, and ' +
                   fbt.param('dai-coin', formatCurrency(balances['dai'], 0)) +
                   ' DAI.e in your wallet.',
                 'welcome-message-buying-power'

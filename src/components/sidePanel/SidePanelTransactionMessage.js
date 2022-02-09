@@ -72,7 +72,8 @@ const SidePanelTransactionMessage = ({
     transaction.data.xusd !== undefined &&
     transaction.data.dai !== undefined &&
     transaction.data.usdt !== undefined &&
-    transaction.data.usdc !== undefined
+    transaction.data.usdc !== undefined &&
+    transaction.data.usdc_native !== undefined
   const redeemDataAvailable = isRedeemTransaction && coinDataPresent
   const mintDataAvailable = isMintTransaction && coinDataPresent
 
@@ -293,7 +294,9 @@ const SidePanelTransactionMessage = ({
                   <CoinCircleGraphics
                     transaction={transaction}
                     coin={
-                      coin === 'mix' ? ['dai', 'usdt', 'usdc'] : coin.split(',')
+                      coin === 'mix'
+                        ? ['dai', 'usdt', 'usdc', 'usdc_native']
+                        : coin.split(',')
                     }
                     animate={animate}
                     showTxStatusIcon={false}
@@ -468,6 +471,17 @@ const SidePanelTransactionMessage = ({
                           {coinDisplayName('usdc')}
                         </div>
                       )}
+                      {parseFloat(transaction.data.usdc_native) > 0 && (
+                        <div>
+                          {formatCurrencyConditional(
+                            transaction.data.usdc_native,
+                            100,
+                            2,
+                            0
+                          )}{' '}
+                          {coinDisplayName('usdc_native')}
+                        </div>
+                      )}
                     </>
                   )}
                 </div>
@@ -508,6 +522,17 @@ const SidePanelTransactionMessage = ({
                             0
                           )}{' '}
                           {coinDisplayName('usdc')}
+                        </div>
+                      )}
+                      {parseFloat(transaction.data.usdc_native) > 0 && (
+                        <div>
+                          {formatCurrencyConditional(
+                            transaction.data.usdc_native,
+                            100,
+                            2,
+                            0
+                          )}{' '}
+                          {coinDisplayName('usdc_native')}
                         </div>
                       )}
                     </>
