@@ -84,11 +84,13 @@ const AccountListener = (props) => {
           /* IMPORTANT (!) production uses a different method to load balances. Any changes here need to
            * also happen in production version of this function.
            */
-          displayCurrency(await xusd.balanceOf(account), xusd),
-          displayCurrency(await usdt.balanceOf(account), usdt),
-          displayCurrency(await dai.balanceOf(account), dai),
-          displayCurrency(await usdc.balanceOf(account), usdc),
-          displayCurrency(await usdc_native.balanceOf(account), usdc_native),
+          xusd.balanceOf(account).then((bal) => displayCurrency(bal, xusd)),
+          usdt.balanceOf(account).then((bal) => displayCurrency(bal, usdt)),
+          dai.balanceOf(account).then((bal) => displayCurrency(bal, dai)),
+          usdc.balanceOf(account).then((bal) => displayCurrency(bal, usdc)),
+          usdc_native
+            .balanceOf(account)
+            .then((bal) => displayCurrency(bal, usdc_native)),
         ])
 
         AccountStore.update((s) => {
@@ -116,7 +118,13 @@ const AccountListener = (props) => {
         method: 'eth_getTokenBalances',
         params: [
           account,
-          [xusd.address, usdt.address, dai.address, usdc.address],
+          [
+            xusd.address,
+            usdt.address,
+            dai.address,
+            usdc.address,
+            usdc_native.address,
+          ],
         ],
         id: jsonCallId.toString(),
       }
@@ -139,6 +147,7 @@ const AccountListener = (props) => {
           { name: 'usdt', decimals: 6, contract: usdt },
           { name: 'dai', decimals: 18, contract: dai },
           { name: 'usdc', decimals: 6, contract: usdc },
+          { name: 'usdc_native', decimals: 6, contract: usdc_native },
         ]
 
         allContractData.forEach((contractData) => {
@@ -188,20 +197,27 @@ const AccountListener = (props) => {
 
       try {
         const [
+          xusdAllowanceVault,
           usdtAllowanceVault,
           daiAllowanceVault,
           usdcAllowanceVault,
           usdcNativeAllowanceVault,
-          xusdAllowanceVault,
         ] = await Promise.all([
-          displayCurrency(await usdt.allowance(account, vault.address), usdt),
-          displayCurrency(await dai.allowance(account, vault.address), dai),
-          displayCurrency(await usdc.allowance(account, vault.address), usdc),
-          displayCurrency(
-            await usdc_native.allowance(account, vault.address),
-            usdc_native
-          ),
-          displayCurrency(await xusd.allowance(account, vault.address), xusd),
+          xusd
+            .allowance(account, vault.address)
+            .then((bal) => displayCurrency(bal, xusd)),
+          usdt
+            .allowance(account, vault.address)
+            .then((bal) => displayCurrency(bal, usdt)),
+          dai
+            .allowance(account, vault.address)
+            .then((bal) => displayCurrency(bal, dai)),
+          usdc
+            .allowance(account, vault.address)
+            .then((bal) => displayCurrency(bal, usdc)),
+          usdc_native
+            .allowance(account, vault.address)
+            .then((bal) => displayCurrency(bal, usdc_native)),
         ])
 
         AccountStore.update((s) => {
