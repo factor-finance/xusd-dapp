@@ -93,7 +93,9 @@ const TransactionListener = ({ rpcProvider }) => {
     const xusd = ContractStore.currentState.contracts.xusd
 
     const handlePossibleReplacedTransaction = async (eventTransactionHash) => {
-      const eventTx = await wsProvider.getTransaction(eventTransactionHash)
+      // NOTE: originally used wsProvider, but eth_getTransactionByHash does
+      //       not exist on avax mainnet websocket as of Feb 2022.
+      const eventTx = await rpcProvider.getTransaction(eventTransactionHash)
 
       if (eventTx.from.toUpperCase() === account.toUpperCase()) {
         const nonMinedTx = TransactionStore.currentState.transactions.filter(
