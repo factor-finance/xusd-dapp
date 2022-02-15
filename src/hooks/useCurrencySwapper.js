@@ -27,7 +27,13 @@ const useCurrencySwapper = ({
     usdc: usdcContract,
     dai: daiContract,
     flipper,
+    curveRegistryExchange,
+    curveXUSDMetaPool,
   } = useStoreState(ContractStore, (s) => s.contracts)
+  const curveMetapoolUnderlyingCoins = useStoreState(
+    ContractStore,
+    (s) => s.curveMetapoolUnderlyingCoins
+  )
 
   const coinInfoList = useStoreState(ContractStore, (s) => s.coinInfoList)
 
@@ -235,6 +241,52 @@ const useCurrencySwapper = ({
     }
   }
 
+  const _swapCurve = async (swapAmount, minSwapAmount, isGasEstimate) => {
+    return await (isGasEstimate
+      ? curveXUSDMetaPool.estimateGas
+      : curveXUSDMetaPool
+    ).exchange_underlying(
+      curveMetapoolUnderlyingCoins.indexOf(coinContract.address.toLowerCase()),
+      curveMetapoolUnderlyingCoins.indexOf(
+        coinToReceiveContract.address.toLowerCase()
+      ),
+      swapAmount,
+      minSwapAmount
+    )
+  }
+
+  const swapCurveGasEstimate = async (swapAmount, minSwapAmount) => {
+    return (await _swapCurve(swapAmount, minSwapAmount, true)).toNumber()
+  }
+
+  const swapCurve = async () => {
+    const { minSwapAmount: minSwapAmountReceived } = calculateSwapAmounts(
+      outputAmount,
+      coinToReceiveDecimals,
+      priceToleranceValue
+    )
+
+    return {
+      result: await _swapCurve(swapAmount, minSwapAmountReceived, false),
+      swapAmount,
+      minSwapAmount,
+    }
+  }
+
+  const quoteCurve = async (swapAmount) => {
+    const coinsReceived = await curveRegistryExchange.get_exchange_amount(
+      addresses.mainnet.CurveXUSDMetaPool,
+      coinContract.address,
+      coinToReceiveContract.address,
+      swapAmount,
+      {
+        gasLimit: 1000000,
+      }
+    )
+
+    return coinsReceived
+  }
+
   return {
     allowancesLoaded,
     needsApproval,
@@ -243,6 +295,9 @@ const useCurrencySwapper = ({
     redeemVault,
     redeemVaultGasEstimate,
     swapFlipper,
+    quoteCurve,
+    swapCurve,
+    swapCurveGasEstimate,
   }
 }
 
