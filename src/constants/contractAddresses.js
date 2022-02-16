@@ -25,7 +25,7 @@ addresses.mainnet.chainlinkAVAX_USD =
   '0x0a77230d17318075983913bc2145db16c7366156'
 
 addresses.mainnet.CurveAddressProvider =
-  '0xb17b674D9c5CB2e441F8e196a2f048A81355d031'
+  '0x0000000022d53366457f9d5e68ec105046fc4383'
 addresses.mainnet.CurveXUSDMetaPool =
   '0x7F2d1C7b8911901de7c9785d6E7A7A10d8dEff66'
 
