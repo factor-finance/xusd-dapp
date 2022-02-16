@@ -9,6 +9,7 @@ import {
   mintPercentGasLimitBuffer,
   redeemPercentGasLimitBuffer,
 } from 'utils/constants'
+import addresses from 'constants/contractAddresses'
 
 import { calculateSwapAmounts } from 'utils/math'
 
