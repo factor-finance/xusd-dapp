@@ -24,7 +24,8 @@ addresses.mainnet.USDT_native = '0x9702230a8ea53601f5cd2dc00fdbc13d4df4a8c7'
 addresses.mainnet.chainlinkAVAX_USD =
   '0x0a77230d17318075983913bc2145db16c7366156'
 
-addresses.mainnet.CurveAddressProvider = '__address__CurveAddressProvider'
+addresses.mainnet.CurveAddressProvider =
+  '0xb17b674D9c5CB2e441F8e196a2f048A81355d031'
 addresses.mainnet.CurveXUSDMetaPool =
   '0x7F2d1C7b8911901de7c9785d6E7A7A10d8dEff66'
 
