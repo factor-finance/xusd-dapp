@@ -311,31 +311,22 @@ const useSwapEstimator = ({
         return {
           canDoSwap: true,
           /* This estimate is from the few ones observed on the mainnet:
-           * https://etherscan.io/tx/0x3ff7178d8be668649928d86863c78cd249224211efe67f23623017812e7918bb
-           * https://etherscan.io/tx/0xbf033ffbaf01b808953ca1904d3b0110b50337d60d89c96cd06f3f9a6972d3ca
-           * https://etherscan.io/tx/0x77d98d0307b53e81f50b39132e038a1c6ef87a599a381675ce44038515a04738
-           * https://etherscan.io/tx/0xbce1a2f1e76d4b4f900b3952f34f5f53f8be4a65ccff348661d19b9a3827aa04
-           *
+           * https://snowtrace.io/tx/0xe3cbdbfa6e08bebd5dcb5acf3736859b23f101ff63dfbd8f6cd6d6440f3ae1bb
            */
-          gasUsed: 520000,
+          gasUsed: 1200000,
           amountReceived,
         }
       }
-
-      const {
-        swapAmount: swapAmountQuoted,
-        minSwapAmount: minSwapAmountQuoted,
-      } = calculateSwapAmounts(
-        amountReceived,
-        coinToReceiveDecimals,
-        priceToleranceValue
-      )
-
-      const gasEstimate = await swapCurveGasEstimate(
-        swapAmount,
-        minSwapAmountQuoted
-      )
-
+      // TODO get gasEstimate working in fork mode
+      let gasEstimate
+      try {
+        gasEstimate = await swapCurveGasEstimate(swapAmount, minSwapAmount)
+      } catch (e) {
+        console.error(
+          `Unexpected error estimating curve swap gas: ${e.message}`
+        )
+        gasEstimate = 1200000
+      }
       return {
         canDoSwap: true,
         gasUsed: gasEstimate,

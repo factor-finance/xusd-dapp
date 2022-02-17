@@ -84,6 +84,7 @@ const useCurrencySwapper = ({
     const nameMaps = {
       vault: 'vault',
       flipper: 'flipper',
+      curve: 'curve',
     }
 
     const coinNeedingApproval = swapMode === 'mint' ? selectedCoin : 'xusd'
@@ -247,9 +248,11 @@ const useCurrencySwapper = ({
       ? curveXUSDMetaPool.estimateGas
       : curveXUSDMetaPool
     ).exchange_underlying(
-      curveMetapoolUnderlyingCoins.indexOf(coinContract.address.toLowerCase()),
       curveMetapoolUnderlyingCoins.indexOf(
-        coinToReceiveContract.address.toLowerCase()
+        _maybeToAvToken(coinContract.address).toLowerCase()
+      ),
+      curveMetapoolUnderlyingCoins.indexOf(
+        _maybeToAvToken(coinToReceiveContract.address).toLowerCase()
       ),
       swapAmount,
       minSwapAmount
@@ -274,17 +277,29 @@ const useCurrencySwapper = ({
     }
   }
 
+  const _maybeToAvToken = (address) => {
+    // TODO: do this not in a stupid way, perhaps using coins and underlying coins call?
+    if (address == usdcContract.address) {
+      return '0x46a51127c3ce23fb7ab1de06226147f446e4a857'
+    } else if (address == usdtContract.address) {
+      return '0x532e6537fea298397212f09a61e03311686f548e'
+    } else if (address == daiContract.address) {
+      return '0x47afa96cdc9fab46904a55a6ad4bf6660b53c38a'
+    } else {
+      return address
+    }
+  }
+
   const quoteCurve = async (swapAmount) => {
     const coinsReceived = await curveRegistryExchange.get_exchange_amount(
       addresses.mainnet.CurveXUSDMetaPool,
-      coinContract.address,
-      coinToReceiveContract.address,
+      _maybeToAvToken(coinContract.address),
+      _maybeToAvToken(coinToReceiveContract.address),
       swapAmount,
       {
         gasLimit: 1000000,
       }
     )
-
     return coinsReceived
   }
 
