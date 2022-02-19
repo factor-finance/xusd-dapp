@@ -66,7 +66,7 @@ export default function APY({ locale, onLocale }) {
           <BalanceHeader />
 
           <div className="apy-table">
-            <p>Daily APY for the last thirty days:</p>
+            <p>Realized APY for the last thirty days:</p>
 
             <table className="table table-right">
               <thead className="header-text">
