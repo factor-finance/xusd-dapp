@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { fbt } from 'fbt-runtime'
-const moment = require('moment')
+import moment from 'moment'
+import { ethers } from 'ethers'
 
 import Layout from 'components/layout'
 import Nav from 'components/Nav'
@@ -19,8 +20,23 @@ function supplyEventsAddApy(supplyEvents) {
     const days = moment(currentDate).diff(moment(pastDate), 'hours') / 24
     const apr = ((ratio - 1) * 100 * 365.25) / days
     const apy = aprToApy(apr, days)
-    supplyEvents[i].apy = apy
+    // show apy as xx.xx%
+    supplyEvents[i].apy = (apy * 100).toFixed(2)
   }
+}
+
+function bigNum18(value: string, fixed: number = 0): string {
+  return parseFloat(ethers.utils.formatUnits(value, 18)).toFixed(fixed)
+}
+
+function yieldFixed(
+  { rebasingCreditsPerToken, totalSupply },
+  fixed: number = 2
+): string {
+  return (
+    (1 - parseFloat(ethers.utils.formatUnits(rebasingCreditsPerToken, 18))) *
+    parseFloat(ethers.utils.formatUnits(totalSupply, 18))
+  ).toFixed(fixed)
 }
 
 export default function APY({ locale, onLocale }) {
@@ -43,22 +59,17 @@ export default function APY({ locale, onLocale }) {
           <BalanceHeader />
 
           <div className="apy-table">
-            <p className="mt-4 mb-0">Daily APY for the last thirty days:</p>
+            <p>Daily APY for the last thirty days:</p>
 
             <table className="table table-right">
               <thead className="header-text">
                 <tr>
                   <th>Block</th>
                   <th>APY</th>
-                  <th>Multiplier</th>
-                  <th>Unboosted</th>
                   <th>Aprx. Yield</th>
-                  <th>XUSD Supply</th>
-                  <th>Backing Supply</th>
+                  <th>XUSD Total</th>
                   <th>Rebasing Supply</th>
                   <th>Non-Rebasing Supply</th>
-                  <th>%</th>
-                  <th>Ratio</th>
                 </tr>
               </thead>
               <tbody>
@@ -66,25 +77,17 @@ export default function APY({ locale, onLocale }) {
                   return (
                     <tr key={supplyEvent.block_number}>
                       <td>{supplyEvent.block_number}</td>
-                      <td>{supplyEvent.apy}%</td>
-                      <td>??x</td>
-                      <td>??%</td>
-                      <td>??%</td>
-                      <td>{supplyEvent.totalSupply}</td>
-                      <td>{supplyEvent.totalSupply + 0 /*pending yield*/}</td>
-                      <td>{supplyEvent.rebasingCredits}</td>
                       <td>
-                        {supplyEvent.totalSupply - supplyEvent.rebasingCredits}
+                        <strong>{supplyEvent.apy}%</strong>
                       </td>
                       <td>
-                        {supplyEvent.rebasingCredits /
-                          (supplyEvent.totalSupply -
-                            supplyEvent.rebasingCredits)}
+                        <strong>{yieldFixed(supplyEvent)}</strong>
                       </td>
+                      <td>{bigNum18(supplyEvent.totalSupply)}</td>
+                      <td>{bigNum18(supplyEvent.rebasingCredits)}</td>
                       <td>
-                        {supplyEvent.rebasingCredits /
-                          (supplyEvent.totalSupply -
-                            supplyEvent.rebasingCredits)}
+                        {parseInt(bigNum18(supplyEvent.totalSupply)) -
+                          parseInt(bigNum18(supplyEvent.rebasingCredits))}
                       </td>
                     </tr>
                   )
@@ -98,30 +101,16 @@ export default function APY({ locale, onLocale }) {
         .apy-table {
           min-height: 470px;
           height: 100%;
-          padding: 70px;
+          padding: 20px;
           border-radius: 0 0 10px 10px;
           border-top: solid 1px #cdd7e0;
           background-color: #fafbfc;
         }
 
         .header-text {
-          font-size: 22px;
-          line-height: 0.86;
-          text-align: center;
-          color: black;
+          font-size: 1.2rem;
           margin-top: 23px;
           margin-bottom: 10px;
-        }
-
-        .subtext {
-          font-size: 14px;
-          line-height: 1.36;
-          text-align: center;
-          color: #8293a4;
-          margin-bottom: 50px;
-        }
-
-        @media (max-width: 799px) {
         }
       `}</style>
     </>
