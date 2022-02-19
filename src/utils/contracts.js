@@ -463,9 +463,9 @@ export async function setupContracts(account, library, chainId, fetchId) {
 const setupCurve = async (curveAddressProvider, getContract, chainId) => {
   const factoryAddress = await curveAddressProvider.get_address(3)
   const factory = getContract(factoryAddress, curveFactoryMiniAbi)
-  const curveUnderlyingCoins = (
-    await factory.get_underlying_coins(addresses.mainnet.CurveXUSDMetaPool)
-  ).map((address) => address.toLowerCase())
+  const curveUnderlyingCoins = await factory.get_underlying_coins(
+    addresses.mainnet.CurveXUSDMetaPool
+  )
 
   const curveXUSDMetaPool = getContract(
     addresses.mainnet.CurveXUSDMetaPool,

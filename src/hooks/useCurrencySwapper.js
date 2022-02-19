@@ -279,11 +279,11 @@ const useCurrencySwapper = ({
   const _maybeToAvToken = (address) => {
     // TODO: do this not in a stupid way, perhaps using coins and underlying coins call?
     if (address == usdcContract.address) {
-      return '0x46a51127c3ce23fb7ab1de06226147f446e4a857'
+      return '0x46A51127C3ce23fb7AB1DE06226147F446e4a857'
     } else if (address == usdtContract.address) {
-      return '0x532e6537fea298397212f09a61e03311686f548e'
+      return '0x532E6537FEA298397212F09A61e03311686f548e'
     } else if (address == daiContract.address) {
-      return '0x47afa96cdc9fab46904a55a6ad4bf6660b53c38a'
+      return '0x47AFa96Cdc9fAb46904A55a6ad4bf6660B53c38a'
     } else {
       return address
     }
