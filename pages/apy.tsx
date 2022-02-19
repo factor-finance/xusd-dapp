@@ -54,6 +54,7 @@ export default function APY({ locale, onLocale }) {
       addApy(eventsJson)
       addYield(eventsJson)
       eventsJson.reverse()
+      eventsJson.pop() // last row has no apy or yield
       setApyHistory(eventsJson)
     })
   }, [])
