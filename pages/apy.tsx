@@ -41,8 +41,8 @@ function addYield(se) {
   }
 }
 
-function bigNum18(value: string, fixed: number = 0): string {
-  return parseFloat(ethers.utils.formatUnits(value, 18)).toFixed(fixed)
+function bigNum18(value: string): number {
+  return parseFloat(ethers.utils.formatUnits(value, 18))
 }
 
 export default function APY({ locale, onLocale }) {
@@ -109,13 +109,15 @@ export default function APY({ locale, onLocale }) {
                         ).toFixed(2)}
                         x
                       </td>
-                      <td>{bigNum18(supplyEvent.totalSupply)}</td>
-                      <td>{bigNum18(supplyEvent.rebasingCredits)}</td>
+                      <td>{bigNum18(supplyEvent.totalSupply).toFixed(2)}</td>
                       <td>
-                        {parseInt(
+                        {bigNum18(supplyEvent.rebasingCredits).toFixed(2)}
+                      </td>
+                      <td>
+                        {(
                           bigNum18(supplyEvent.totalSupply) -
-                            bigNum18(supplyEvent.rebasingCredits)
-                        )}
+                          bigNum18(supplyEvent.rebasingCredits)
+                        ).toFixed(2)}
                       </td>
                     </tr>
                   )
