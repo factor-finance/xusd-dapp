@@ -189,11 +189,7 @@ const BalanceHeader = ({
             >
               <Statistic
                 title={fbt('30-day trailing APY', '30-day trailing APY')}
-                titleLink={
-                  process.env.HIDE_INACTIVE_PAGES == 'true'
-                    ? false
-                    : 'https://analytics.xusd.fi/apy'
-                }
+                titleLink="/apy"
                 value={
                   typeof apy === 'number'
                     ? formatCurrency(apy * 100, 2)
