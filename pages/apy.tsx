@@ -82,7 +82,14 @@ export default function APY({ locale, onLocale }) {
                       <td>
                         {moment(supplyEvent.block_timestamp.iso).format('lll')}
                       </td>
-                      <td>{supplyEvent.block_number}</td>
+                      <td>
+                        <a
+                          href={`https://snowtrace.io/tx/${supplyEvent.transaction_hash}`}
+                          target="_blank"
+                        >
+                          {supplyEvent.block_number}
+                        </a>
+                      </td>
                       <td>
                         <strong>{supplyEvent.apy}%</strong>
                       </td>
