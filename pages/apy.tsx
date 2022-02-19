@@ -9,34 +9,40 @@ import BalanceHeader from 'components/buySell/BalanceHeader'
 import { totalSupplyEvents } from 'utils/moralis'
 import { aprToApy } from 'utils/math'
 
-function supplyEventsAddApy(supplyEvents) {
+function addApy(se) {
   // iterate and take the previous and current supply events and calculate the ratio
-  for (let i = 1; i < supplyEvents.length; i++) {
-    const current = supplyEvents[i].rebasingCreditsPerToken
-    const currentDate = supplyEvents[i].createdAt
-    const past = supplyEvents[i - 1].rebasingCreditsPerToken
-    const pastDate = supplyEvents[i - 1].createdAt
+  for (let i = 1; i < se.length; i++) {
+    const current = se[i].rebasingCreditsPerToken
+    const currentDate = se[i].createdAt
+    const past = se[i - 1].rebasingCreditsPerToken
+    const pastDate = se[i - 1].createdAt
     const ratio = past / current
     const days = moment(currentDate).diff(moment(pastDate), 'hours') / 24
     const apr = ((ratio - 1) * 100 * 365.25) / days
     const apy = aprToApy(apr, days)
     // show apy as xx.xx%
-    supplyEvents[i].apy = (apy * 100).toFixed(2)
+    se[i].apy = (apy * 100).toFixed(2)
+  }
+}
+
+function cumulativeYield({ rebasingCreditsPerToken, totalSupply }): number {
+  return (
+    (1 - parseFloat(ethers.utils.formatUnits(rebasingCreditsPerToken, 18))) *
+    parseFloat(ethers.utils.formatUnits(totalSupply, 18))
+  )
+}
+
+function addYield(se) {
+  // iterate and take the previous and current supply events and calculate the ratio
+  for (let i = 1; i < se.length; i++) {
+    const current = cumulativeYield(se[i])
+    const past = cumulativeYield(se[i - 1])
+    se[i].yield = (current - past).toFixed(2)
   }
 }
 
 function bigNum18(value: string, fixed: number = 0): string {
   return parseFloat(ethers.utils.formatUnits(value, 18)).toFixed(fixed)
-}
-
-function yieldFixed(
-  { rebasingCreditsPerToken, totalSupply },
-  fixed: number = 2
-): string {
-  return (
-    (1 - parseFloat(ethers.utils.formatUnits(rebasingCreditsPerToken, 18))) *
-    parseFloat(ethers.utils.formatUnits(totalSupply, 18))
-  ).toFixed(fixed)
 }
 
 export default function APY({ locale, onLocale }) {
@@ -45,8 +51,8 @@ export default function APY({ locale, onLocale }) {
   useEffect(() => {
     totalSupplyEvents().then((events) => {
       const eventsJson = events.map((s) => s.toJSON())
-      console.log(eventsJson)
-      supplyEventsAddApy(eventsJson)
+      addApy(eventsJson)
+      addYield(eventsJson)
       eventsJson.reverse()
       setApyHistory(eventsJson)
     })
@@ -94,7 +100,7 @@ export default function APY({ locale, onLocale }) {
                         <strong>{supplyEvent.apy}%</strong>
                       </td>
                       <td>
-                        <strong>{yieldFixed(supplyEvent)}</strong>
+                        <strong>{supplyEvent.yield}</strong>
                       </td>
                       <td>
                         {(
