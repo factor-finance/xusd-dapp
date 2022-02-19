@@ -63,7 +63,7 @@ export default function APY({ locale, onLocale }) {
     <>
       <Layout locale={locale} onLocale={onLocale} dapp>
         <Nav dapp page={'apy'} locale={locale} onLocale={onLocale} />
-        <div className="d-flex flex-column p-0 pt-md-5">
+        <div className="d-flex flex-column p-0 pt-md-3">
           <BalanceHeader />
 
           <div className="apy-table">
