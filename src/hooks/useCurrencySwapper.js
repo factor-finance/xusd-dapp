@@ -28,7 +28,6 @@ const useCurrencySwapper = ({
     usdc: usdcContract,
     dai: daiContract,
     flipper,
-    curveRegistryExchange,
     curveXUSDMetaPool,
   } = useStoreState(ContractStore, (s) => s.contracts)
   const curveMetapoolUnderlyingCoins = useStoreState(
@@ -291,14 +290,16 @@ const useCurrencySwapper = ({
   }
 
   const quoteCurve = async (swapAmount) => {
-    const coinsReceived = await curveRegistryExchange.get_exchange_amount(
-      addresses.mainnet.CurveXUSDMetaPool,
-      _maybeToAvToken(coinContract.address),
-      _maybeToAvToken(coinToReceiveContract.address),
-      swapAmount,
-      {
-        gasLimit: 1000000,
-      }
+    const fromCoinIndex = curveMetapoolUnderlyingCoins.indexOf(
+      _maybeToAvToken(coinContract.address)
+    )
+    const toCoinIndex = curveMetapoolUnderlyingCoins.indexOf(
+      _maybeToAvToken(coinToReceiveContract.address)
+    )
+    const coinsReceived = await curveXUSDMetaPool.get_dy_underlying(
+      fromCoinIndex,
+      toCoinIndex,
+      swapAmount
     )
     return coinsReceived
   }

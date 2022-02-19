@@ -65,6 +65,32 @@ const curveMetapoolMiniAbi = [
     stateMutability: 'nonpayable',
     type: 'function',
   },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    name: 'get_dy_underlying',
+    inputs: [
+      {
+        name: 'i',
+        type: 'int128',
+      },
+      {
+        name: 'j',
+        type: 'int128',
+      },
+      {
+        name: 'dx',
+        type: 'uint256',
+      },
+    ],
+    outputs: [
+      {
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    gas: 2486125,
+  },
 ]
 
 /* fetchId - used to prevent race conditions.
@@ -360,8 +386,11 @@ export async function setupContracts(account, library, chainId, fetchId) {
 
   callWithDelay()
 
-  const [curveRegistryExchange, curveXUSDMetaPool, curveUnderlyingCoins] =
-    await setupCurve(curveAddressProvider, getContract, chainId)
+  const [curveXUSDMetaPool, curveUnderlyingCoins] = await setupCurve(
+    curveAddressProvider,
+    getContract,
+    chainId
+  )
 
   if (ContractStore.currentState.fetchId > fetchId) {
     console.log('Contracts already setup with newer fetchId. Exiting...')
@@ -389,7 +418,6 @@ export async function setupContracts(account, library, chainId, fetchId) {
     vault,
     chainlinkEthAggregator,
     curveAddressProvider,
-    curveRegistryExchange,
     curveXUSDMetaPool,
   }
 
@@ -433,9 +461,6 @@ export async function setupContracts(account, library, chainId, fetchId) {
 
 // calls to be executed only once after setup
 const setupCurve = async (curveAddressProvider, getContract, chainId) => {
-  const registryExchangeAddress = await curveAddressProvider.get_address(2)
-  const registryExchangeJson = require('../../abis/CurveRegistryExchange.json')
-
   const factoryAddress = await curveAddressProvider.get_address(3)
   const factory = getContract(factoryAddress, curveFactoryMiniAbi)
   const curveUnderlyingCoins = (
@@ -447,11 +472,7 @@ const setupCurve = async (curveAddressProvider, getContract, chainId) => {
     curveMetapoolMiniAbi
   )
 
-  return [
-    getContract(registryExchangeAddress, registryExchangeJson.abi),
-    curveXUSDMetaPool,
-    curveUnderlyingCoins,
-  ]
+  return [curveXUSDMetaPool, curveUnderlyingCoins]
 }
 
 // calls to be executed only once after setup
