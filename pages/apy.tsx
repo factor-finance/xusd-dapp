@@ -76,7 +76,14 @@ export default function APY({ locale, onLocale }) {
                 {apyHistory.map((supplyEvent) => {
                   return (
                     <tr key={supplyEvent.block_number}>
-                      <td>{supplyEvent.block_number}</td>
+                      <td>
+                        <a
+                          href={`https://snowtrace.io/tx/${supplyEvent.transaction_hash}`}
+                          target="_blank"
+                        >
+                          {supplyEvent.block_number}
+                        </a>
+                      </td>
                       <td>
                         <strong>{supplyEvent.apy}%</strong>
                       </td>
