@@ -45,6 +45,7 @@ export default function APY({ locale, onLocale }) {
   useEffect(() => {
     totalSupplyEvents().then((events) => {
       const eventsJson = events.map((s) => s.toJSON())
+      console.log(eventsJson)
       supplyEventsAddApy(eventsJson)
       eventsJson.reverse()
       setApyHistory(eventsJson)
@@ -64,9 +65,11 @@ export default function APY({ locale, onLocale }) {
             <table className="table table-right">
               <thead className="header-text">
                 <tr>
+                  <th>Block Time</th>
                   <th>Block</th>
                   <th>APY</th>
-                  <th>Aprx. Yield</th>
+                  <th>Yield</th>
+                  <th>Multiplier</th>
                   <th>XUSD Total</th>
                   <th>Rebasing Supply</th>
                   <th>Non-Rebasing Supply</th>
@@ -76,6 +79,9 @@ export default function APY({ locale, onLocale }) {
                 {apyHistory.map((supplyEvent) => {
                   return (
                     <tr key={supplyEvent.block_number}>
+                      <td>
+                        {moment(supplyEvent.block_timestamp.iso).format('lll')}
+                      </td>
                       <td>{supplyEvent.block_number}</td>
                       <td>
                         <strong>{supplyEvent.apy}%</strong>
@@ -83,11 +89,20 @@ export default function APY({ locale, onLocale }) {
                       <td>
                         <strong>{yieldFixed(supplyEvent)}</strong>
                       </td>
+                      <td>
+                        {(
+                          bigNum18(supplyEvent.totalSupply) /
+                          bigNum18(supplyEvent.rebasingCredits)
+                        ).toFixed(2)}
+                        x
+                      </td>
                       <td>{bigNum18(supplyEvent.totalSupply)}</td>
                       <td>{bigNum18(supplyEvent.rebasingCredits)}</td>
                       <td>
-                        {parseInt(bigNum18(supplyEvent.totalSupply)) -
-                          parseInt(bigNum18(supplyEvent.rebasingCredits))}
+                        {parseInt(
+                          bigNum18(supplyEvent.totalSupply) -
+                            bigNum18(supplyEvent.rebasingCredits)
+                        )}
                       </td>
                     </tr>
                   )
