@@ -351,6 +351,7 @@ export async function setupContracts(account, library, chainId, fetchId) {
     s.chainId = chainId
     s.readOnlyProvider = jsonRpcProvider
     s.fetchId = fetchId
+    s.network = contracts
   })
 
   await afterSetup(contractsToExport)
