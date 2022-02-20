@@ -27,10 +27,10 @@ function bigNum6(value: string): number {
 
 function section(title, data) {
   return (
-    <table className="table table-right">
-      <thead className="header-text">
+    <>
+      <thead>
         <tr>
-          <th>{title}</th>
+          <th className="header-text">{title}</th>
           <th></th>
         </tr>
       </thead>
@@ -47,11 +47,11 @@ function section(title, data) {
       <style jsx>{`
         .header-text {
           font-size: 1.2rem;
-          margin-top: 23px;
-          margin-bottom: 10px;
+          padding-top: 23px;
+          padding-bottom: 10px;
         }
       `}</style>
-    </table>
+    </>
   )
 }
 
@@ -390,18 +390,20 @@ export default function NetworkStatus({ locale, onLocale }) {
           <BalanceHeader />
 
           <div className="status-table">
-            {section('Contract addresses', addresses)}
-            {section('Governor', governor)}
-            {section('Governor addresses', governorAddresses)}
-            {section('XUSD', xusdSettings)}
-            {section('Oracle', oracle)}
-            {section('Vault settings', vaultSettings)}
-            {section('Vault balances', vaultBalances)}
-            {section('Vault buffer balances', vaultBufferBalances)}
-            {section('Strategies balances', strategiesBalances)}
-            {section('Default strategies', defaultStrategies)}
-            {section('Aave strategy', aaveStrategy)}
-            {section('Curve strategy', curveStrategy)}
+            <table className="table table-right">
+              {section('Contract addresses', addresses)}
+              {section('Governor', governor)}
+              {section('Governor addresses', governorAddresses)}
+              {section('XUSD', xusdSettings)}
+              {section('Oracle prices', oracle)}
+              {section('Vault settings', vaultSettings)}
+              {section('Vault balances', vaultBalances)}
+              {section('Vault buffer balances', vaultBufferBalances)}
+              {section('Strategies balances', strategiesBalances)}
+              {section('Default strategies', defaultStrategies)}
+              {section('Aave strategy', aaveStrategy)}
+              {section('Curve strategy', curveStrategy)}
+            </table>
           </div>
         </div>
       </Layout>
