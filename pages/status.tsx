@@ -181,9 +181,9 @@ export default function NetworkStatus({ locale, onLocale }) {
       try {
         setOracle({
           'DAI.e': bigNum8(await c.OracleRouter.price(dai.address)),
+          'USDT.e': bigNum8(await c.OracleRouter.price(usdt.address)),
           'USDC.e': bigNum8(await c.OracleRouter.price(usdc.address)),
           USDC: bigNum8(await c.OracleRouter.price(usdc_native.address)),
-          'USDT.e': bigNum8(await c.OracleRouter.price(usdt.address)),
         })
       } catch (e) {
         console.error(e)
@@ -266,6 +266,121 @@ export default function NetworkStatus({ locale, onLocale }) {
     }
     load()
   }, [vault, dai, usdc, usdc_native, usdt])
+
+  useEffect(() => {
+    if (!c) {
+      return
+    }
+    const load = async () => {
+      try {
+        setStrategiesBalances({
+          'Aave DAI.e': bigNum18(
+            await c.AaveStrategy.checkBalance(dai.address)
+          ),
+          'Aave USDT.e': bigNum6(
+            await c.AaveStrategy.checkBalance(usdt.address)
+          ),
+          'Aave USDC.e': bigNum6(
+            await c.AaveStrategy.checkBalance(usdc.address)
+          ),
+          'Curve USDC.e': bigNum6(
+            await c.CurveUsdcStrategy.checkBalance(usdc.address)
+          ),
+          'Curve USDC': bigNum6(
+            await c.CurveUsdcStrategy.checkBalance(usdc_native.address)
+          ),
+        })
+      } catch (e) {
+        console.error(e)
+      }
+    }
+    load()
+  }, [c, dai, usdc, usdc_native, usdt])
+
+  useEffect(() => {
+    if (!vault) {
+      return
+    }
+    const load = async () => {
+      try {
+        setDefaultStrategies({
+          'DAI.e': await vault.assetDefaultStrategies(dai.address),
+          'USDT.e': await vault.assetDefaultStrategies(usdt.address),
+          'USDC.e': await vault.assetDefaultStrategies(usdc.address),
+          USDC: await vault.assetDefaultStrategies(usdc_native.address),
+        })
+      } catch (e) {
+        console.error(e)
+      }
+    }
+    load()
+  }, [vault, dai, usdc, usdc_native, usdt])
+
+  useEffect(() => {
+    if (!c) {
+      return
+    }
+    const load = async () => {
+      try {
+        setAaveStrategy({
+          vaultAddress: await c.AaveStrategy.vaultAddress(),
+          platformAddress: await c.AaveStrategy.platformAddress(),
+          rewardTokenAddress: await c.AaveStrategy.rewardTokenAddress(),
+          rewardLiquidationThreshold: (
+            await c.AaveStrategy.rewardLiquidationThreshold()
+          ).toString(),
+          'supportsAsset(DAI.e)': (
+            await c.AaveStrategy.supportsAsset(dai.address)
+          ).toString(),
+          'supportsAsset(USDT.e)': (
+            await c.AaveStrategy.supportsAsset(usdt.address)
+          ).toString(),
+          'supportsAsset(USDC.e)': (
+            await c.AaveStrategy.supportsAsset(usdc.address)
+          ).toString(),
+          'supportsAsset(USDC)': (
+            await c.AaveStrategy.supportsAsset(usdc_native.address)
+          ).toString(),
+        })
+      } catch (e) {
+        console.error(e)
+      }
+    }
+    load()
+  }, [c, dai, usdc, usdc_native, usdt])
+
+  useEffect(() => {
+    if (!c) {
+      return
+    }
+    const load = async () => {
+      try {
+        setCurveStrategy({
+          vaultAddress: await c.CurveUsdcStrategy.vaultAddress(),
+          platformAddress: await c.CurveUsdcStrategy.platformAddress(),
+          rewardTokenAddress: await c.CurveUsdcStrategy.rewardTokenAddress(),
+          rewardLiquidationThreshold: (
+            await c.CurveUsdcStrategy.rewardLiquidationThreshold()
+          ).toString(),
+          'supportsAsset(DAI.e)': (
+            await c.CurveUsdcStrategy.supportsAsset(dai.address)
+          ).toString(),
+          'supportsAsset(USDT.e)': (
+            await c.CurveUsdcStrategy.supportsAsset(usdt.address)
+          ).toString(),
+          'supportsAsset(USDC.e)': (
+            await c.CurveUsdcStrategy.supportsAsset(usdc.address)
+          ).toString(),
+          'supportsAsset(USDC)': (
+            await c.CurveUsdcStrategy.supportsAsset(usdc_native.address)
+          ).toString(),
+        })
+      } catch (e) {
+        console.error(e)
+      }
+    }
+    load()
+  }, [c, dai, usdc, usdc_native, usdt])
 
   return (
     <>
