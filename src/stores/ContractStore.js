@@ -3,7 +3,7 @@ import { BigNumber } from 'ethers'
 
 const ContractStore = new Store({
   contracts: {},
-  network: {},
+  network: null,
   apy: null,
   xusdExchangeRates: {
     dai: {

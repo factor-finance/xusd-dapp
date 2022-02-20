@@ -92,7 +92,7 @@ export async function setupContracts(account, library, chainId, fetchId) {
       contracts[key] = new ethers.Contract(
         address,
         network.contracts[key].abi,
-        library ? library.getSigner(account) : null
+        library ? library.getSigner(account) : provider
       )
       contracts[key].__originalAddress = network.contracts[key].address
     } catch (e) {
