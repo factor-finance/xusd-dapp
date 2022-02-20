@@ -94,6 +94,7 @@ export async function setupContracts(account, library, chainId, fetchId) {
         network.contracts[key].abi,
         library ? library.getSigner(account) : null
       )
+      contracts[key].__originalAddress = network.contracts[key].address
     } catch (e) {
       console.error(
         `Error creating contract in [setup] with address:${address} name:${key}`

@@ -94,20 +94,20 @@ export default function NetworkStatus({ locale, onLocale }) {
         setAddresses({
           'XUSD proxy': c.XUSDProxy.address,
           'XUSD impl': await c.XUSDProxy.implementation(),
-          XUSD: c.XUSD.address,
+          XUSD: c.XUSD.__originalAddress,
           'Vault proxy': c.VaultProxy.address,
           'Vault impl': await c.VaultProxy.implementation(),
-          Vault: c.Vault.address,
+          Vault: c.Vault.__originalAddress,
           VaultCore: c.VaultCore.address,
           VaultAdmin: c.VaultAdmin.address,
           OracleRouter: c.OracleRouter.address,
           'AaveStrategy proxy': c.AaveStrategyProxy.address,
           'AaveStrategy impl': await c.AaveStrategyProxy.implementation(),
-          AaveStrategy: c.AaveStrategy.address,
+          AaveStrategy: c.AaveStrategy.__originalAddress,
           'CurveUsdcStrategy proxy': c.CurveUsdcStrategyProxy.address,
           'CurveUsdcStrategy impl':
             await c.CurveUsdcStrategyProxy.implementation(),
-          CurveUsdcStrategy: c.CurveUsdcStrategy.address,
+          CurveUsdcStrategy: c.CurveUsdcStrategy.__originalAddress,
           Governor: c.Governor.address,
         })
       } catch (e) {
