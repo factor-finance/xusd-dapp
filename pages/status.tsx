@@ -39,7 +39,18 @@ function section(title, data) {
           return (
             <tr key={key}>
               <td>{key}</td>
-              <td>{value}</td>
+              <td>
+                {value && value.toString().startsWith('0x') ? (
+                  <a
+                    href={`https://snowtrace.io/address/${value}`}
+                    target="blank"
+                  >
+                    {value}
+                  </a>
+                ) : (
+                  value
+                )}
+              </td>
             </tr>
           )
         })}
@@ -390,6 +401,9 @@ export default function NetworkStatus({ locale, onLocale }) {
           <BalanceHeader />
 
           <div className="status-table">
+            <h4 style={{ padding: '0.75rem', fontWeight: 'bold' }}>
+              Factor XUSD network status: 🟢
+            </h4>
             <table className="table table-right">
               {section('Contract addresses', addresses)}
               {section('Governor', governor)}
