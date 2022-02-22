@@ -49,6 +49,7 @@ const useCurrencySwapper = ({
     allowances.xusd &&
     allowances.usdt &&
     allowances.usdc &&
+    allowances.usdc_native &&
     allowances.dai
 
   const { contract: coinContract, decimals } =

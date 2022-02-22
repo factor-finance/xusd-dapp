@@ -70,7 +70,8 @@ const AccountListener = (props) => {
       return
     }
 
-    const { usdt, dai, usdc, usdc_native, xusd, vault } = contracts
+    const { usdt, dai, usdc, usdc_native, xusd, vault, curveXUSDMetaPool } =
+      contracts
 
     const loadbalancesDev = async () => {
       try {
@@ -220,22 +221,58 @@ const AccountListener = (props) => {
             .then((bal) => displayCurrency(bal, usdc_native)),
         ])
 
+        let usdtAllowanceCurvePool,
+          daiAllowanceCurvePool,
+          usdcAllowanceCurvePool,
+          xusdAllowanceCurvePool
+
+        // curve pool functionality supported on mainnet and hardhat fork
+        if (curveXUSDMetaPool) {
+          ;[
+            usdtAllowanceCurvePool,
+            daiAllowanceCurvePool,
+            usdcAllowanceCurvePool,
+            xusdAllowanceCurvePool,
+          ] = await Promise.all([
+            displayCurrency(
+              await usdt.allowance(account, curveXUSDMetaPool.address),
+              usdt
+            ),
+            displayCurrency(
+              await dai.allowance(account, curveXUSDMetaPool.address),
+              dai
+            ),
+            displayCurrency(
+              await usdc.allowance(account, curveXUSDMetaPool.address),
+              usdc
+            ),
+            displayCurrency(
+              await xusd.allowance(account, curveXUSDMetaPool.address),
+              xusd
+            ),
+          ])
+        }
+
         AccountStore.update((s) => {
           s.allowances = {
             usdt: {
               vault: usdtAllowanceVault,
+              curve: usdtAllowanceCurvePool,
             },
             dai: {
               vault: daiAllowanceVault,
+              curve: daiAllowanceCurvePool,
             },
             usdc: {
               vault: usdcAllowanceVault,
+              curve: usdcAllowanceCurvePool,
             },
             usdc_native: {
               vault: usdcNativeAllowanceVault,
             },
             xusd: {
               vault: xusdAllowanceVault,
+              curve: xusdAllowanceCurvePool,
             },
           }
         })
