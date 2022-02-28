@@ -296,13 +296,12 @@ const useSwapEstimator = ({
         isRedeem ? coinToReceiveDecimals : 18
       )
 
-      /* Check if Curve router has allowance to spend coin. If not we can not run gas estimation and need
-       * to guess the gas usage.
-       *
-       * We don't check if positive amount is large enough: since we always approve max_int allowance.
+      /* Check if Curve Zapper has allowance/approval to spend coin. If not we can not run gas estimation and need
+       * to guess the gas usage to estimate best trade route
        */
       if (
-        parseFloat(allowances[isRedeem ? 'xusd' : selectedCoin].curve) === 0 ||
+        parseFloat(allowances[isRedeem ? 'xusd' : selectedCoin].curve) <
+          parseFloat(inputAmountRaw) ||
         !userHasEnoughStablecoin(
           isRedeem ? 'xusd' : selectedCoin,
           parseFloat(inputAmountRaw)
@@ -313,7 +312,7 @@ const useSwapEstimator = ({
           /* This estimate is from the few ones observed on the mainnet:
            * https://snowtrace.io/tx/0xe3cbdbfa6e08bebd5dcb5acf3736859b23f101ff63dfbd8f6cd6d6440f3ae1bb
            */
-          gasUsed: 1200000,
+          gasUsed: 1100001,
           amountReceived,
         }
       }
@@ -325,7 +324,7 @@ const useSwapEstimator = ({
         console.error(
           `Unexpected error estimating curve swap gas: ${e.message}`
         )
-        gasEstimate = 1200000
+        gasEstimate = 1100000
       }
       return {
         canDoSwap: true,

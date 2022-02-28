@@ -36,35 +36,7 @@ const curveFactoryMiniAbi = [
 ]
 
 const curveMetapoolMiniAbi = [
-  {
-    name: 'exchange_underlying',
-    outputs: [
-      {
-        type: 'uint256',
-        name: '',
-      },
-    ],
-    inputs: [
-      {
-        type: 'int128',
-        name: 'i',
-      },
-      {
-        type: 'int128',
-        name: 'j',
-      },
-      {
-        type: 'uint256',
-        name: 'dx',
-      },
-      {
-        type: 'uint256',
-        name: 'min_dy',
-      },
-    ],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
+  ,
   {
     stateMutability: 'view',
     type: 'function',
@@ -90,6 +62,42 @@ const curveMetapoolMiniAbi = [
       },
     ],
     gas: 2486125,
+  },
+]
+
+const curveZapperMiniAbi = [
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    name: 'exchange_underlying',
+    inputs: [
+      {
+        name: '_pool',
+        type: 'address',
+      },
+      {
+        name: '_i',
+        type: 'int128',
+      },
+      {
+        name: '_j',
+        type: 'int128',
+      },
+      {
+        name: '_dx',
+        type: 'uint256',
+      },
+      {
+        name: '_min_dy',
+        type: 'uint256',
+      },
+    ],
+    outputs: [
+      {
+        name: '',
+        type: 'uint256',
+      },
+    ],
   },
 ]
 
@@ -386,11 +394,8 @@ export async function setupContracts(account, library, chainId, fetchId) {
 
   callWithDelay()
 
-  const [curveXUSDMetaPool, curveUnderlyingCoins] = await setupCurve(
-    curveAddressProvider,
-    getContract,
-    chainId
-  )
+  const [curveXUSDMetaPool, curveUnderlyingCoins, curveZapper] =
+    await setupCurve(curveAddressProvider, getContract, chainId)
 
   if (ContractStore.currentState.fetchId > fetchId) {
     console.log('Contracts already setup with newer fetchId. Exiting...')
@@ -419,6 +424,7 @@ export async function setupContracts(account, library, chainId, fetchId) {
     chainlinkEthAggregator,
     curveAddressProvider,
     curveXUSDMetaPool,
+    curveZapper,
   }
 
   const coinInfoList = {
@@ -463,16 +469,21 @@ export async function setupContracts(account, library, chainId, fetchId) {
 const setupCurve = async (curveAddressProvider, getContract, chainId) => {
   const factoryAddress = await curveAddressProvider.get_address(3)
   const factory = getContract(factoryAddress, curveFactoryMiniAbi)
-  const curveUnderlyingCoins = await factory.get_underlying_coins(
-    addresses.mainnet.CurveXUSDMetaPool
-  )
+  const curveUnderlyingCoins = (
+    await factory.get_underlying_coins(addresses.mainnet.CurveXUSDMetaPool)
+  ).map((addr) => addr.toLowerCase())
 
   const curveXUSDMetaPool = getContract(
     addresses.mainnet.CurveXUSDMetaPool,
     curveMetapoolMiniAbi
   )
 
-  return [curveXUSDMetaPool, curveUnderlyingCoins]
+  const curveZapper = getContract(
+    addresses.mainnet.CurveZapper,
+    curveZapperMiniAbi
+  )
+
+  return [curveXUSDMetaPool, curveUnderlyingCoins, curveZapper]
 }
 
 // calls to be executed only once after setup

@@ -70,8 +70,16 @@ const AccountListener = (props) => {
       return
     }
 
-    const { usdt, dai, usdc, usdc_native, xusd, vault, curveXUSDMetaPool } =
-      contracts
+    const {
+      usdt,
+      dai,
+      usdc,
+      usdc_native,
+      xusd,
+      vault,
+      curveXUSDMetaPool,
+      curveZapper,
+    } = contracts
 
     const loadbalancesDev = async () => {
       try {
@@ -226,7 +234,7 @@ const AccountListener = (props) => {
           usdcAllowanceCurvePool,
           xusdAllowanceCurvePool
         // curve pool functionality supported on mainnet and hardhat fork
-        if (curveXUSDMetaPool) {
+        if (curveZapper) {
           ;[
             usdtAllowanceCurvePool,
             daiAllowanceCurvePool,
@@ -234,16 +242,16 @@ const AccountListener = (props) => {
             xusdAllowanceCurvePool,
           ] = await Promise.all([
             usdt
-              .allowance(account, curveXUSDMetaPool.address)
+              .allowance(account, curveZapper.address)
               .then((bal) => displayCurrency(bal, usdt)),
             dai
-              .allowance(account, curveXUSDMetaPool.address)
+              .allowance(account, curveZapper.address)
               .then((bal) => displayCurrency(bal, dai)),
             usdc
-              .allowance(account, curveXUSDMetaPool.address)
+              .allowance(account, curveZapper.address)
               .then((bal) => displayCurrency(bal, usdc)),
             xusd
-              .allowance(account, curveXUSDMetaPool.address)
+              .allowance(account, curveZapper.address)
               .then((bal) => displayCurrency(bal, xusd)),
           ])
         }

@@ -30,6 +30,7 @@ const useCurrencySwapper = ({
     dai: daiContract,
     flipper,
     curveXUSDMetaPool,
+    curveZapper,
   } = useStoreState(ContractStore, (s) => s.contracts)
   const curveMetapoolUnderlyingCoins = useStoreState(
     ContractStore,
@@ -97,12 +98,11 @@ const useCurrencySwapper = ({
           `Can not fetch contract: ${selectedSwap.name} allowance for coin: ${coinNeedingApproval}`
         )
       }
-
       setNeedsApproval(
         Object.keys(allowances).length > 0 &&
           parseFloat(
             allowances[coinNeedingApproval][nameMaps[selectedSwap.name]]
-          ) < amount
+          ) < ethers.utils.parseUnits(amount.toString(), decimals)
           ? selectedSwap.name
           : false
       )
@@ -250,25 +250,28 @@ const useCurrencySwapper = ({
 
   const _swapCurve = async (swapAmount, minSwapAmount, isGasEstimate) => {
     const swapParams = [
+      curveXUSDMetaPool.address,
       curveMetapoolUnderlyingCoins.indexOf(
-        _maybeToAvToken(coinContract.address).toLowerCase()
+        _maybeToAvToken(coinContract.address)
       ),
       curveMetapoolUnderlyingCoins.indexOf(
-        _maybeToAvToken(coinToReceiveContract.address).toLowerCase()
+        _maybeToAvToken(coinToReceiveContract.address)
       ),
       swapAmount,
       minSwapAmount,
     ]
+
     const gasLimit = increaseGasLimitByBuffer(
-      await curveXUSDMetaPool.estimateGas.exchange_underlying(...swapParams, {
+      await curveZapper.estimateGas.exchange_underlying(...swapParams, {
         from: account,
       }),
       curveGasLimitBuffer
     )
+
     if (isGasEstimate) {
       return gasLimit
     } else {
-      return await curveXUSDMetaPool.exchange_underlying(...swapParams, {
+      return await curveZapper.exchange_underlying(...swapParams, {
         gasLimit,
       })
     }
@@ -294,14 +297,14 @@ const useCurrencySwapper = ({
 
   const _maybeToAvToken = (address) => {
     // TODO: do this not in a stupid way, perhaps using coins and underlying coins call?
-    if (address == usdcContract.address) {
-      return '0x46A51127C3ce23fb7AB1DE06226147F446e4a857'
-    } else if (address == usdtContract.address) {
-      return '0x532E6537FEA298397212F09A61e03311686f548e'
-    } else if (address == daiContract.address) {
-      return '0x47AFa96Cdc9fAb46904A55a6ad4bf6660B53c38a'
+    if (address.toLowerCase() == usdcContract.address.toLowerCase()) {
+      return '0x46A51127C3ce23fb7AB1DE06226147F446e4a857'.toLowerCase()
+    } else if (address.toLowerCase() == usdtContract.address.toLowerCase()) {
+      return '0x532E6537FEA298397212F09A61e03311686f548e'.toLowerCase()
+    } else if (address.toLowerCase() == daiContract.address.toLowerCase()) {
+      return '0x47AFa96Cdc9fAb46904A55a6ad4bf6660B53c38a'.toLowerCase()
     } else {
-      return address
+      return address.toLowerCase()
     }
   }
 
