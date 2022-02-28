@@ -8,6 +8,7 @@ import {
   mintAbsoluteGasLimitBuffer,
   mintPercentGasLimitBuffer,
   redeemPercentGasLimitBuffer,
+  curveGasLimitBuffer,
 } from 'utils/constants'
 import addresses from 'constants/contractAddresses'
 
@@ -121,7 +122,12 @@ const useCurrencySwapper = ({
       options
     )
   }
-
+  /* Increases the given gas limit by the specified buffer. BufferToIncrease is expressed
+   * in relative percentages. Meaning a 0.2 value will set gasLimit to 120% of the original value
+   */
+  const increaseGasLimitByBuffer = (gasLimit, bufferToIncrease) => {
+    return Math.round(gasLimit * (1 + bufferToIncrease))
+  }
   const mintVaultGasEstimate = async (swapAmount, minSwapAmount) => {
     return (
       await _mintVault(vaultContract.estimateGas, swapAmount, minSwapAmount)
@@ -243,10 +249,7 @@ const useCurrencySwapper = ({
   }
 
   const _swapCurve = async (swapAmount, minSwapAmount, isGasEstimate) => {
-    return await (isGasEstimate
-      ? curveXUSDMetaPool.estimateGas
-      : curveXUSDMetaPool
-    ).exchange_underlying(
+    const swapParams = [
       curveMetapoolUnderlyingCoins.indexOf(
         _maybeToAvToken(coinContract.address).toLowerCase()
       ),
@@ -254,8 +257,21 @@ const useCurrencySwapper = ({
         _maybeToAvToken(coinToReceiveContract.address).toLowerCase()
       ),
       swapAmount,
-      minSwapAmount
+      minSwapAmount,
+    ]
+    const gasLimit = increaseGasLimitByBuffer(
+      await curveXUSDMetaPool.estimateGas.exchange_underlying(...swapParams, {
+        from: account,
+      }),
+      curveGasLimitBuffer
     )
+    if (isGasEstimate) {
+      return gasLimit
+    } else {
+      return await curveXUSDMetaPool.exchange_underlying(...swapParams, {
+        gasLimit,
+      })
+    }
   }
 
   const swapCurveGasEstimate = async (swapAmount, minSwapAmount) => {
