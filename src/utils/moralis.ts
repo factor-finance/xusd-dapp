@@ -18,16 +18,20 @@ export async function accountLifetimeYield(
   const zeroFromAddress = '0x0000000000000000000000000000000000000000'
   const accountLower = account.toLowerCase()
 
-  const XUSDProxyTransfer = Moralis.Object.extend('XUSDProxyTransfer')
-  const query = new Moralis.Query(XUSDProxyTransfer)
-  query.containedIn('to', [accountLower, zeroFromAddress])
-  query.containedIn('from', [accountLower, zeroFromAddress])
-  const results = await query.find()
+  const recvQuery = new Moralis.Query('XUSDProxyTransfer').equalTo(
+    'to',
+    accountLower
+  )
+  const sentQuery = new Moralis.Query('XUSDProxyTransfer').equalTo(
+    'from',
+    accountLower
+  )
+  const results = await Moralis.Query.or(recvQuery, sentQuery).find()
 
   const totalMinted = results.reduce((prev, cur) => {
     let valueWithSign = cur.get('value')
-    if (cur.get('to') == zeroFromAddress) {
-      // debit redeeming to the contract
+    if (cur.get('from') == accountLower) {
+      // debit transfer from account
       valueWithSign = '-' + valueWithSign
     }
     return prev.add(BigNumber.from(valueWithSign))
