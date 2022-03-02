@@ -15,6 +15,92 @@ import usdtAbi from 'constants/mainnetAbi/usdt.json'
 import usdcAbi from 'constants/mainnetAbi/cUsdc.json'
 import daiAbi from 'constants/mainnetAbi/dai.json'
 
+const curveFactoryMiniAbi = [
+  {
+    stateMutability: 'view',
+    type: 'function',
+    name: 'get_underlying_coins',
+    inputs: [
+      {
+        name: '_pool',
+        type: 'address',
+      },
+    ],
+    outputs: [
+      {
+        name: '',
+        type: 'address[8]',
+      },
+    ],
+  },
+]
+
+const curveMetapoolMiniAbi = [
+  ,
+  {
+    stateMutability: 'view',
+    type: 'function',
+    name: 'get_dy_underlying',
+    inputs: [
+      {
+        name: 'i',
+        type: 'int128',
+      },
+      {
+        name: 'j',
+        type: 'int128',
+      },
+      {
+        name: 'dx',
+        type: 'uint256',
+      },
+    ],
+    outputs: [
+      {
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    gas: 2486125,
+  },
+]
+
+const curveZapperMiniAbi = [
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    name: 'exchange_underlying',
+    inputs: [
+      {
+        name: '_pool',
+        type: 'address',
+      },
+      {
+        name: '_i',
+        type: 'int128',
+      },
+      {
+        name: '_j',
+        type: 'int128',
+      },
+      {
+        name: '_dx',
+        type: 'uint256',
+      },
+      {
+        name: '_min_dy',
+        type: 'uint256',
+      },
+    ],
+    outputs: [
+      {
+        name: '',
+        type: 'uint256',
+      },
+    ],
+  },
+]
+
 /* fetchId - used to prevent race conditions.
  * Sometimes "setupContracts" is called twice with very little time in between and it can happen
  * that the call issued first (for example with not yet signed in account) finishes after the second
@@ -106,13 +192,22 @@ export async function setupContracts(account, library, chainId, fetchId) {
   const xusdProxy = contracts['XUSDProxy']
   const vaultProxy = contracts['VaultProxy']
 
-  let usdt, dai, tusd, usdc, usdc_native, xusd, vault, chainlinkEthAggregator
+  let usdt,
+    dai,
+    tusd,
+    usdc,
+    usdc_native,
+    xusd,
+    vault,
+    chainlinkEthAggregator,
+    curveAddressProvider
 
-  let iVaultJson, chainlinkAggregatorV3Json
+  let iVaultJson, chainlinkAggregatorV3Json, curveAddressProviderJson
 
   try {
     iVaultJson = require('../../abis/IVault.json')
     chainlinkAggregatorV3Json = require('../../abis/ChainlinkAggregatorV3Interface.json')
+    curveAddressProviderJson = require('../../abis/CurveAddressProvider.json')
   } catch (e) {
     console.error(`Can not find contract artifact file: `, e)
   }
@@ -128,6 +223,11 @@ export async function setupContracts(account, library, chainId, fetchId) {
   chainlinkEthAggregator = getContract(
     addresses[networkKey].chainlinkAVAX_USD,
     chainlinkAggregatorV3Json.abi
+  )
+
+  curveAddressProvider = getContract(
+    addresses.mainnet.CurveAddressProvider,
+    curveAddressProviderJson.abi
   )
 
   const fetchExchangeRates = async () => {
@@ -295,6 +395,9 @@ export async function setupContracts(account, library, chainId, fetchId) {
 
   callWithDelay()
 
+  const [curveXUSDMetaPool, curveUnderlyingCoins, curveZapper] =
+    await setupCurve(curveAddressProvider, getContract, chainId)
+
   if (ContractStore.currentState.fetchId > fetchId) {
     console.log('Contracts already setup with newer fetchId. Exiting...')
     return
@@ -320,6 +423,9 @@ export async function setupContracts(account, library, chainId, fetchId) {
     xusd,
     vault,
     chainlinkEthAggregator,
+    curveAddressProvider,
+    curveXUSDMetaPool,
+    curveZapper,
   }
 
   const coinInfoList = {
@@ -351,6 +457,7 @@ export async function setupContracts(account, library, chainId, fetchId) {
     s.walletConnected = walletConnected
     s.chainId = chainId
     s.readOnlyProvider = jsonRpcProvider
+    s.curveMetapoolUnderlyingCoins = curveUnderlyingCoins
     s.fetchId = fetchId
     s.network = contracts
   })
@@ -358,6 +465,27 @@ export async function setupContracts(account, library, chainId, fetchId) {
   await afterSetup(contractsToExport)
 
   return contractsToExport
+}
+
+// calls to be executed only once after setup
+const setupCurve = async (curveAddressProvider, getContract, chainId) => {
+  const factoryAddress = await curveAddressProvider.get_address(3)
+  const factory = getContract(factoryAddress, curveFactoryMiniAbi)
+  const curveUnderlyingCoins = (
+    await factory.get_underlying_coins(addresses.mainnet.CurveXUSDMetaPool)
+  ).map((addr) => addr.toLowerCase())
+
+  const curveXUSDMetaPool = getContract(
+    addresses.mainnet.CurveXUSDMetaPool,
+    curveMetapoolMiniAbi
+  )
+
+  const curveZapper = getContract(
+    addresses.mainnet.CurveZapper,
+    curveZapperMiniAbi
+  )
+
+  return [curveXUSDMetaPool, curveUnderlyingCoins, curveZapper]
 }
 
 // calls to be executed only once after setup

@@ -8,7 +8,9 @@ import {
   mintAbsoluteGasLimitBuffer,
   mintPercentGasLimitBuffer,
   redeemPercentGasLimitBuffer,
+  curveGasLimitBuffer,
 } from 'utils/constants'
+import addresses from 'constants/contractAddresses'
 
 import { calculateSwapAmounts } from 'utils/math'
 
@@ -27,7 +29,13 @@ const useCurrencySwapper = ({
     usdc: usdcContract,
     dai: daiContract,
     flipper,
+    curveXUSDMetaPool,
+    curveZapper,
   } = useStoreState(ContractStore, (s) => s.contracts)
+  const curveMetapoolUnderlyingCoins = useStoreState(
+    ContractStore,
+    (s) => s.curveMetapoolUnderlyingCoins
+  )
 
   const coinInfoList = useStoreState(ContractStore, (s) => s.coinInfoList)
 
@@ -77,6 +85,7 @@ const useCurrencySwapper = ({
     const nameMaps = {
       vault: 'vault',
       flipper: 'flipper',
+      curve: 'curve',
     }
 
     const coinNeedingApproval = swapMode === 'mint' ? selectedCoin : 'xusd'
@@ -89,12 +98,11 @@ const useCurrencySwapper = ({
           `Can not fetch contract: ${selectedSwap.name} allowance for coin: ${coinNeedingApproval}`
         )
       }
-
       setNeedsApproval(
         Object.keys(allowances).length > 0 &&
           parseFloat(
             allowances[coinNeedingApproval][nameMaps[selectedSwap.name]]
-          ) < amount
+          ) < ethers.utils.parseUnits(amount.toString(), decimals)
           ? selectedSwap.name
           : false
       )
@@ -114,7 +122,12 @@ const useCurrencySwapper = ({
       options
     )
   }
-
+  /* Increases the given gas limit by the specified buffer. BufferToIncrease is expressed
+   * in relative percentages. Meaning a 0.2 value will set gasLimit to 120% of the original value
+   */
+  const increaseGasLimitByBuffer = (gasLimit, bufferToIncrease) => {
+    return Math.round(gasLimit * (1 + bufferToIncrease))
+  }
   const mintVaultGasEstimate = async (swapAmount, minSwapAmount) => {
     return (
       await _mintVault(vaultContract.estimateGas, swapAmount, minSwapAmount)
@@ -235,6 +248,81 @@ const useCurrencySwapper = ({
     }
   }
 
+  const _swapCurve = async (swapAmount, minSwapAmount, isGasEstimate) => {
+    const swapParams = [
+      curveXUSDMetaPool.address,
+      curveMetapoolUnderlyingCoins.indexOf(
+        _maybeToAvToken(coinContract.address)
+      ),
+      curveMetapoolUnderlyingCoins.indexOf(
+        _maybeToAvToken(coinToReceiveContract.address)
+      ),
+      swapAmount,
+      minSwapAmount,
+    ]
+
+    const gasLimit = increaseGasLimitByBuffer(
+      await curveZapper.estimateGas.exchange_underlying(...swapParams, {
+        from: account,
+      }),
+      curveGasLimitBuffer
+    )
+
+    if (isGasEstimate) {
+      return gasLimit
+    } else {
+      return await curveZapper.exchange_underlying(...swapParams, {
+        gasLimit,
+      })
+    }
+  }
+
+  const swapCurveGasEstimate = async (swapAmount, minSwapAmount) => {
+    return (await _swapCurve(swapAmount, minSwapAmount, true)).toNumber()
+  }
+
+  const swapCurve = async () => {
+    const { minSwapAmount: minSwapAmountReceived } = calculateSwapAmounts(
+      outputAmount,
+      coinToReceiveDecimals,
+      priceToleranceValue
+    )
+
+    return {
+      result: await _swapCurve(swapAmount, minSwapAmountReceived, false),
+      swapAmount,
+      minSwapAmount,
+    }
+  }
+
+  const _maybeToAvToken = (address) => {
+    // TODO: do this not in a stupid way, perhaps using coins and underlying coins call?
+    if (address.toLowerCase() == usdcContract.address.toLowerCase()) {
+      return '0x46A51127C3ce23fb7AB1DE06226147F446e4a857'.toLowerCase()
+    } else if (address.toLowerCase() == usdtContract.address.toLowerCase()) {
+      return '0x532E6537FEA298397212F09A61e03311686f548e'.toLowerCase()
+    } else if (address.toLowerCase() == daiContract.address.toLowerCase()) {
+      return '0x47AFa96Cdc9fAb46904A55a6ad4bf6660B53c38a'.toLowerCase()
+    } else {
+      return address.toLowerCase()
+    }
+  }
+
+  const quoteCurve = async (swapAmount) => {
+    const fromCoinIndex = curveMetapoolUnderlyingCoins.indexOf(
+      _maybeToAvToken(coinContract.address)
+    )
+    const toCoinIndex = curveMetapoolUnderlyingCoins.indexOf(
+      _maybeToAvToken(coinToReceiveContract.address)
+    )
+    const coinsReceived = await curveXUSDMetaPool.get_dy_underlying(
+      fromCoinIndex,
+      toCoinIndex,
+      swapAmount
+    )
+    return coinsReceived
+  }
+
   return {
     allowancesLoaded,
     needsApproval,
@@ -243,6 +331,9 @@ const useCurrencySwapper = ({
     redeemVault,
     redeemVaultGasEstimate,
     swapFlipper,
+    quoteCurve,
+    swapCurve,
+    swapCurveGasEstimate,
   }
 }
 

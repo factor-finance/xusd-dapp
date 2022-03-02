@@ -24,6 +24,12 @@ addresses.mainnet.USDT_native = '0x9702230a8ea53601f5cd2dc00fdbc13d4df4a8c7'
 addresses.mainnet.chainlinkAVAX_USD =
   '0x0a77230d17318075983913bc2145db16c7366156'
 
+addresses.mainnet.CurveAddressProvider =
+  '0x0000000022d53366457f9d5e68ec105046fc4383'
+addresses.mainnet.CurveXUSDMetaPool =
+  '0x7F2d1C7b8911901de7c9785d6E7A7A10d8dEff66'
+addresses.mainnet.CurveZapper = '0x001E3BA199B4FF4B5B6e97aCD96daFC0E2e4156e'
+
 /* --- FUJI --- */
 addresses.fuji = {}
 

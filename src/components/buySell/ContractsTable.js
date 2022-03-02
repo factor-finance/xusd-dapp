@@ -28,6 +28,9 @@ const ContractsTable = () => {
     vault: {
       name: fbt('XUSD Vault', 'Contract Table XUSD Vault'),
     },
+    curve: {
+      name: fbt('Curve.fi', 'Contract Table Curve Pool'),
+    },
   }
 
   const errorMap = {

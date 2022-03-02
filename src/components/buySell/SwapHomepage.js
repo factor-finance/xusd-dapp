@@ -153,6 +153,7 @@ const SwapHomepage = ({
     mintVault,
     redeemVault,
     swapFlipper,
+    swapCurve,
   } = useCurrencySwapper(
     swapParams(
       swapMode === 'mint' ? selectedBuyCoinAmount : selectedRedeemCoinAmount,
@@ -336,6 +337,8 @@ const SwapHomepage = ({
         } else {
           ;({ result, swapAmount, minSwapAmount } = await redeemVault())
         }
+      } else if (selectedSwap.name === 'curve') {
+        ;({ result, swapAmount, minSwapAmount } = await swapCurve())
       }
       setBuyWidgetState(`${prependStage}waiting-network`)
 

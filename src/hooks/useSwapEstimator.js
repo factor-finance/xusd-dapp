@@ -66,7 +66,12 @@ const useSwapEstimator = ({
   const account = useStoreState(AccountStore, (s) => s.account)
   const [ethPrice, setEthPrice] = useState(false)
   const [estimationCallback, setEstimationCallback] = useState(null)
-  const { mintVaultGasEstimate, redeemVaultGasEstimate } = useCurrencySwapper({
+  const {
+    mintVaultGasEstimate,
+    redeemVaultGasEstimate,
+    swapCurveGasEstimate,
+    quoteCurve,
+  } = useCurrencySwapper({
     swapMode,
     inputAmountRaw,
     selectedCoin,
@@ -164,15 +169,17 @@ const useSwapEstimator = ({
     })
     let usedGasPrice = gasPrice
 
-    let vaultResult, ethPrice
+    let vaultResult, curveResult, ethPrice
     if (swapMode === 'mint') {
-      ;[vaultResult, ethPrice] = await Promise.all([
+      ;[vaultResult, curveResult, ethPrice] = await Promise.all([
         estimateMintSuitabilityVault(),
+        estimateSwapSuitabilityCurve(),
         fetchEthPrice(),
       ])
     } else {
-      ;[vaultResult, ethPrice] = await Promise.all([
+      ;[vaultResult, curveResult, ethPrice] = await Promise.all([
         estimateRedeemSuitabilityVault(),
+        estimateSwapSuitabilityCurve(),
         fetchEthPrice(),
       ])
     }
@@ -183,6 +190,7 @@ const useSwapEstimator = ({
 
     let estimations = {
       vault: vaultResult,
+      curve: curveResult,
     }
 
     estimations = enrichAndFindTheBest(
@@ -267,6 +275,71 @@ const useSwapEstimator = ({
 
   const userHasEnoughStablecoin = (coin, swapAmount) => {
     return parseFloat(balances[coin]) > swapAmount
+  }
+
+  /* Gives information on suitability of Curve for this swap
+   */
+  const estimateSwapSuitabilityCurve = async () => {
+    const isRedeem = swapMode === 'redeem'
+    if (isRedeem && selectedCoin === 'mix') {
+      return {
+        canDoSwap: false,
+        error: 'unsupported',
+      }
+    }
+
+    try {
+      const priceQuoteBn = await quoteCurve(swapAmount)
+      const amountReceived = ethers.utils.formatUnits(
+        priceQuoteBn,
+        // 18 because xusd has 18 decimals
+        isRedeem ? coinToReceiveDecimals : 18
+      )
+
+      /* Check if Curve Zapper has allowance/approval to spend coin. If not we can not run gas estimation and need
+       * to guess the gas usage to estimate best trade route
+       */
+      if (
+        parseFloat(allowances[isRedeem ? 'xusd' : selectedCoin].curve) <
+          parseFloat(inputAmountRaw) ||
+        !userHasEnoughStablecoin(
+          isRedeem ? 'xusd' : selectedCoin,
+          parseFloat(inputAmountRaw)
+        )
+      ) {
+        return {
+          canDoSwap: true,
+          /* This estimate is from the few ones observed on the mainnet:
+           * https://snowtrace.io/tx/0xe3cbdbfa6e08bebd5dcb5acf3736859b23f101ff63dfbd8f6cd6d6440f3ae1bb
+           */
+          gasUsed: 1100001,
+          amountReceived,
+        }
+      }
+      // TODO get gasEstimate working in fork mode
+      let gasEstimate
+      try {
+        gasEstimate = await swapCurveGasEstimate(swapAmount, minSwapAmount)
+      } catch (e) {
+        console.error(
+          `Unexpected error estimating curve swap gas: ${e.message}`
+        )
+        gasEstimate = 1100000
+      }
+      return {
+        canDoSwap: true,
+        gasUsed: gasEstimate,
+        amountReceived,
+      }
+    } catch (e) {
+      console.error(
+        `Unexpected error estimating curve swap suitability: ${e.message}`
+      )
+      return {
+        canDoSwap: false,
+        error: 'unexpected_error',
+      }
+    }
   }
 
   /* Gives information on suitability of vault mint
@@ -574,6 +647,7 @@ const useSwapEstimator = ({
   return {
     estimateMintSuitabilityVault,
     estimateRedeemSuitabilityVault,
+    estimateSwapSuitabilityCurve,
   }
 }
 
