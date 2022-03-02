@@ -114,18 +114,29 @@ export default function Footer({ onLocale, locale, dapp }) {
                     {fbt('Discord', 'Discord link')}
                   </a>
                 )}
-                {
-                  <a
-                    href="#"
-                    rel="noreferrer"
-                    className="nav-link"
-                    onClick={() => {
-                      trackXUSDInWallet(xusdAddr)
-                    }}
-                  >
-                    {fbt('Add XUSD to Wallet', 'Add XUSD to Wallet')}
-                  </a>
-                }
+                <a
+                  href="/status"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="nav-link"
+                  onClick={() => {
+                    analytics.track('To Network Status', {
+                      category: 'navigation',
+                    })
+                  }}
+                >
+                  {fbt('Network Status', 'Network Status link')}
+                </a>
+                <a
+                  href="#"
+                  rel="noreferrer"
+                  className="nav-link"
+                  onClick={() => {
+                    trackXUSDInWallet(xusdAddr)
+                  }}
+                >
+                  {fbt('Add XUSD to Wallet', 'Add XUSD to Wallet')}
+                </a>
               </nav>
             </div>
             <div className="col-12 col-lg-6 text-center text-lg-right pr-lg-0 d-flex justify-content-end">
