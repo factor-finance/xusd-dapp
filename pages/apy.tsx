@@ -25,10 +25,10 @@ function addApy(se) {
   }
 }
 
-function cumulativeYield({ rebasingCreditsPerToken, totalSupply }): number {
+function cumulativeYield({ rebasingCreditsPerToken, rebasingCredits }): number {
   return (
     (1 - parseFloat(ethers.utils.formatUnits(rebasingCreditsPerToken, 18))) *
-    parseFloat(ethers.utils.formatUnits(totalSupply, 18))
+    parseFloat(ethers.utils.formatUnits(rebasingCredits, 18))
   )
 }
 
