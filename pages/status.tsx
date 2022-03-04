@@ -285,20 +285,17 @@ export default function NetworkStatus({ locale, onLocale }) {
     const load = async () => {
       try {
         setStrategiesBalances({
-          'Aave DAI.e': bigNum18(
+          'Aave avDAI.e': bigNum18(
             await c.AaveStrategy.checkBalance(dai.address)
           ),
-          'Aave USDT.e': bigNum6(
+          'Aave avUSDT.e': bigNum6(
             await c.AaveStrategy.checkBalance(usdt.address)
           ),
-          'Aave USDC.e': bigNum6(
+          'Aave avUSDC.e': bigNum6(
             await c.AaveStrategy.checkBalance(usdc.address)
           ),
-          'Curve USDC.e': bigNum6(
-            await c.CurveUsdcStrategy.checkBalance(usdc.address)
-          ),
-          'Curve USDC': bigNum6(
-            await c.CurveUsdcStrategy.checkBalance(usdc_native.address)
+          'Curve USDC/USDC.e': bigNum6(
+            (await c.CurveUsdcStrategy.checkBalance(usdc.address)) * 2
           ),
         })
       } catch (e) {
@@ -405,18 +402,18 @@ export default function NetworkStatus({ locale, onLocale }) {
               Factor XUSD network status: 🟢
             </h4>
             <table className="table table-right">
-              {section('Contract addresses', addresses)}
-              {section('Governor', governor)}
-              {section('Governor addresses', governorAddresses)}
               {section('XUSD', xusdSettings)}
-              {section('Oracle prices', oracle)}
-              {section('Vault settings', vaultSettings)}
+              {section('Strategy balances', strategiesBalances)}
               {section('Vault balances', vaultBalances)}
               {section('Vault buffer balances', vaultBufferBalances)}
-              {section('Strategies balances', strategiesBalances)}
+              {section('Vault settings', vaultSettings)}
+              {section('Contract addresses', addresses)}
+              {section('Oracle prices', oracle)}
               {section('Default strategies', defaultStrategies)}
-              {section('Aave strategy', aaveStrategy)}
-              {section('Curve strategy', curveStrategy)}
+              {section('Aave avToken strategy', aaveStrategy)}
+              {section('Curve USDC/USDC.e strategy', curveStrategy)}
+              {section('Governor', governor)}
+              {section('Governor addresses', governorAddresses)}
             </table>
           </div>
         </div>
