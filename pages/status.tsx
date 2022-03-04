@@ -294,9 +294,8 @@ export default function NetworkStatus({ locale, onLocale }) {
           'Aave avUSDC.e': bigNum6(
             await c.AaveStrategy.checkBalance(usdc.address)
           ),
-          'Curve USDC/USDC.e': bigNum6(
-            (await c.CurveUsdcStrategy.checkBalance(usdc.address)) * 2
-          ),
+          'Curve USDC/USDC.e':
+            bigNum6(await c.CurveUsdcStrategy.checkBalance(usdc.address)) * 2,
         })
       } catch (e) {
         console.error(e)
