@@ -402,7 +402,6 @@ export default function NetworkStatus({ locale, onLocale }) {
               Factor XUSD network status: 🟢
             </h4>
             <table className="table table-right">
-              {section('XUSD', xusdSettings)}
               {section('Strategy balances', strategiesBalances)}
               {section('Vault balances', vaultBalances)}
               {section('Vault buffer balances', vaultBufferBalances)}
@@ -412,6 +411,7 @@ export default function NetworkStatus({ locale, onLocale }) {
               {section('Default strategies', defaultStrategies)}
               {section('Aave avToken strategy', aaveStrategy)}
               {section('Curve USDC/USDC.e strategy', curveStrategy)}
+              {section('XUSD', xusdSettings)}
               {section('Governor', governor)}
               {section('Governor addresses', governorAddresses)}
             </table>
