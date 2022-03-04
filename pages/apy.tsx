@@ -33,11 +33,13 @@ function cumulativeYield({ rebasingCreditsPerToken, rebasingCredits }): number {
 }
 
 function addYield(se) {
-  // iterate and take the previous and current supply events and calculate the ratio
+  // iterate and take the previous and current supply events and calculate the difference
   for (let i = 1; i < se.length; i++) {
     const current = cumulativeYield(se[i])
     const past = cumulativeYield(se[i - 1])
-    se[i].yield = (current - past).toFixed(2)
+    const newYield = (current - past).toFixed(2)
+    // show -0.00 yield as 0.00
+    se[i].yield = newYield === '-0.00' ? '0.00' : newYield
   }
 }
 
