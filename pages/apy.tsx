@@ -13,9 +13,9 @@ function addApy(se) {
   // iterate and take the previous and current supply events and calculate the ratio
   for (let i = 1; i < se.length; i++) {
     const current = se[i].rebasingCreditsPerToken
-    const currentDate = se[i].createdAt
+    const currentDate = se[i].block_timestamp.iso
     const past = se[i - 1].rebasingCreditsPerToken
-    const pastDate = se[i - 1].createdAt
+    const pastDate = se[i - 1].block_timestamp.iso
     const ratio = past / current
     const days = moment(currentDate).diff(moment(pastDate), 'hours') / 24
     const apr = ((ratio - 1) * 100 * 365.25) / days
