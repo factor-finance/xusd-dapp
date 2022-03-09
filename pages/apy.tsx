@@ -22,6 +22,8 @@ function addApy(se) {
     const apy = aprToApy(apr, days)
     // show apy as xx.xx%
     se[i].apy = (apy * 100).toFixed(2)
+    se[i].aprUnboosted = (apr / se[i].multiplier).toFixed(2)
+    console.log(se[i].multiplier.toFixed(2))
   }
 }
 
@@ -43,6 +45,14 @@ function addYield(se) {
   }
 }
 
+function addMultiplier(se) {
+  // iterate and take the previous and current supply events and calculate the difference
+  for (let i = 1; i < se.length; i++) {
+    se[i].multiplier =
+      bigNum18(se[i].totalSupply) / bigNum18(se[i].rebasingCredits)
+  }
+}
+
 function bigNum18(value: string): number {
   return parseFloat(ethers.utils.formatUnits(value, 18))
 }
@@ -53,6 +63,7 @@ export default function APY({ locale, onLocale }) {
   useEffect(() => {
     totalSupplyEvents().then((events) => {
       const eventsJson = events.map((s) => s.toJSON())
+      addMultiplier(eventsJson)
       addApy(eventsJson)
       addYield(eventsJson)
       eventsJson.reverse()
@@ -79,6 +90,7 @@ export default function APY({ locale, onLocale }) {
                   <th>APY</th>
                   <th>Yield</th>
                   <th>Multiplier</th>
+                  <th>APR on Total</th>
                   <th>XUSD Total</th>
                   <th>Rebasing Supply</th>
                   <th>Non-Rebasing Supply</th>
@@ -105,12 +117,9 @@ export default function APY({ locale, onLocale }) {
                       <td>
                         <strong>{supplyEvent.yield}</strong>
                       </td>
+                      <td>{supplyEvent.multiplier.toFixed(2)}x</td>
                       <td>
-                        {(
-                          bigNum18(supplyEvent.totalSupply) /
-                          bigNum18(supplyEvent.rebasingCredits)
-                        ).toFixed(2)}
-                        x
+                        <strong>{supplyEvent.aprUnboosted}%</strong>
                       </td>
                       <td>{bigNum18(supplyEvent.totalSupply).toFixed(2)}</td>
                       <td>
