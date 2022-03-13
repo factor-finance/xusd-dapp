@@ -20,10 +20,13 @@ function addApy(se) {
     const days = moment(currentDate).diff(moment(pastDate), 'hours') / 24
     const apr = ((ratio - 1) * 100 * 365.25) / days
     const apy = aprToApy(apr, days)
+
+    se[i].multiplier =
+      bigNum18(se[i].totalSupply) / bigNum18(se[i].rebasingCredits)
+
     // show apy as xx.xx%
     se[i].apy = (apy * 100).toFixed(2)
     se[i].aprUnboosted = (apr / se[i].multiplier).toFixed(2)
-    console.log(se[i].multiplier.toFixed(2))
   }
 }
 
@@ -45,14 +48,6 @@ function addYield(se) {
   }
 }
 
-function addMultiplier(se) {
-  // iterate and take the previous and current supply events and calculate the difference
-  for (let i = 1; i < se.length; i++) {
-    se[i].multiplier =
-      bigNum18(se[i].totalSupply) / bigNum18(se[i].rebasingCredits)
-  }
-}
-
 function bigNum18(value: string): number {
   return parseFloat(ethers.utils.formatUnits(value, 18))
 }
@@ -63,7 +58,6 @@ export default function APY({ locale, onLocale }) {
   useEffect(() => {
     totalSupplyEvents().then((events) => {
       const eventsJson = events.map((s) => s.toJSON())
-      addMultiplier(eventsJson)
       addApy(eventsJson)
       addYield(eventsJson)
       eventsJson.reverse()
