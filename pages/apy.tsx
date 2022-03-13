@@ -20,8 +20,13 @@ function addApy(se) {
     const days = moment(currentDate).diff(moment(pastDate), 'hours') / 24
     const apr = ((ratio - 1) * 100 * 365.25) / days
     const apy = aprToApy(apr, days)
+
+    se[i].multiplier =
+      bigNum18(se[i].totalSupply) / bigNum18(se[i].rebasingCredits)
+
     // show apy as xx.xx%
     se[i].apy = (apy * 100).toFixed(2)
+    se[i].aprUnboosted = (apr / se[i].multiplier).toFixed(2)
   }
 }
 
@@ -79,6 +84,7 @@ export default function APY({ locale, onLocale }) {
                   <th>APY</th>
                   <th>Yield</th>
                   <th>Multiplier</th>
+                  <th>APR on Total</th>
                   <th>XUSD Total</th>
                   <th>Rebasing Supply</th>
                   <th>Non-Rebasing Supply</th>
@@ -105,12 +111,9 @@ export default function APY({ locale, onLocale }) {
                       <td>
                         <strong>{supplyEvent.yield}</strong>
                       </td>
+                      <td>{supplyEvent.multiplier.toFixed(2)}x</td>
                       <td>
-                        {(
-                          bigNum18(supplyEvent.totalSupply) /
-                          bigNum18(supplyEvent.rebasingCredits)
-                        ).toFixed(2)}
-                        x
+                        <strong>{supplyEvent.aprUnboosted}%</strong>
                       </td>
                       <td>{bigNum18(supplyEvent.totalSupply).toFixed(2)}</td>
                       <td>
