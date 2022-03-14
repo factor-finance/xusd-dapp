@@ -332,7 +332,9 @@ export default function NetworkStatus({ locale, onLocale }) {
         setAaveStrategy({
           vaultAddress: await c.AaveStrategy.vaultAddress(),
           platformAddress: await c.AaveStrategy.platformAddress(),
-          rewardTokenAddress: await c.AaveStrategy.rewardTokenAddress(),
+          rewardTokenAddresses: (
+            await c.AaveStrategy.getRewardTokenAddresses()
+          ).join(', '),
           rewardLiquidationThreshold: (
             await c.AaveStrategy.rewardLiquidationThreshold()
           ).toString(),
@@ -365,7 +367,9 @@ export default function NetworkStatus({ locale, onLocale }) {
         setCurveStrategy({
           vaultAddress: await c.CurveUsdcStrategy.vaultAddress(),
           platformAddress: await c.CurveUsdcStrategy.platformAddress(),
-          rewardTokenAddress: await c.CurveUsdcStrategy.rewardTokenAddress(),
+          rewardTokenAddresses: (
+            await c.CurveUsdcStrategy.getRewardTokenAddresses()
+          ).join(', '),
           rewardLiquidationThreshold: (
             await c.CurveUsdcStrategy.rewardLiquidationThreshold()
           ).toString(),
