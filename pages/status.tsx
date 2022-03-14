@@ -89,6 +89,7 @@ export default function NetworkStatus({ locale, onLocale }) {
   const [defaultStrategies, setDefaultStrategies] = useState({})
   const [aaveStrategy, setAaveStrategy] = useState({})
   const [curveStrategy, setCurveStrategy] = useState({})
+  const [alphaHomoraStrategy, setAlphaHomoraStrategy] = useState({})
 
   useEffect(() => {
     if (!c) {
@@ -106,6 +107,7 @@ export default function NetworkStatus({ locale, onLocale }) {
           VaultCore: c.VaultCore.address,
           VaultAdmin: c.VaultAdmin.address,
           OracleRouter: c.OracleRouter.address,
+          Governor: c.Governor.address,
           'AaveStrategy proxy': c.AaveStrategyProxy.address,
           'AaveStrategy impl': await c.AaveStrategyProxy.implementation(),
           AaveStrategy: c.AaveStrategy.__originalAddress,
@@ -113,7 +115,10 @@ export default function NetworkStatus({ locale, onLocale }) {
           'CurveUsdcStrategy impl':
             await c.CurveUsdcStrategyProxy.implementation(),
           CurveUsdcStrategy: c.CurveUsdcStrategy.__originalAddress,
-          Governor: c.Governor.address,
+          'AlphaHomoraStrategy proxy': c.AlphaHomoraStrategyProxy.address,
+          'AlphaHomoraStrategy impl':
+            await c.AlphaHomoraStrategyProxy.implementation(),
+          AlphaHomoraStrategy: c.AlphaHomoraStrategy.__originalAddress,
         })
       } catch (e) {
         console.error(e)
@@ -395,6 +400,41 @@ export default function NetworkStatus({ locale, onLocale }) {
     load()
   }, [c, dai, usdc, usdc_native, usdt])
 
+  useEffect(() => {
+    if (!c) {
+      return
+    }
+    const load = async () => {
+      try {
+        setAlphaHomoraStrategy({
+          vaultAddress: await c.AlphaHomoraStrategy.vaultAddress(),
+          platformAddress: await c.AlphaHomoraStrategy.platformAddress(),
+          rewardTokenAddresses: (
+            await c.AlphaHomoraStrategy.rewardTokenAddresses()
+          ).join(', '),
+          rewardLiquidationThreshold: (
+            await c.AlphaHomoraStrategy.rewardLiquidationThreshold()
+          ).toString(),
+          'supportsAsset(DAI.e)': (
+            await c.AlphaHomoraStrategy.supportsAsset(dai.address)
+          ).toString(),
+          'supportsAsset(USDT.e)': (
+            await c.AlphaHomoraStrategy.supportsAsset(usdt.address)
+          ).toString(),
+          'supportsAsset(USDC.e)': (
+            await c.AlphaHomoraStrategy.supportsAsset(usdc.address)
+          ).toString(),
+          'supportsAsset(USDC)': (
+            await c.AlphaHomoraStrategy.supportsAsset(usdc_native.address)
+          ).toString(),
+        })
+      } catch (e) {
+        console.error(e)
+      }
+    }
+    load()
+  }, [c, dai, usdc, usdc_native, usdt])
+
   return (
     <>
       <Layout locale={locale} onLocale={onLocale} dapp>
@@ -416,6 +456,7 @@ export default function NetworkStatus({ locale, onLocale }) {
               {section('Default strategies', defaultStrategies)}
               {section('Aave avToken strategy', aaveStrategy)}
               {section('Curve USDC/USDC.e strategy', curveStrategy)}
+              {section('Alpha Homora strategy', alphaHomoraStrategy)}
               {section('XUSD', xusdSettings)}
               {section('Governor', governor)}
               {section('Governor addresses', governorAddresses)}
