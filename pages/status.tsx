@@ -201,7 +201,7 @@ export default function NetworkStatus({ locale, onLocale }) {
       }
     }
     load()
-  }, [c])
+  }, [c, dai, usdc, usdc_native, usdt])
 
   useEffect(() => {
     if (!vault) {
