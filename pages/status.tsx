@@ -26,7 +26,7 @@ function bigNum6(value: string): number {
 }
 
 function addrLink(value: any): any {
-  // if array of addresses, return comma separated list each one with addrLink called
+  // for array of addresses, return space separated list each one with addrLink called
   if (value.map) {
     return value
       .map((v) => addrLink(v))
