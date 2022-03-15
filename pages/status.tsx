@@ -25,6 +25,22 @@ function bigNum6(value: string): number {
   return bigNum(value, 6)
 }
 
+function addrLink(value: any): any {
+  // for array of addresses, return space separated list each one with addrLink called
+  if (value.map) {
+    return value
+      .map((v) => addrLink(v))
+      .reduce((prev, curr) => [prev, ' ', curr])
+  }
+  return value.toString().startsWith('0x') ? (
+    <a href={`https://snowtrace.io/address/${value}`} target="blank">
+      {value}
+    </a>
+  ) : (
+    value
+  )
+}
+
 function section(title, data) {
   return (
     <>
@@ -39,18 +55,7 @@ function section(title, data) {
           return (
             <tr key={key}>
               <td>{key}</td>
-              <td>
-                {value && value.toString().startsWith('0x') ? (
-                  <a
-                    href={`https://snowtrace.io/address/${value}`}
-                    target="blank"
-                  >
-                    {value}
-                  </a>
-                ) : (
-                  value
-                )}
-              </td>
+              <td>{value && addrLink(value)}</td>
             </tr>
           )
         })}
@@ -332,7 +337,7 @@ export default function NetworkStatus({ locale, onLocale }) {
         setAaveStrategy({
           vaultAddress: await c.AaveStrategy.vaultAddress(),
           platformAddress: await c.AaveStrategy.platformAddress(),
-          rewardTokenAddress: await c.AaveStrategy.rewardTokenAddress(),
+          rewardTokenAddresses: await c.AaveStrategy.getRewardTokenAddresses(),
           rewardLiquidationThreshold: (
             await c.AaveStrategy.rewardLiquidationThreshold()
           ).toString(),
@@ -365,7 +370,8 @@ export default function NetworkStatus({ locale, onLocale }) {
         setCurveStrategy({
           vaultAddress: await c.CurveUsdcStrategy.vaultAddress(),
           platformAddress: await c.CurveUsdcStrategy.platformAddress(),
-          rewardTokenAddress: await c.CurveUsdcStrategy.rewardTokenAddress(),
+          rewardTokenAddresses:
+            await c.CurveUsdcStrategy.getRewardTokenAddresses(),
           rewardLiquidationThreshold: (
             await c.CurveUsdcStrategy.rewardLiquidationThreshold()
           ).toString(),
