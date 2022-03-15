@@ -161,6 +161,7 @@ export default function NetworkStatus({ locale, onLocale }) {
           Vault: await c.VaultProxy.governor(),
           AaveStrategy: await c.AaveStrategyProxy.governor(),
           CurveUsdcStrategy: await c.CurveUsdcStrategyProxy.governor(),
+          AlphaHomoraStrategy: await c.AlphaHomoraStrategyProxy.governor(),
         })
       } catch (e) {
         console.error(e)
@@ -310,6 +311,9 @@ export default function NetworkStatus({ locale, onLocale }) {
           ),
           'Curve USDC/USDC.e':
             bigNum6(await c.CurveUsdcStrategy.checkBalance(usdc.address)) * 2,
+          'Alpha Homora USDT.e': bigNum6(
+            await c.AlphaHomoraStrategy.checkBalance(usdt.address)
+          ),
         })
       } catch (e) {
         console.error(e)
