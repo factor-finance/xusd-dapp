@@ -33,7 +33,11 @@ function addrLink(value: any): any {
       .reduce((prev, curr) => [prev, ' ', curr])
   }
   return value.toString().startsWith('0x') ? (
-    <a href={`https://snowtrace.io/address/${value}`} target="blank">
+    <a
+      href={`https://snowtrace.io/address/${value}`}
+      target="blank"
+      key={value}
+    >
       {value}
     </a>
   ) : (
@@ -409,9 +413,8 @@ export default function NetworkStatus({ locale, onLocale }) {
         setAlphaHomoraStrategy({
           vaultAddress: await c.AlphaHomoraStrategy.vaultAddress(),
           platformAddress: await c.AlphaHomoraStrategy.platformAddress(),
-          rewardTokenAddresses: (
-            await c.AlphaHomoraStrategy.rewardTokenAddresses()
-          ).join(', '),
+          rewardTokenAddresses:
+            await c.AlphaHomoraStrategy.getRewardTokenAddresses(),
           rewardLiquidationThreshold: (
             await c.AlphaHomoraStrategy.rewardLiquidationThreshold()
           ).toString(),
