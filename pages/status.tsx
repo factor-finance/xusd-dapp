@@ -316,7 +316,7 @@ export default function NetworkStatus({ locale, onLocale }) {
             await c.AlphaHomoraStrategy.checkBalance(usdt.address)
           ),
           'Alpha Homora USDC.e': bigNum6(
-            await c.AlphaHomoraStrategy.checkBalance(usdt.address)
+            await c.AlphaHomoraStrategy.checkBalance(usdc.address)
           ),
           'Curve USDC.e': bigNum6(
             await c.CurveUsdcStrategy.checkBalance(usdc.address)
