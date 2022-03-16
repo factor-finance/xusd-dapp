@@ -309,10 +309,20 @@ export default function NetworkStatus({ locale, onLocale }) {
           'Aave avUSDC.e': bigNum6(
             await c.AaveStrategy.checkBalance(usdc.address)
           ),
-          'Curve USDC/USDC.e':
-            bigNum6(await c.CurveUsdcStrategy.checkBalance(usdc.address)) * 2,
+          'Alpha Homora DAI.e': bigNum6(
+            await c.AlphaHomoraStrategy.checkBalance(dai.address)
+          ),
           'Alpha Homora USDT.e': bigNum6(
             await c.AlphaHomoraStrategy.checkBalance(usdt.address)
+          ),
+          'Alpha Homora USDC.e': bigNum6(
+            await c.AlphaHomoraStrategy.checkBalance(usdt.address)
+          ),
+          'Curve USDC.e': bigNum6(
+            await c.CurveUsdcStrategy.checkBalance(usdc.address)
+          ),
+          'Curve USDC': bigNum6(
+            await c.CurveUsdcStrategy.checkBalance(usdc_native.address)
           ),
         })
       } catch (e) {
