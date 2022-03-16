@@ -160,8 +160,8 @@ export default function NetworkStatus({ locale, onLocale }) {
           XUSD: await c.XUSDProxy.governor(),
           Vault: await c.VaultProxy.governor(),
           AaveStrategy: await c.AaveStrategyProxy.governor(),
-          CurveUsdcStrategy: await c.CurveUsdcStrategyProxy.governor(),
           AlphaHomoraStrategy: await c.AlphaHomoraStrategyProxy.governor(),
+          CurveUsdcStrategy: await c.CurveUsdcStrategyProxy.governor(),
         })
       } catch (e) {
         console.error(e)
@@ -472,8 +472,8 @@ export default function NetworkStatus({ locale, onLocale }) {
               {section('Oracle prices', oracle)}
               {section('Default strategies', defaultStrategies)}
               {section('Aave avToken strategy', aaveStrategy)}
-              {section('Curve USDC/USDC.e strategy', curveStrategy)}
               {section('Alpha Homora strategy', alphaHomoraStrategy)}
+              {section('Curve USDC/USDC.e strategy', curveStrategy)}
               {section('XUSD', xusdSettings)}
               {section('Governor', governor)}
               {section('Governor addresses', governorAddresses)}
