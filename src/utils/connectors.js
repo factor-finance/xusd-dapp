@@ -5,11 +5,8 @@ import { SafeAppConnector } from '@gnosis.pm/safe-apps-web3-react'
 import { LedgerConnector } from '@web3-react/ledger-connector'
 import { get } from 'lodash'
 
-import { providerName } from 'utils/web3'
-
 const POLLING_INTERVAL = 12000
 const RPC_PROVIDER = process.env.ETHEREUM_RPC_PROVIDER
-const WS_PROVIDER = process.env.ETHEREUM_WEBSOCKET_PROVIDER
 const CHAIN_ID = parseInt(process.env.ETHEREUM_RPC_CHAIN_ID) || 43114
 
 export const injectedConnector = new InjectedConnector({

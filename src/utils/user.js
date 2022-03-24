@@ -1,7 +1,6 @@
 import analytics from 'utils/analytics'
 const localStorageUserSourceKey = 'utm_source'
 
-let source
 export function getUserSource() {
   return localStorage.getItem(localStorageUserSourceKey)
 }
