@@ -3,7 +3,6 @@ import classnames from 'classnames'
 import Head from 'next/head'
 import { useStoreState } from 'pullstate'
 import { fbt } from 'fbt-runtime'
-import { useWeb3React } from '@web3-react/core'
 import { get } from 'lodash'
 
 import AccountStore from 'stores/AccountStore'
@@ -27,8 +26,6 @@ const Layout = ({
   storeTransaction,
   storeTransactionError,
 }) => {
-  const { connector, account } = useWeb3React()
-
   const xusdContract = useStoreState(ContractStore, (s) =>
     get(s, 'contracts.xusd')
   )

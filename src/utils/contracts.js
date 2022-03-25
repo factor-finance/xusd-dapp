@@ -98,6 +98,8 @@ const curveZapperMiniAbi = [
   },
 ]
 
+let fetchInterval
+
 /* fetchId - used to prevent race conditions.
  * Sometimes "setupContracts" is called twice with very little time in between and it can happen
  * that the call issued first (for example with not yet signed in account) finishes after the second

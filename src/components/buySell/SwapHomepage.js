@@ -35,7 +35,6 @@ const SwapHomepage = ({
   storeTransaction,
   storeTransactionError,
   rpcProvider,
-  isMobile,
 }) => {
   const allowances = useStoreState(AccountStore, (s) => s.allowances)
   const pendingMintTransactions = useStoreState(TransactionStore, (s) =>
@@ -70,9 +69,11 @@ const SwapHomepage = ({
   const [selectedBuyCoinAmount, setSelectedBuyCoinAmount] = useState('')
   const [selectedRedeemCoinAmount, setSelectedRedeemCoinAmount] = useState('')
   const [showApproveModal, _setShowApproveModal] = useState(false)
+  const [buyWidgetState, setBuyWidgetState] = useState('buy')
 
   const [formError, setFormError] = useState(null)
-  const [setBuyFormWarnings] = useState({})
+  // eslint-disable-next-line no-unused-vars
+  const [buyFormWarnings, setBuyFormWarnings] = useState({})
   const {
     setPriceToleranceValue,
     priceToleranceValue,
@@ -314,6 +315,7 @@ const SwapHomepage = ({
           ;({ result, swapAmount, minSwapAmount } = await redeemVault())
         }
       } else if (selectedSwap.name === 'curve') {
+        // eslint-disable-next-line no-unused-vars
         ;({ result, swapAmount, minSwapAmount } = await swapCurve())
       }
       setBuyWidgetState(`${prependStage}waiting-network`)
@@ -337,7 +339,7 @@ const SwapHomepage = ({
       setSelectedBuyCoinAmount('')
       setSelectedRedeemCoinAmount('')
 
-      const receipt = await rpcProvider.waitForTransaction(result.hash)
+      await rpcProvider.waitForTransaction(result.hash)
       analytics.track('Swap succeeded User source', {
         category: 'swap',
         label: getUserSource(),
@@ -355,7 +357,6 @@ const SwapHomepage = ({
         })
       }
     } catch (e) {
-      const metadata = swapMetadata()
       // 4001 code happens when a user rejects the transaction
       if (e.code !== 4001) {
         await storeTransactionError(swapMode, selectedBuyCoin)
