@@ -2,5 +2,4 @@
 . "$(dirname "$0")/_/husky.sh"
 
 yarn prettier:check
-# Disabled due to many js errors
-#yarn lint
+yarn lint
