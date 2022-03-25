@@ -10,6 +10,7 @@ module.exports = {
     'react/jsx-uses-react': 'error',
     'react/jsx-uses-vars': 'error',
     'react/react-in-jsx-scope': 'error',
+    'react/prop-types': 'off',
   },
   plugins: ['react'],
   extends: [
