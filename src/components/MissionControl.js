@@ -1,8 +1,7 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { useWeb3React } from '@web3-react/core'
 import { fbt } from 'fbt-runtime'
 
-import AccountStore from 'stores/AccountStore'
 import SwapHomepage from 'components/buySell/SwapHomepage'
 import ContractsTable from 'components/buySell/ContractsTable'
 import GetXUSD from 'components/GetXUSD'

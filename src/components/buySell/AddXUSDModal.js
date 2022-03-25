@@ -1,15 +1,14 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { fbt } from 'fbt-runtime'
 import { useStoreState } from 'pullstate'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
-import { get } from 'lodash'
 
 import AccountStore from 'stores/AccountStore'
 import ContractStore from 'stores/ContractStore'
 import withIsMobile from 'hoc/withIsMobile'
-import { providerName, trackXUSDInWallet, shortenAddress } from 'utils/web3'
+import { providerName, trackXUSDInWallet } from 'utils/web3'
 import analytics from 'utils/analytics'
-import { connectorNameIconMap, getConnectorIcon } from 'utils/connectors'
+import { getConnectorIcon } from 'utils/connectors'
 
 const AddXUSDModal = ({ onClose, isMobile }) => {
   const xusdAddress = useStoreState(

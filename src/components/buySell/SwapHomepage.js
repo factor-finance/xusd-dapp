@@ -1,8 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import { fbt } from 'fbt-runtime'
 import { useStoreState } from 'pullstate'
-import { ethers, BigNumber } from 'ethers'
-import { get, find } from 'lodash'
 
 import AccountStore from 'stores/AccountStore'
 import TransactionStore from 'stores/TransactionStore'

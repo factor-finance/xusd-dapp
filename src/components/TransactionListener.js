@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { ethers } from 'ethers'
 import { useStoreState } from 'pullstate'
 
 import TransactionStore, { initialState } from 'stores/TransactionStore'
 import ContractStore from 'stores/ContractStore'
-import { usePrevious } from 'utils/hooks'
 import { useWeb3React } from '@web3-react/core'
 import withRpcProvider from 'hoc/withRpcProvider'
 import { sleep } from 'utils/utils'

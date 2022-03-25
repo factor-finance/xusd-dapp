@@ -1,5 +1,4 @@
-import React, { useState } from 'react'
-import { fbt } from 'fbt-runtime'
+import React from 'react'
 import { useStoreState } from 'pullstate'
 
 import AccountStore from 'stores/AccountStore'

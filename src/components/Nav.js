@@ -18,7 +18,6 @@ import LocaleDropdown from 'components/LocaleDropdown'
 import ContractStore from 'stores/ContractStore'
 import AccountStore from 'stores/AccountStore'
 
-import Languages from '../constants/Languages'
 import AccountStatusPopover from './AccountStatusPopover'
 
 const environment = process.env.NODE_ENV

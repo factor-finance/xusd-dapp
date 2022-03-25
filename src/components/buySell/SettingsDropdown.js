@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { BigNumber } from 'ethers'
 import Dropdown from 'components/Dropdown'
 import { fbt } from 'fbt-runtime'

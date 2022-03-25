@@ -9,7 +9,7 @@ import { getEtherscanHost } from 'utils/web3'
 import { isCorrectNetwork, truncateAddress, networkIdToName } from 'utils/web3'
 import { currencies } from 'constants/Contract'
 import { formatCurrency } from 'utils/math'
-import { connectorNameIconMap, getConnectorIcon } from 'utils/connectors'
+import { getConnectorIcon } from 'utils/connectors'
 import analytics from 'utils/analytics'
 import { coinDisplayName } from 'utils/coins'
 

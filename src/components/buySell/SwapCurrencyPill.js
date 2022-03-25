@@ -4,8 +4,6 @@ import { fbt } from 'fbt-runtime'
 
 import AccountStore from 'stores/AccountStore'
 import Dropdown from 'components/Dropdown'
-import { usePrevious } from 'utils/hooks'
-import analytics from 'utils/analytics'
 import {
   formatCurrency,
   formatCurrencyMinMaxDecimals,
@@ -14,7 +12,6 @@ import {
   removeCommas,
 } from 'utils/math'
 import { coinDisplayName } from 'utils/coins'
-import { currencies } from 'constants/Contract'
 
 const DownCaret = ({ color = '#608fcf', size = '30' }) => (
   <svg

@@ -2,13 +2,12 @@ import React, { useState, useEffect } from 'react'
 import { fbt } from 'fbt-runtime'
 import { useStoreState } from 'pullstate'
 import { ethers } from 'ethers'
-import { get } from 'lodash'
 
 import AccountStore from 'stores/AccountStore'
 import withRpcProvider from 'hoc/withRpcProvider'
 import ContractStore from 'stores/ContractStore'
 import analytics from 'utils/analytics'
-import { connectorNameIconMap, getConnectorIcon } from 'utils/connectors'
+import { getConnectorIcon } from 'utils/connectors'
 import { coinDisplayName } from 'utils/coins'
 
 const ApproveCurrencyRow = ({

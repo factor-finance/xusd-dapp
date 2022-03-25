@@ -1,5 +1,4 @@
-import React, { Component } from 'react'
-import { useStoreState } from 'pullstate'
+import React from 'react'
 
 import AccountStore from 'stores/AccountStore'
 /* Intentionally not using withIsMobile since that one is more interested in screen sizes. Here it is important

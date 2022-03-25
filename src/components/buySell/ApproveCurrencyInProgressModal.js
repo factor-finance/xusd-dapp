@@ -1,12 +1,11 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { fbt } from 'fbt-runtime'
 import { useStoreState } from 'pullstate'
-import { get } from 'lodash'
 
 import AccountStore from 'stores/AccountStore'
 import TransactionStore from 'stores/TransactionStore'
 import { currencies } from 'constants/Contract'
-import { connectorNameIconMap, getConnectorIcon } from 'utils/connectors'
+import { getConnectorIcon } from 'utils/connectors'
 import { coinDisplayName } from 'utils/coins'
 
 const ApproveCurrencyInProgressModal = ({ show }) => {
