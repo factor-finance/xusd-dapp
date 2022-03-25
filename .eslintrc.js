@@ -11,8 +11,19 @@ module.exports = {
     'react/jsx-uses-vars': 'error',
     'react/react-in-jsx-scope': 'error',
     'react/prop-types': 'off',
+    'no-extra-semi': 'off',
+    'unused-imports/no-unused-imports': 'error',
+    'unused-imports/no-unused-vars': [
+      'warn',
+      {
+        vars: 'all',
+        varsIgnorePattern: '^_',
+        args: 'after-used',
+        argsIgnorePattern: '^_',
+      },
+    ],
   },
-  plugins: ['react'],
+  plugins: ['react', 'unused-imports'],
   extends: [
     'eslint:recommended',
     'plugin:react/jsx-runtime',
