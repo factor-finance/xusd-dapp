@@ -13,15 +13,6 @@ module.exports = {
     'react/prop-types': 'off',
     'no-extra-semi': 'off',
     'unused-imports/no-unused-imports': 'error',
-    'unused-imports/no-unused-vars': [
-      'warn',
-      {
-        vars: 'all',
-        varsIgnorePattern: '^_',
-        args: 'after-used',
-        argsIgnorePattern: '^_',
-      },
-    ],
   },
   plugins: ['react', 'unused-imports'],
   extends: [
