@@ -130,15 +130,15 @@ const TransactionListener = ({ rpcProvider }) => {
           })
       }
     }
-
+    // eslint-disable-next-line no-unused-vars
     wsProvider.on(vault.filters.Mint(), (log, event) => {
       handlePossibleReplacedTransaction(log.transactionHash)
     })
-
+    // eslint-disable-next-line no-unused-vars
     wsProvider.on(vault.filters.Redeem(), (log, event) => {
       handlePossibleReplacedTransaction(log.transactionHash)
     })
-
+    // eslint-disable-next-line no-unused-vars
     wsProvider.on(xusd.filters.TotalSupplyUpdated(), (log, event) => {
       handlePossibleReplacedTransaction(log.transactionHash)
     })

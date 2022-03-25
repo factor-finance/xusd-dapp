@@ -24,7 +24,7 @@ const AddXUSDModal = ({ onClose, isMobile }) => {
     <>
       <div
         className="add-xusd-modal d-flex"
-        onClick={(e) => {
+        onClick={() => {
           onClose()
         }}
       >
@@ -47,7 +47,7 @@ const AddXUSDModal = ({ onClose, isMobile }) => {
               </div>
               <button
                 className="btn-blue mt-4 ml-auto mr-auto"
-                onClick={(e) => {
+                onClick={() => {
                   trackXUSDInWallet(xusdAddress)
                   onClose()
                 }}
@@ -110,7 +110,7 @@ const AddXUSDModal = ({ onClose, isMobile }) => {
               </div>
               <button
                 className="btn-blue mt-4 ml-auto mr-auto"
-                onClick={(e) => {
+                onClick={() => {
                   onClose()
                 }}
               >

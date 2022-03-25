@@ -15,7 +15,7 @@ import { coinDisplayName } from 'utils/coins'
 
 const AccountStatusContent = ({ className, onOpen }) => {
   const web3react = useWeb3React()
-  const { connector, deactivate, active, account, chainId } = web3react
+  const { deactivate, active, account, chainId } = web3react
   const correctNetwork = isCorrectNetwork(chainId)
   const balances = useStoreState(AccountStore, (s) => s.balances)
   const etherscanLink = `${getEtherscanHost(web3react)}/address/${account}`

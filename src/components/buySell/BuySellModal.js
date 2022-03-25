@@ -5,7 +5,7 @@ const BuySellModal = ({ onBackgroundClick, content }) => {
     <>
       <div
         className="buy-sell-modal d-flex"
-        onClick={(e) => {
+        onClick={() => {
           if (onBackgroundClick) {
             onBackgroundClick()
           }

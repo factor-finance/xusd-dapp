@@ -35,17 +35,8 @@ initSentry()
 function App({ Component, pageProps, err }) {
   const [locale, setLocale] = useState('en_US')
 
-  const {
-    connector,
-    library,
-    chainId,
-    account,
-    activate,
-    deactivate,
-    active,
-    error,
-  } = useWeb3React()
-  const [cookies, setCookie, removeCookie] = useCookies(['loggedIn'])
+  const { account, active, error } = useWeb3React()
+  const [setCookie] = useCookies(['loggedIn'])
   const router = useRouter()
   const tried = useEagerConnect()
   const address = useStoreState(AccountStore, (s) => s.address)
@@ -74,6 +65,7 @@ function App({ Component, pageProps, err }) {
     }
 
     if (process.browser && process.env.NODE_ENV === 'development') {
+      // eslint-disable-next-line no-unused-vars
       var vConsole = new VConsole()
     }
   }, [])

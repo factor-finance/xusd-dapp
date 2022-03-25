@@ -4,7 +4,7 @@ import { useStoreState } from 'pullstate'
 import AccountStore from 'stores/AccountStore'
 import WalletSelectContent from 'components/WalletSelectContent'
 
-const WalletSelectModal = ({}) => {
+const WalletSelectModal = () => {
   const modalState = useStoreState(
     AccountStore,
     (s) => s.walletSelectModalState

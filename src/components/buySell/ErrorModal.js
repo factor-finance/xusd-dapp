@@ -50,7 +50,7 @@ const ErrorModal = ({
               <div>
                 <button
                   className="btn-blue mt-4"
-                  onClick={(e) => {
+                  onClick={() => {
                     location.reload()
                   }}
                 >

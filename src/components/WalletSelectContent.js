@@ -13,8 +13,8 @@ import AccountStore from 'stores/AccountStore'
 
 import analytics from 'utils/analytics'
 
-const WalletSelectContent = ({}) => {
-  const { connector, activate, deactivate, active, chainId } = useWeb3React()
+const WalletSelectContent = () => {
+  const { activate, active, chainId } = useWeb3React()
   const [error, setError] = useState(null)
   const correctNetwork = isCorrectNetwork(chainId)
 

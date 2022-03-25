@@ -443,7 +443,7 @@ const SwapHomepage = ({
         {!showApproveModal && <ApproveCurrencyInProgressModal />}
         {addXusdModalState === 'show' && providerNotAutoDetectXUSD && (
           <AddXUSDModal
-            onClose={(e) => {
+            onClose={() => {
               localStorage.setItem('addXUSDModalShown', 'true')
               AccountStore.update((s) => {
                 s.addXusdModalState = 'none'

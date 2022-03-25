@@ -52,7 +52,7 @@ const ConfirmContractPickModal = ({
           <div className="body-actions d-flex align-items-center justify-content-center">
             <button
               className="btn-clear-blue d-flex align-items-center justify-content-center mr-2"
-              onClick={async (e) => {
+              onClick={async () => {
                 setConfirmAlternateRoute(false)
                 analytics.track('On deny tx route change', {
                   category: 'settings',
@@ -65,7 +65,7 @@ const ConfirmContractPickModal = ({
             </button>
             <button
               className="btn-blue d-flex align-items-center justify-content-center ml-2"
-              onClick={async (e) => {
+              onClick={async () => {
                 setConfirmAlternateRoute(true)
                 analytics.track('On confirm tx route change', {
                   category: 'settings',

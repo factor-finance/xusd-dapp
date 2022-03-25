@@ -17,10 +17,6 @@ const ApproveModal = ({
   buyWidgetState,
   onMintingError,
 }) => {
-  const xusdBalance = useStoreState(
-    AccountStore,
-    (s) => s.balances['xusd'] || 0
-  )
   const [coinApproved, setCoinApproved] = useState(false)
   const connectorName = useStoreState(AccountStore, (s) => s.connectorName)
   const connectorIcon = getConnectorIcon(connectorName)

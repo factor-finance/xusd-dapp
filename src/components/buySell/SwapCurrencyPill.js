@@ -131,7 +131,7 @@ const CoinSelect = ({ selected, onChange, options = [] }) => {
                   className={`${
                     option === 'xusd' ? 'xusd' : ''
                   }  d-flex justify-content-start align-items-center p-5px dropdown-item`}
-                  onClick={(e) => {
+                  onClick={() => {
                     onChange(option)
                     setOpen(false)
                   }}
@@ -246,7 +246,6 @@ const SwapCurrencyPill = ({
   topItem,
   onSelectChange,
   onAmountChange,
-  amountEditable,
   selectedCoin,
   selectedSwap,
   swapsLoaded,
@@ -437,7 +436,7 @@ const SwapCurrencyPill = ({
                     onAmountChange(valueNoCommas)
                   }
                 }}
-                onBlur={(e) => {
+                onBlur={() => {
                   const valueRounded = removeCommas(
                     roundTo2to6Decimals(coinValue)
                   )

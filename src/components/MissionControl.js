@@ -6,7 +6,7 @@ import SwapHomepage from 'components/buySell/SwapHomepage'
 import ContractsTable from 'components/buySell/ContractsTable'
 import GetXUSD from 'components/GetXUSD'
 
-const MissionControl = ({}) => {
+const MissionControl = () => {
   const { active } = useWeb3React()
 
   return (

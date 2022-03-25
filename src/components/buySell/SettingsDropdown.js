@@ -49,7 +49,7 @@ const PriceToleranceDropdown = ({
       >
         <div
           className="price-tolerance-selected d-flex justify-content-between"
-          onClick={(e) => {
+          onClick={() => {
             setPriceToleranceOpen(!priceToleranceOpen)
           }}
         >
@@ -169,7 +169,7 @@ const SettingsDropdown = ({
         <img
           className="settings-icon"
           src="/images/settings-icon.svg"
-          onClick={(e) => {
+          onClick={() => {
             const newOpenState = !settingsOpen
             setSettingsOpen(newOpenState)
             if (newOpenState) {

@@ -4,7 +4,6 @@ import Dropdown from 'components/Dropdown'
 const DisclaimerTooltip = ({
   children,
   id,
-  isOpen,
   onClose,
   text,
   smallIcon,
@@ -59,7 +58,7 @@ const DisclaimerTooltip = ({
         )}
       </Dropdown>
       <style jsx>{`
-        .disclaimer-popover {    
+        .disclaimer-popover {
           overflow: unset;
           white-space: normal;
           position: absolute;

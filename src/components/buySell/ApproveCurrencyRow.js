@@ -69,7 +69,7 @@ const ApproveCurrencyRow = ({
             )}
             <a
               className="blue-btn d-flex align-items-center justify-content-center"
-              onClick={async (e) => {
+              onClick={async () => {
                 analytics.track('On Approve Coin', {
                   category: 'swap',
                   label: swapMetadata.coinGiven,
@@ -85,9 +85,7 @@ const ApproveCurrencyRow = ({
                   storeTransaction(result, 'approve', coin)
                   setStage('waiting-network')
 
-                  const receipt = await rpcProvider.waitForTransaction(
-                    result.hash
-                  )
+                  await rpcProvider.waitForTransaction(result.hash)
                   analytics.track('Approval Successful', {
                     category: 'swap',
                     label: swapMetadata.coinGiven,

@@ -1,7 +1,7 @@
-import { useEffect } from 'react'
+import React, { useEffect } from 'react'
 import Router from 'next/router'
 
-export default function Home({ locale, onLocale }) {
+export default function Home() {
   useEffect(() => {
     Router.push('/swap')
   })

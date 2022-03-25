@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { fbt } from 'fbt-runtime'
 import { useStoreState } from 'pullstate'
-import { get as _get } from 'lodash'
 import { useWeb3React } from '@web3-react/core'
 import withIsMobile from 'hoc/withIsMobile'
 
@@ -14,18 +13,9 @@ import { usePrevious } from 'utils/hooks'
 import useExpectedYield from 'utils/useExpectedYield'
 import withRpcProvider from 'hoc/withRpcProvider'
 
-const BalanceHeader = ({
-  storeTransaction,
-  storeTransactionError,
-  rpcProvider,
-  isMobile,
-}) => {
-  const { connector, account } = useWeb3React()
+const BalanceHeader = ({ isMobile }) => {
+  const { account } = useWeb3React()
   const apy = useStoreState(ContractStore, (s) => s.apy)
-  const vault = useStoreState(ContractStore, (s) => _get(s, 'contracts.vault'))
-  const xusdContract = useStoreState(ContractStore, (s) =>
-    _get(s, 'contracts.xusd')
-  )
   const xusdBalance = useStoreState(AccountStore, (s) => s.balances['xusd'])
   const lifetimeYield = useStoreState(AccountStore, (s) => s.lifetimeYield)
   const xusdBalanceLoaded = typeof xusdBalance === 'string'
@@ -35,6 +25,7 @@ const BalanceHeader = ({
   )
   const mintAnimationLimit = 0.5
 
+  // eslint-disable-next-line no-unused-vars
   const [balanceEmphasised, setBalanceEmphasised] = useState(false)
   const prevXusdBalance = usePrevious(xusdBalance)
   const addXusdModalState = useStoreState(

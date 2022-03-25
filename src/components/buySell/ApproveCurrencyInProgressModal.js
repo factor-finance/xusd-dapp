@@ -8,7 +8,7 @@ import { currencies } from 'constants/Contract'
 import { getConnectorIcon } from 'utils/connectors'
 import { coinDisplayName } from 'utils/coins'
 
-const ApproveCurrencyInProgressModal = ({ show }) => {
+const ApproveCurrencyInProgressModal = () => {
   const transactions = useStoreState(TransactionStore, (s) => s.transactions)
   const approveContractTypes = Object.keys(currencies).map(
     (c) => `approve-${c}`

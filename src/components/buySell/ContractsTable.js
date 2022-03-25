@@ -99,10 +99,6 @@ const ContractsTable = () => {
     userSelectionExists ? estimation.userSelected : estimation.isBest
   )
 
-  const usedContractName = selectedEstimation
-    ? swapContracts[selectedEstimation.name].name
-    : '...'
-
   const numberOfCanDoSwaps = swapEstimationsReady
     ? Object.values(swapEstimations).filter((e) => e.canDoSwap).length
     : 0

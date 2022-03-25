@@ -13,6 +13,7 @@ module.exports = {
     'react/prop-types': 'off',
     'no-extra-semi': 'off',
     'unused-imports/no-unused-imports': 'error',
+    'react/no-children-prop': 'off',
   },
   plugins: ['react', 'unused-imports'],
   extends: [
