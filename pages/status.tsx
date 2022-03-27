@@ -309,7 +309,7 @@ export default function NetworkStatus({ locale, onLocale }) {
           'Aave avUSDC.e': bigNum6(
             await c.AaveStrategy.checkBalance(usdc.address)
           ),
-          'Alpha Homora DAI.e': bigNum6(
+          'Alpha Homora DAI.e': bigNum18(
             await c.AlphaHomoraStrategy.checkBalance(dai.address)
           ),
           'Alpha Homora USDT.e': bigNum6(
