@@ -6,14 +6,10 @@ import { useStoreState } from 'pullstate'
 
 import CoinCircleGraphics from 'components/sidePanel/CoinCircleGraphics'
 import TransactionStore from 'stores/TransactionStore'
-import { formatCurrency, formatCurrencyConditional } from 'utils/math'
+import { formatCurrencyConditional } from 'utils/math'
 import { coinDisplayName } from 'utils/coins'
 
-const SidePanelTransactionMessage = ({
-  transaction,
-  dismissTransaction,
-  animate = false,
-}) => {
+const SidePanelTransactionMessage = ({ transaction, animate = false }) => {
   const isApproveTransaction = transaction.type === 'approve'
   const isMintTransaction = transaction.type === 'mint'
   const isRedeemTransaction = transaction.type === 'redeem'
@@ -95,7 +91,7 @@ const SidePanelTransactionMessage = ({
           {showContents && isValidHash && (
             <a
               className={`etherscan-link ${showInnerContents ? '' : 'hidden'}`}
-              onClick={(e) => {
+              onClick={() => {
                 window.open(etherscanLink, '_blank')
               }}
             >
@@ -107,7 +103,7 @@ const SidePanelTransactionMessage = ({
               className={`expand-link ${showInnerContents ? '' : 'hidden'} ${
                 isExpanded ? 'expanded' : ''
               } `}
-              onClick={(e) => {
+              onClick={() => {
                 TransactionStore.update((s) => {
                   s.expandedTransaction = isExpanded ? null : transaction
                 })

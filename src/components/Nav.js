@@ -18,11 +18,8 @@ import LocaleDropdown from 'components/LocaleDropdown'
 import ContractStore from 'stores/ContractStore'
 import AccountStore from 'stores/AccountStore'
 
-import Languages from '../constants/Languages'
 import AccountStatusPopover from './AccountStatusPopover'
 
-const environment = process.env.NODE_ENV
-const showExperimentalSoftwareNotice = false
 const DappLinks = ({ dapp, page }) => {
   const xusdBalance = useStoreState(AccountStore, (s) => s.balances['xusd'])
   const lifetimeYield = useStoreState(AccountStore, (s) => s.lifetimeYield)
@@ -87,7 +84,7 @@ const DappLinks = ({ dapp, page }) => {
   )
 }
 
-const Nav = ({ dapp, isMobile, locale, onLocale, page }) => {
+const Nav = ({ dapp, locale, onLocale, page }) => {
   const { pathname } = useRouter()
   const { active, account } = useWeb3React()
   const apy = useStoreState(ContractStore, (s) => s.apy || 0)

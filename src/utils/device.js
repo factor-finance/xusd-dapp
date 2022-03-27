@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-escape */
 import { providerName } from 'utils/web3'
 
 export function isMobileDevice() {

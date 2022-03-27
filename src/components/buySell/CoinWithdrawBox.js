@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useStoreState } from 'pullstate'
 
-import { currencies } from 'constants/Contract'
 import { formatCurrency } from 'utils/math'
 import { animateValue } from 'utils/animation'
 import { coinDisplayName } from 'utils/coins'

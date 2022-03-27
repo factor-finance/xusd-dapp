@@ -1,8 +1,4 @@
-import React, { useState, useEffect } from 'react'
-import { useStoreState } from 'pullstate'
-
-import { usePrevious } from 'utils/hooks'
-import analytics from 'utils/analytics'
+import React from 'react'
 
 const DownCaret = ({ swapMode, disableRotation, color = '#8293a4' }) => {
   return (

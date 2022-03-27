@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import cookies from 'next-cookies'
 import { useWeb3React } from '@web3-react/core'
 import { useRouter } from 'next/router'
 import { useCookies } from 'react-cookie'
@@ -14,10 +13,9 @@ import withWeb3Provider from 'hoc/withWeb3Provider'
 import setUtilLocale from 'utils/setLocale'
 import { setUserSource } from 'utils/user'
 import { useEagerConnect } from 'utils/hooks'
-import { logout, login } from 'utils/account'
+import { login } from 'utils/account'
 import WalletSelectModal from 'components/WalletSelectModal'
 import { ToastContainer } from 'react-toastify'
-import { getConnector, getConnectorImage } from 'utils/connectors'
 
 import analytics from 'utils/analytics'
 import { AnalyticsProvider } from 'use-analytics'
@@ -37,17 +35,8 @@ initSentry()
 function App({ Component, pageProps, err }) {
   const [locale, setLocale] = useState('en_US')
 
-  const {
-    connector,
-    library,
-    chainId,
-    account,
-    activate,
-    deactivate,
-    active,
-    error,
-  } = useWeb3React()
-  const [cookies, setCookie, removeCookie] = useCookies(['loggedIn'])
+  const { account, active, error } = useWeb3React()
+  const [setCookie] = useCookies(['loggedIn'])
   const router = useRouter()
   const tried = useEagerConnect()
   const address = useStoreState(AccountStore, (s) => s.address)
@@ -76,6 +65,7 @@ function App({ Component, pageProps, err }) {
     }
 
     if (process.browser && process.env.NODE_ENV === 'development') {
+      // eslint-disable-next-line no-unused-vars
       var vConsole = new VConsole()
     }
   }, [])

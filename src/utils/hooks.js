@@ -11,7 +11,7 @@ import AccountStore from 'stores/AccountStore'
 import analytics from 'utils/analytics'
 
 export function useEagerConnect() {
-  const { activate, active } = useWeb3React()
+  const { activate } = useWeb3React()
 
   const connectorName = useStoreState(AccountStore, (s) => s.connectorName)
 
@@ -25,8 +25,6 @@ export function useEagerConnect() {
       if (!process.browser) return
 
       const gconnector = gnosisConnector()
-      // OK to use Gnosis Safe?
-      const canUseGnosisSafe = await gconnector.isSafeApp()
 
       try {
         await activate(gconnector, undefined, true)

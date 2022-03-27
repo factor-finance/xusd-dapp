@@ -2,13 +2,12 @@ import React, { useState, useEffect } from 'react'
 import { fbt } from 'fbt-runtime'
 import { useStoreState } from 'pullstate'
 import { ethers } from 'ethers'
-import { get } from 'lodash'
 
 import AccountStore from 'stores/AccountStore'
 import withRpcProvider from 'hoc/withRpcProvider'
 import ContractStore from 'stores/ContractStore'
 import analytics from 'utils/analytics'
-import { connectorNameIconMap, getConnectorIcon } from 'utils/connectors'
+import { getConnectorIcon } from 'utils/connectors'
 import { coinDisplayName } from 'utils/coins'
 
 const ApproveCurrencyRow = ({
@@ -70,7 +69,7 @@ const ApproveCurrencyRow = ({
             )}
             <a
               className="blue-btn d-flex align-items-center justify-content-center"
-              onClick={async (e) => {
+              onClick={async () => {
                 analytics.track('On Approve Coin', {
                   category: 'swap',
                   label: swapMetadata.coinGiven,
@@ -86,9 +85,7 @@ const ApproveCurrencyRow = ({
                   storeTransaction(result, 'approve', coin)
                   setStage('waiting-network')
 
-                  const receipt = await rpcProvider.waitForTransaction(
-                    result.hash
-                  )
+                  await rpcProvider.waitForTransaction(result.hash)
                   analytics.track('Approval Successful', {
                     category: 'swap',
                     label: swapMetadata.coinGiven,

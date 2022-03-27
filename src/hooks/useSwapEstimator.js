@@ -1,19 +1,12 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { ethers, BigNumber } from 'ethers'
 import { useStoreState } from 'pullstate'
-import { get, minBy } from 'lodash'
+import { get, minBy, find } from 'lodash'
 import AccountStore from 'stores/AccountStore'
-import {
-  mintAbsoluteGasLimitBuffer,
-  mintPercentGasLimitBuffer,
-  redeemPercentGasLimitBuffer,
-} from 'utils/constants'
 import { usePrevious } from 'utils/hooks'
 import useCurrencySwapper from 'hooks/useCurrencySwapper'
 import ContractStore from 'stores/ContractStore'
-import { calculateSwapAmounts, formatCurrency } from 'utils/math'
-import fetchWithTimeout from 'utils/fetchWithTimeout'
-import { find } from 'lodash'
+import { calculateSwapAmounts } from 'utils/math'
 
 /* Swap estimator listens for input changes of the currency and amount users is attempting
  * to swap and with some delay (to not cause too many calls) kicks off swap estimations.
@@ -47,11 +40,11 @@ const useSwapEstimator = ({
   const { contract: coinToSwapContract, decimals: coinToSwapDecimals } =
     coinInfoList[swapMode === 'mint' ? selectedCoin : 'xusd']
 
-  let coinToReceiveContract, coinToReceiveDecimals
+  let coinToReceiveDecimals
 
   // do not enter conditional body when redeeming a mix
   if (!(swapMode === 'redeem' && selectedCoin === 'mix')) {
-    ;({ contract: coinToReceiveContract, decimals: coinToReceiveDecimals } =
+    ;({ decimals: coinToReceiveDecimals } =
       coinInfoList[swapMode === 'redeem' ? selectedCoin : 'xusd'])
   }
 
@@ -63,8 +56,7 @@ const useSwapEstimator = ({
     allowances.usdc !== undefined &&
     allowances.dai !== undefined
 
-  const account = useStoreState(AccountStore, (s) => s.account)
-  const [ethPrice, setEthPrice] = useState(false)
+  const [setEthPrice] = useState(false)
   const [estimationCallback, setEstimationCallback] = useState(null)
   const {
     mintVaultGasEstimate,

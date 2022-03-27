@@ -159,7 +159,7 @@ export function checkValidInputForCoin(amount, coin) {
     amount = '0.00'
   }
 
-  const COIN = coin.toLowerCase()
+  coin = coin.toLowerCase()
   let decimals
 
   switch (coin) {

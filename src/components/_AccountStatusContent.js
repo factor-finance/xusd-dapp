@@ -9,13 +9,13 @@ import { getEtherscanHost } from 'utils/web3'
 import { isCorrectNetwork, truncateAddress, networkIdToName } from 'utils/web3'
 import { currencies } from 'constants/Contract'
 import { formatCurrency } from 'utils/math'
-import { connectorNameIconMap, getConnectorIcon } from 'utils/connectors'
+import { getConnectorIcon } from 'utils/connectors'
 import analytics from 'utils/analytics'
 import { coinDisplayName } from 'utils/coins'
 
 const AccountStatusContent = ({ className, onOpen }) => {
   const web3react = useWeb3React()
-  const { connector, deactivate, active, account, chainId } = web3react
+  const { deactivate, active, account, chainId } = web3react
   const correctNetwork = isCorrectNetwork(chainId)
   const balances = useStoreState(AccountStore, (s) => s.balances)
   const etherscanLink = `${getEtherscanHost(web3react)}/address/${account}`

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { useWeb3React } from '@web3-react/core'
 import { fbt } from 'fbt-runtime'
 import { find, sortBy } from 'lodash'
@@ -98,10 +98,6 @@ const ContractsTable = () => {
   const selectedEstimation = find(swapEstimations, (estimation) =>
     userSelectionExists ? estimation.userSelected : estimation.isBest
   )
-
-  const usedContractName = selectedEstimation
-    ? swapContracts[selectedEstimation.name].name
-    : '...'
 
   const numberOfCanDoSwaps = swapEstimationsReady
     ? Object.values(swapEstimations).filter((e) => e.canDoSwap).length

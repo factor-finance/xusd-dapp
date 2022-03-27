@@ -1,3 +1,4 @@
+import React from 'react'
 // FIXME: report to sentry
 
 export default function Custom404() {

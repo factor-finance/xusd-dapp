@@ -1,12 +1,11 @@
-import React, { useState, useEffect } from 'react'
-import { fbt } from 'fbt-runtime'
+import React from 'react'
 
 const BuySellModal = ({ onBackgroundClick, content }) => {
   return (
     <>
       <div
         className="buy-sell-modal d-flex"
-        onClick={(e) => {
+        onClick={() => {
           if (onBackgroundClick) {
             onBackgroundClick()
           }

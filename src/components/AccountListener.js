@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react'
-import { ethers, BigNumber } from 'ethers'
+import { useState, useEffect } from 'react'
 import { useCookies } from 'react-cookie'
 import { useWeb3React } from '@web3-react/core'
 import _ from 'lodash'
@@ -15,6 +14,7 @@ import { accountLifetimeYield } from 'utils/moralis'
 
 import { displayCurrency } from 'utils/math'
 
+// eslint-disable-next-line no-unused-vars
 const AccountListener = (props) => {
   const web3react = useWeb3React()
   const { account, chainId, library, active } = web3react
@@ -29,8 +29,6 @@ const AccountListener = (props) => {
   } = useStoreState(AccountStore, (s) => s)
   const prevRefetchStakingData = usePrevious(refetchStakingData)
   const prevRefetchUserData = usePrevious(refetchUserData)
-  const isDevelopment = process.env.NODE_ENV === 'development'
-  const isProduction = process.env.NODE_ENV === 'production'
 
   useEffect(() => {
     if ((prevActive && !active) || prevAccount !== account) {
@@ -58,7 +56,7 @@ const AccountListener = (props) => {
     fetchVaultThresholds()
   }, [contracts])
 
-  const loadData = async (contracts, {} = {}) => {
+  const loadData = async (contracts) => {
     if (!account) {
       return
     }
@@ -70,18 +68,9 @@ const AccountListener = (props) => {
       return
     }
 
-    const {
-      usdt,
-      dai,
-      usdc,
-      usdc_native,
-      xusd,
-      vault,
-      curveXUSDMetaPool,
-      curveZapper,
-    } = contracts
+    const { usdt, dai, usdc, usdc_native, xusd, vault, curveZapper } = contracts
 
-    const loadbalancesDev = async () => {
+    const loadBalances = async () => {
       try {
         const [
           xusdBalance,
@@ -116,88 +105,6 @@ const AccountListener = (props) => {
           'AccountListener.js error - can not load account balances: ',
           e
         )
-      }
-    }
-
-    let jsonCallId = 1
-    const loadBalancesProd = async () => {
-      // FIXME call using provider.call?
-      const data = {
-        jsonrpc: '2.0',
-        method: 'eth_getTokenBalances',
-        params: [
-          account,
-          [
-            xusd.address,
-            usdt.address,
-            dai.address,
-            usdc.address,
-            usdc_native.address,
-          ],
-        ],
-        id: jsonCallId.toString(),
-      }
-      jsonCallId++
-
-      const response = await fetch(process.env.ETHEREUM_RPC_PROVIDER, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        referrerPolicy: 'no-referrer',
-        body: JSON.stringify(data),
-      })
-      if (response.ok) {
-        const responseJson = await response.json()
-        const balanceData = {}
-
-        const allContractData = [
-          { name: 'xusd', decimals: 18, contract: xusd },
-          { name: 'usdt', decimals: 6, contract: usdt },
-          { name: 'dai', decimals: 18, contract: dai },
-          { name: 'usdc', decimals: 6, contract: usdc },
-          { name: 'usdc_native', decimals: 6, contract: usdc_native },
-        ]
-
-        allContractData.forEach((contractData) => {
-          const balanceResponseData = responseJson.result.tokenBalances.filter(
-            (tokenBalanceData) =>
-              tokenBalanceData.contractAddress.toLowerCase() ===
-              contractData.contract.address.toLowerCase()
-          )[0]
-
-          if (balanceResponseData.error === null) {
-            balanceData[contractData.name] =
-              balanceResponseData.tokenBalance === '0x'
-                ? '0'
-                : ethers.utils.formatUnits(
-                    balanceResponseData.tokenBalance,
-                    contractData.decimals
-                  )
-          } else {
-            console.error(
-              `Can not load balance for ${contractData.name} reason: ${balanceResponseData.error}`
-            )
-          }
-        })
-
-        AccountStore.update((s) => {
-          s.balances = balanceData
-        })
-      } else {
-        throw new Error(
-          `Could not fetch balances http status: ${response.status}`
-        )
-      }
-    }
-
-    const loadBalances = async () => {
-      if (!account) return
-
-      if (false) {
-        await loadBalancesProd()
-      } else {
-        await loadbalancesDev()
       }
     }
 
