@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import dateformat from 'dateformat'
-import EtherscanLink from 'components/earn/EtherscanLink'
 
 import { fbt } from 'fbt-runtime'
 import { useWeb3React } from '@web3-react/core'

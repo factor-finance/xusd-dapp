@@ -1,12 +1,10 @@
-import { ethers, Contract, BigNumber } from 'ethers'
+import { ethers, BigNumber } from 'ethers'
 const EthDater = require('ethereum-block-by-date')
 const moment = require('moment')
 
 import ContractStore from 'stores/ContractStore'
-import CoinStore from 'stores/CoinStore'
+
 import { aprToApy } from 'utils/math'
-import { displayCurrency } from 'utils/math'
-import { sleep } from 'utils/utils'
 
 import AccountStore from 'stores/AccountStore'
 import YieldStore from 'stores/YieldStore'
@@ -36,7 +34,6 @@ const curveFactoryMiniAbi = [
 ]
 
 const curveMetapoolMiniAbi = [
-  ,
   {
     stateMutability: 'view',
     type: 'function',
@@ -100,6 +97,8 @@ const curveZapperMiniAbi = [
     ],
   },
 ]
+
+let fetchInterval
 
 /* fetchId - used to prevent race conditions.
  * Sometimes "setupContracts" is called twice with very little time in between and it can happen
@@ -468,7 +467,7 @@ export async function setupContracts(account, library, chainId, fetchId) {
 }
 
 // calls to be executed only once after setup
-const setupCurve = async (curveAddressProvider, getContract, chainId) => {
+const setupCurve = async (curveAddressProvider, getContract) => {
   const factoryAddress = await curveAddressProvider.get_address(3)
   const factory = getContract(factoryAddress, curveFactoryMiniAbi)
   const curveUnderlyingCoins = (

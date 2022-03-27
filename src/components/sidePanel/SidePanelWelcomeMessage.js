@@ -1,11 +1,10 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { fbt } from 'fbt-runtime'
 import { useStoreState } from 'pullstate'
 
 import { formatCurrency } from 'utils/math'
 import AccountStore from 'stores/AccountStore'
 import ContractStore from 'stores/ContractStore'
-import { getDocsLink } from 'utils/getDocsLink'
 
 const SidePanelWelcomeMessage = () => {
   const xusdExchangeRates = useStoreState(
@@ -50,7 +49,7 @@ const SidePanelWelcomeMessage = () => {
               )}
             </p>
           )}
-          <a href="https://docs.xusd.fi" target="_blank">
+          <a href="https://docs.xusd.fi" target="_blank" rel="noreferrer">
             Learn more about Factor XUSD
           </a>
           .

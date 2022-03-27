@@ -1,15 +1,10 @@
-import React, { useState } from 'react'
+import React from 'react'
 import classnames from 'classnames'
 import Head from 'next/head'
-import Link from 'next/link'
 import { useStoreState } from 'pullstate'
-import { useEffect, useRef } from 'react'
-import { useCookies } from 'react-cookie'
 import { fbt } from 'fbt-runtime'
-import { useWeb3React } from '@web3-react/core'
 import { get } from 'lodash'
 
-import { useEagerConnect } from 'utils/hooks'
 import AccountStore from 'stores/AccountStore'
 import ContractStore from 'stores/ContractStore'
 import withRpcProvider from 'hoc/withRpcProvider'
@@ -31,8 +26,6 @@ const Layout = ({
   storeTransaction,
   storeTransactionError,
 }) => {
-  const { connector, account } = useWeb3React()
-
   const xusdContract = useStoreState(ContractStore, (s) =>
     get(s, 'contracts.xusd')
   )

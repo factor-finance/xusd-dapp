@@ -1,8 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import { fbt } from 'fbt-runtime'
 import { useStoreState } from 'pullstate'
-import { ethers, BigNumber } from 'ethers'
-import { get, find } from 'lodash'
 
 import AccountStore from 'stores/AccountStore'
 import TransactionStore from 'stores/TransactionStore'
@@ -10,7 +8,6 @@ import ContractStore from 'stores/ContractStore'
 import ApproveModal from 'components/buySell/ApproveModal'
 import AddXUSDModal from 'components/buySell/AddXUSDModal'
 import ErrorModal from 'components/buySell/ErrorModal'
-import DisclaimerTooltip from 'components/buySell/DisclaimerTooltip'
 import ApproveCurrencyInProgressModal from 'components/buySell/ApproveCurrencyInProgressModal'
 import { currencies } from 'constants/Contract'
 import { providersNotAutoDetectingXUSD, providerName } from 'utils/web3'
@@ -26,15 +23,10 @@ import useSwapEstimator from 'hooks/useSwapEstimator'
 import withIsMobile from 'hoc/withIsMobile'
 import { getUserSource } from 'utils/user'
 import usePrevious from 'utils/usePrevious'
-import LinkIcon from 'components/buySell/_LinkIcon'
-import { connectorNameIconMap, getConnectorIcon } from 'utils/connectors'
+import { getConnectorIcon } from 'utils/connectors'
 
 import analytics from 'utils/analytics'
-import {
-  truncateDecimals,
-  formatCurrencyMinMaxDecimals,
-  removeCommas,
-} from '../../utils/math'
+import { formatCurrencyMinMaxDecimals, removeCommas } from '../../utils/math'
 
 const lastUserSelectedCoinKey = 'last_user_selected_coin'
 const lastSelectedSwapModeKey = 'last_user_selected_swap_mode'
@@ -43,33 +35,17 @@ const SwapHomepage = ({
   storeTransaction,
   storeTransactionError,
   rpcProvider,
-  isMobile,
 }) => {
   const allowances = useStoreState(AccountStore, (s) => s.allowances)
   const pendingMintTransactions = useStoreState(TransactionStore, (s) =>
     s.transactions.filter((tx) => !tx.mined && tx.type === 'mint')
   )
   const balances = useStoreState(AccountStore, (s) => s.balances)
-  const xusdExchangeRates = useStoreState(
-    ContractStore,
-    (s) => s.xusdExchangeRates
-  )
   const swapEstimations = useStoreState(ContractStore, (s) => s.swapEstimations)
   const swapsLoaded = swapEstimations && typeof swapEstimations === 'object'
   const selectedSwap = useStoreState(ContractStore, (s) => s.selectedSwap)
 
-  const [displayedXusdToSell, setDisplayedXusdToSell] = useState('')
-  const [xusdToSell, setXusdToSell] = useState(0)
-  const [sellAllActive, setSellAllActive] = useState(false)
   const [generalErrorReason, setGeneralErrorReason] = useState(null)
-  const [sellWidgetIsCalculating, setSellWidgetIsCalculating] = useState(false)
-  const [sellWidgetCoinSplit, setSellWidgetCoinSplit] = useState([])
-  // redeem now, waiting-user, waiting-network
-  const [sellWidgetState, setSellWidgetState] = useState('redeem now')
-  const [sellWidgetSplitsInterval, setSellWidgetSplitsInterval] = useState(null)
-  // buy/modal-buy, waiting-user/modal-waiting-user, waiting-network/modal-waiting-network
-  const [buyWidgetState, setBuyWidgetState] = useState('buy')
-  const [priceToleranceOpen, setPriceToleranceOpen] = useState(false)
   // mint / redeem
   const [swapMode, setSwapMode] = useState(
     localStorage.getItem(lastSelectedSwapModeKey) || 'mint'
@@ -93,8 +69,10 @@ const SwapHomepage = ({
   const [selectedBuyCoinAmount, setSelectedBuyCoinAmount] = useState('')
   const [selectedRedeemCoinAmount, setSelectedRedeemCoinAmount] = useState('')
   const [showApproveModal, _setShowApproveModal] = useState(false)
+  const [buyWidgetState, setBuyWidgetState] = useState('buy')
 
   const [formError, setFormError] = useState(null)
+  // eslint-disable-next-line no-unused-vars
   const [buyFormWarnings, setBuyFormWarnings] = useState({})
   const {
     setPriceToleranceValue,
@@ -104,7 +82,6 @@ const SwapHomepage = ({
 
   const swappingGloballyDisabled = process.env.DISABLE_SWAP_BUTTON === 'true'
   const formHasErrors = formError !== null
-  const buyFormHasWarnings = buyFormWarnings !== null
   const connectorName = useStoreState(AccountStore, (s) => s.connectorName)
   const connectorIcon = getConnectorIcon(connectorName)
   const addXusdModalState = useStoreState(
@@ -338,6 +315,7 @@ const SwapHomepage = ({
           ;({ result, swapAmount, minSwapAmount } = await redeemVault())
         }
       } else if (selectedSwap.name === 'curve') {
+        // eslint-disable-next-line no-unused-vars
         ;({ result, swapAmount, minSwapAmount } = await swapCurve())
       }
       setBuyWidgetState(`${prependStage}waiting-network`)
@@ -361,7 +339,7 @@ const SwapHomepage = ({
       setSelectedBuyCoinAmount('')
       setSelectedRedeemCoinAmount('')
 
-      const receipt = await rpcProvider.waitForTransaction(result.hash)
+      await rpcProvider.waitForTransaction(result.hash)
       analytics.track('Swap succeeded User source', {
         category: 'swap',
         label: getUserSource(),
@@ -379,7 +357,6 @@ const SwapHomepage = ({
         })
       }
     } catch (e) {
-      const metadata = swapMetadata()
       // 4001 code happens when a user rejects the transaction
       if (e.code !== 4001) {
         await storeTransactionError(swapMode, selectedBuyCoin)
@@ -466,7 +443,7 @@ const SwapHomepage = ({
         {!showApproveModal && <ApproveCurrencyInProgressModal />}
         {addXusdModalState === 'show' && providerNotAutoDetectXUSD && (
           <AddXUSDModal
-            onClose={(e) => {
+            onClose={() => {
               localStorage.setItem('addXUSDModalShown', 'true')
               AccountStore.update((s) => {
                 s.addXusdModalState = 'none'

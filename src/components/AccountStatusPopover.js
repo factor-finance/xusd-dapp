@@ -1,10 +1,8 @@
 import React from 'react'
 import { useWeb3React } from '@web3-react/core'
-import { fbt } from 'fbt-runtime'
 
 import { isCorrectNetwork } from 'utils/web3'
 import withWalletSelectModal from 'hoc/withWalletSelectModal'
-import GetXUSD from 'components/GetXUSD'
 import Content from './_AccountStatusContent'
 
 const AccountStatusPopover = ({ className }) => {

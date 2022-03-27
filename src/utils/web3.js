@@ -60,6 +60,7 @@ export function truncateAddress(address) {
   return `${address.slice(0, 6)}...${address.slice(-4)}`
 }
 
+let web3
 export function trackXUSDInWallet(xusdAddress) {
   web3.currentProvider.sendAsync(
     {

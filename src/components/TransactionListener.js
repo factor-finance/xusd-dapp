@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { ethers } from 'ethers'
 import { useStoreState } from 'pullstate'
 
 import TransactionStore, { initialState } from 'stores/TransactionStore'
 import ContractStore from 'stores/ContractStore'
-import { usePrevious } from 'utils/hooks'
 import { useWeb3React } from '@web3-react/core'
 import withRpcProvider from 'hoc/withRpcProvider'
 import { sleep } from 'utils/utils'
@@ -131,15 +130,15 @@ const TransactionListener = ({ rpcProvider }) => {
           })
       }
     }
-
+    // eslint-disable-next-line no-unused-vars
     wsProvider.on(vault.filters.Mint(), (log, event) => {
       handlePossibleReplacedTransaction(log.transactionHash)
     })
-
+    // eslint-disable-next-line no-unused-vars
     wsProvider.on(vault.filters.Redeem(), (log, event) => {
       handlePossibleReplacedTransaction(log.transactionHash)
     })
-
+    // eslint-disable-next-line no-unused-vars
     wsProvider.on(xusd.filters.TotalSupplyUpdated(), (log, event) => {
       handlePossibleReplacedTransaction(log.transactionHash)
     })

@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { ethers, BigNumber } from 'ethers'
+import { useEffect, useState } from 'react'
+import { ethers } from 'ethers'
 import { useStoreState } from 'pullstate'
 
 import ContractStore from 'stores/ContractStore'
@@ -10,7 +10,6 @@ import {
   redeemPercentGasLimitBuffer,
   curveGasLimitBuffer,
 } from 'utils/constants'
-import addresses from 'constants/contractAddresses'
 
 import { calculateSwapAmounts } from 'utils/math'
 
@@ -24,7 +23,6 @@ const useCurrencySwapper = ({
   const [needsApproval, setNeedsApproval] = useState(false)
   const {
     vault: vaultContract,
-    xusd: xusdContract,
     usdt: usdtContract,
     usdc: usdcContract,
     dai: daiContract,
@@ -42,8 +40,6 @@ const useCurrencySwapper = ({
   const allowances = useStoreState(AccountStore, (s) => s.allowances)
   const balances = useStoreState(AccountStore, (s) => s.balances)
   const account = useStoreState(AccountStore, (s) => s.address)
-  const swapEstimations = useStoreState(ContractStore, (s) => s.swapEstimations)
-  const swapsLoaded = swapEstimations && typeof swapEstimations === 'object'
   const selectedSwap = useStoreState(ContractStore, (s) => s.selectedSwap)
 
   const allowancesLoaded =
@@ -173,12 +169,11 @@ const useCurrencySwapper = ({
     minSwapAmount,
     options = {}
   ) => {
-    let gasEstimate
     const isRedeemAll = Math.abs(swapAmount - balances.xusd) < 1
     if (isRedeemAll) {
-      return await callObject.redeemAll(minSwapAmount)
+      return await callObject.redeemAll(minSwapAmount, options)
     } else {
-      return await callObject.redeem(swapAmount, minSwapAmount)
+      return await callObject.redeem(swapAmount, minSwapAmount, options)
     }
   }
 

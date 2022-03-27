@@ -1,6 +1,5 @@
 const path = require('path')
 const webpack = require('webpack')
-const nextSourceMaps = require('@zeit/next-source-maps')()
 
 const isStaging = process.env.STAGING === 'true'
 const isProduction = process.env.NODE_ENV === 'production' && !isStaging
@@ -21,6 +20,7 @@ require('dotenv').config({
    * get set to process.env before the `dotenv` is initialized and dotenv doesn't
    * override the values with the prod values.
    */
+  /* eslint-disable-next-line */
   path: path.resolve(__dirname, envFile),
 })
 
@@ -90,10 +90,7 @@ const config = {
 
 if (process.env.NO_LANDING === 'true') {
   console.log('Building without landing page')
-  config.exportPathMap = async function (
-    defaultPathMap,
-    { dev, dir, outDir, distDir, buildId }
-  ) {
+  config.exportPathMap = async function () {
     return {
       '/': { page: '/mint' },
     }

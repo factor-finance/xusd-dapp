@@ -4,8 +4,6 @@ import { fbt } from 'fbt-runtime'
 
 import AccountStore from 'stores/AccountStore'
 import Dropdown from 'components/Dropdown'
-import { usePrevious } from 'utils/hooks'
-import analytics from 'utils/analytics'
 import {
   formatCurrency,
   formatCurrencyMinMaxDecimals,
@@ -14,7 +12,6 @@ import {
   removeCommas,
 } from 'utils/math'
 import { coinDisplayName } from 'utils/coins'
-import { currencies } from 'constants/Contract'
 
 const DownCaret = ({ color = '#608fcf', size = '30' }) => (
   <svg
@@ -134,7 +131,7 @@ const CoinSelect = ({ selected, onChange, options = [] }) => {
                   className={`${
                     option === 'xusd' ? 'xusd' : ''
                   }  d-flex justify-content-start align-items-center p-5px dropdown-item`}
-                  onClick={(e) => {
+                  onClick={() => {
                     onChange(option)
                     setOpen(false)
                   }}
@@ -249,7 +246,6 @@ const SwapCurrencyPill = ({
   topItem,
   onSelectChange,
   onAmountChange,
-  amountEditable,
   selectedCoin,
   selectedSwap,
   swapsLoaded,
@@ -440,7 +436,7 @@ const SwapCurrencyPill = ({
                     onAmountChange(valueNoCommas)
                   }
                 }}
-                onBlur={(e) => {
+                onBlur={() => {
                   const valueRounded = removeCommas(
                     roundTo2to6Decimals(coinValue)
                   )

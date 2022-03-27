@@ -1,24 +1,23 @@
+import React from 'react'
 import { fbt } from 'fbt-runtime'
 import { useStoreState } from 'pullstate'
-import Link from 'next/link'
 
 import ContractStore from 'stores/ContractStore'
 import analytics from 'utils/analytics'
 import { getDocsLink } from 'utils/getDocsLink'
 import LocaleDropdown from 'components/LocaleDropdown'
-import { providerName, trackXUSDInWallet } from 'utils/web3'
+import { trackXUSDInWallet } from 'utils/web3'
 
 const analyticsURL = process.env.ANALYTICS_URL
 const jobsURL = process.env.JOBS_URL
 const termsURL = process.env.TERMS_URL
-const privacyURL = process.env.PRIVACY_URL
+const privacyURL = process.env.PRIVACY_URnL
 const discordURL = process.env.DISCORD_URL
 export default function Footer({ onLocale, locale, dapp }) {
   const xusdAddr = useStoreState(
     ContractStore,
     (s) => s.contracts && s.contracts.xusd && s.contracts.xusd.address
   )
-  const provider = providerName()
   return (
     <>
       <footer>

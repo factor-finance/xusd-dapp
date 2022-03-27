@@ -6,7 +6,6 @@ import Dropdown from 'components/Dropdown'
 import GetXUSD from 'components/GetXUSD'
 import {
   isCorrectNetwork,
-  truncateAddress,
   switchEthereumChain,
   shortenAddress,
 } from 'utils/web3'
