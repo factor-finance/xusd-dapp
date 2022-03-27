@@ -324,28 +324,12 @@ export async function setupContracts(account, library, chainId, fetchId) {
   const fetchCreditsPerToken = async () => {
     try {
       const creditsPerToken = await xusd.rebasingCreditsPerToken()
-
       const rebasingCredits = await xusd.rebasingCredits()
       const nonRebasingSupply = await xusd.nonRebasingSupply()
       const totalSupply = await xusd.totalSupply()
-
-      const coinBalances = await Promise.all(
-        ['usdt', 'usdc', 'dai', 'usdc_native'].map(async (coinName) => {
-          return ethers.utils.parseUnits(
-            ethers.utils.formatUnits(
-              await coinInfoList[coinName].contract.balanceOf(vault.address),
-              coinInfoList[coinName].decimals
-            ),
-            coinInfoList.xusd.decimals
-          )
-        })
-      )
-      const computedSupply = coinBalances.reduce(
-        (a, b) => a.add(b),
-        BigNumber.from('0')
-      )
+      const computedSupply = await vault.totalValue()
       const vaultFeeBps = await vault.trusteeFeeBps()
-      const credits = nonRebasingSupply.add(rebasingCredits)
+
       const futureFee = computedSupply
         .sub(totalSupply)
         .mul(vaultFeeBps)
@@ -354,9 +338,8 @@ export async function setupContracts(account, library, chainId, fetchId) {
       const nextRebaseSupply = computedSupply
         .sub(nonRebasingSupply)
         .sub(futureFee)
-      const rebasingCreditsRatio = nextRebaseSupply.div(credits)
       const nextCreditsPerToken =
-        1 / parseFloat(ethers.utils.formatUnits(rebasingCreditsRatio, 18))
+        parseFloat(rebasingCredits) / parseFloat(nextRebaseSupply)
       YieldStore.update((s) => {
         s.currentCreditsPerToken = parseFloat(
           ethers.utils.formatUnits(creditsPerToken, 18)
