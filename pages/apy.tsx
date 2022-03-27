@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import { fbt } from 'fbt-runtime'
 import moment from 'moment'
 import { ethers } from 'ethers'
 
@@ -48,6 +47,16 @@ function addYield(se) {
   }
 }
 
+function addSupplies(supplyEvent: any) {
+  supplyEvent.rebasingSupply =
+    bigNum18(supplyEvent.rebasingCredits) /
+    bigNum18(supplyEvent.rebasingCreditsPerToken)
+  supplyEvent.nonRebasingSupply =
+    bigNum18(supplyEvent.totalSupply) - supplyEvent.rebasingSupply
+
+  return supplyEvent
+}
+
 function bigNum18(value: string): number {
   return parseFloat(ethers.utils.formatUnits(value, 18))
 }
@@ -57,7 +66,9 @@ export default function APY({ locale, onLocale }) {
 
   useEffect(() => {
     totalSupplyEvents().then((events) => {
-      const eventsJson = events.map((s) => s.toJSON())
+      const eventsJson = events
+        .map((s) => s.toJSON())
+        .map((s) => addSupplies(s))
       addApy(eventsJson)
       addYield(eventsJson)
       eventsJson.reverse()
@@ -116,15 +127,8 @@ export default function APY({ locale, onLocale }) {
                         <strong>{supplyEvent.aprUnboosted}%</strong>
                       </td>
                       <td>{bigNum18(supplyEvent.totalSupply).toFixed(2)}</td>
-                      <td>
-                        {bigNum18(supplyEvent.rebasingCredits).toFixed(2)}
-                      </td>
-                      <td>
-                        {(
-                          bigNum18(supplyEvent.totalSupply) -
-                          bigNum18(supplyEvent.rebasingCredits)
-                        ).toFixed(2)}
-                      </td>
+                      <td>{supplyEvent.rebasingSupply.toFixed(2)}</td>
+                      <td>{supplyEvent.nonRebasingSupply.toFixed(2)}</td>
                     </tr>
                   )
                 })}
