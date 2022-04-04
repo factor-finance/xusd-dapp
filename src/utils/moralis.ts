@@ -1,5 +1,6 @@
 import Moralis from 'moralis'
 import { ethers, BigNumber } from 'ethers'
+import moment from 'moment'
 
 /* Moralis init code */
 async function init() {
@@ -50,7 +51,10 @@ export async function totalSupplyEvents(): Promise<any[]> {
   const XUSDProxyTotalSupplyUpdated = Moralis.Object.extend(
     'XUSDProxyTotalSupplyUpdated'
   )
-  const query = new Moralis.Query(XUSDProxyTotalSupplyUpdated)
+  const query = new Moralis.Query(XUSDProxyTotalSupplyUpdated).greaterThan(
+    'block_timestamp',
+    moment().subtract(30, 'days').toDate()
+  )
   const results = await query.find()
 
   return results
